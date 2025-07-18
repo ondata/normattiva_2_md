@@ -16,3 +16,6 @@ Thumbs.db
 
 # File di sistema specifici di Windows
 *.xml:Zone.Identifier
+
+# File di output generati
+output*.md
