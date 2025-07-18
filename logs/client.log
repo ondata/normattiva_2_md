@@ -1,0 +1,7 @@
+2025-07-18 08:29:20,204 INFO NormattivaClient Client initialized with download_dir=./temp_normattiva_xml, log_dir=./logs
+2025-07-18 08:29:20,206 INFO NormattivaClient Downloading Normattiva document with params: {'dataGU': '20050516', 'codiceRedaz': '005G0104', 'dataVigenza': '20250130', 'date': '2005/05/16'}
+2025-07-18 08:29:20,206 INFO NormattivaClient Building request URL with params: {'dataGU': '20050516', 'codiceRedaz': '005G0104', 'dataVigenza': '20250130', 'date': '2005/05/16'}
+2025-07-18 08:29:20,206 INFO NormattivaClient Fetching cookies from URI: https://www.normattiva.it/eli/id/2005/05/16//005G0104/CONSOLIDATED
+2025-07-18 08:29:21,132 INFO NormattivaClient Fetching content from URL: https://www.normattiva.it/do/atto/caricaAKN?dataGU=20050516&codiceRedaz=005G0104&dataVigenza=20250130
+2025-07-18 08:29:21,499 INFO NormattivaClient File saved: temp_normattiva_xml/20050516_005G0104_VIGENZA_20250130.xml
+2025-07-18 08:29:21,499 INFO NormattivaClient Downloaded Normattiva document to temp_normattiva_xml/20050516_005G0104_VIGENZA_20250130.xml

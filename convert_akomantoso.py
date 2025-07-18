@@ -147,7 +147,7 @@ def process_article(article_element, markdown_content_list, ns):
                 intro_element = para_list_element.find('./akn:intro', ns)
                 if intro_element is not None:
                     intro_text = clean_text_content(intro_element)
-                    if intro_text and para_num_element is not None:
+                    if intro_text:
                         # Remove double dots from paragraph numbering
                         para_num = para_num_element.text.strip().rstrip('.')
                         markdown_content_list.append(f"{para_num}. {intro_text}\n\n")
