@@ -1,0 +1,7 @@
+# Imposta i fine riga per i file di testo
+*.py text eol=lf
+*.md text eol=lf
+*.xml text eol=lf
+
+# Normalizza i fine riga per tutti i file di testo
+* text=auto

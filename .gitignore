@@ -1,0 +1,18 @@
+# Ignora la directory di build di PyInstaller
+build/
+dist/
+
+# File Python compilati
+*.pyc
+__pycache__/
+
+# File temporanei e di sistema
+*~
+*.bak
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# File di sistema specifici di Windows
+*.xml:Zone.Identifier
