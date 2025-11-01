@@ -89,6 +89,7 @@ def generate_front_matter(metadata):
         lines.append(f"{key}: {value}")
     lines.append("---")
     lines.append("")  # Empty line after front matter
+    lines.append("")  # Additional empty line before content
 
     return "\n".join(lines)
 
@@ -763,16 +764,17 @@ Esempi d'uso:
     # Auto-detect: URL o file locale?
     if is_normattiva_url(input_source):
         # Gestione URL
-        if not args.quiet:
+        quiet_mode = args.quiet or output_file is None  # Quiet when output to stdout
+        if not quiet_mode:
             print(f"Rilevato URL normattiva.it: {input_source}", file=sys.stderr)
 
         # Estrai parametri dalla pagina
-        params, session = extract_params_from_normattiva_url(input_source, quiet=args.quiet)
+        params, session = extract_params_from_normattiva_url(input_source, quiet=quiet_mode)
         if not params:
             print("❌ Impossibile estrarre parametri dall'URL", file=sys.stderr)
             sys.exit(1)
 
-        if not args.quiet:
+        if not quiet_mode:
             print(f"\nParametri estratti:", file=sys.stderr)
             print(f"  dataGU: {params['dataGU']}", file=sys.stderr)
             print(f"  codiceRedaz: {params['codiceRedaz']}", file=sys.stderr)
@@ -782,12 +784,12 @@ Esempi d'uso:
         xml_temp_path = f"temp_{params['codiceRedaz']}.xml"
 
         # Scarica XML
-        if not download_akoma_ntoso(params, xml_temp_path, session, quiet=args.quiet):
+        if not download_akoma_ntoso(params, xml_temp_path, session, quiet=quiet_mode):
             print("❌ Errore durante il download del file XML", file=sys.stderr)
             sys.exit(1)
 
         # Converti a Markdown
-        if not args.quiet:
+        if not quiet_mode:
             print(f"\nConversione in Markdown...", file=sys.stderr)
 
         # Prepare metadata dict for front matter
@@ -802,7 +804,7 @@ Esempi d'uso:
         success = convert_akomantoso_to_markdown_improved(xml_temp_path, output_file, metadata)
 
         if success:
-            if not args.quiet:
+            if not quiet_mode:
                 if output_file:
                     print(f"✅ Conversione completata: {output_file}", file=sys.stderr)
                 else:
@@ -812,12 +814,12 @@ Esempi d'uso:
             if not args.keep_xml:
                 try:
                     os.remove(xml_temp_path)
-                    if not args.quiet:
+                    if not quiet_mode:
                         print(f"File XML temporaneo rimosso", file=sys.stderr)
                 except OSError as e:
                     print(f"Attenzione: impossibile rimuovere file temporaneo: {e}", file=sys.stderr)
             else:
-                if not args.quiet:
+                if not quiet_mode:
                     print(f"File XML mantenuto: {xml_temp_path}", file=sys.stderr)
 
             sys.exit(0)
@@ -827,16 +829,17 @@ Esempi d'uso:
 
     else:
         # Gestione file XML locale
-        if output_file:
-            print(f"Conversione da file XML locale: '{input_source}' a '{output_file}'...", file=sys.stderr)
-        else:
-            print(f"Conversione da file XML locale: '{input_source}' (output a stdout)...", file=sys.stderr)
+        quiet_mode = args.quiet or output_file is None  # Quiet when output to stdout
+        if not quiet_mode:
+            if output_file:
+                print(f"Conversione da file XML locale: '{input_source}' a '{output_file}'...", file=sys.stderr)
+            else:
+                print(f"Conversione da file XML locale: '{input_source}' (output a stdout)...", file=sys.stderr)
         success = convert_akomantoso_to_markdown_improved(input_source, output_file)
 
-        if success:
+        if success and not quiet_mode:
             print("✅ Conversione completata con successo!", file=sys.stderr)
-            sys.exit(0)
-        else:
+        elif not success:
             print("❌ Errore durante la conversione.", file=sys.stderr)
             sys.exit(1)
 

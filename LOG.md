@@ -4,6 +4,26 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2025-11-01
 
+### 🎉 Release v1.3.1: Output Pulito e Formattazione Migliorata
+
+**Ottimizzazione UX**: Output silenzioso per stdout, formattazione front matter migliorata
+
+#### ✅ Output Silenzioso per Stdout
+- **Rimossi messaggi verbosi**: Quando output va su stdout, solo markdown senza messaggi di progresso
+- **Preservati messaggi**: Quando output su file, messaggi di progresso ancora visibili
+- **Flag quiet rispettato**: Logica migliorata per gestire diversi scenari di output
+
+#### ✅ Formattazione Front Matter
+- **Riga vuota aggiunta**: Spazio tra chiusura front matter e primo heading
+- **Migliore leggibilità**: Separazione chiara tra metadati e contenuto
+
+#### 🧪 Testing e Qualità
+- Test di regressione completati
+- Verifica output silenzioso funzionante
+- Formattazione front matter corretta
+
+## 2025-11-01
+
 ### 🎉 Release v1.3.0: Miglioramento Struttura Documenti e Metadati
 
 **Ottimizzazione per LLM**: Struttura Markdown migliorata con front matter e gerarchia heading ottimizzata per modelli linguistici
