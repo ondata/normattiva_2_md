@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "akoma2md"
+version = "1.1.1"
+description = "Convertitore da XML Akoma Ntoso a formato Markdown con supporto URL normattiva.it"
+readme = "README.md"
+requires-python = ">=3.7"
+license = {text = "MIT"}
+authors = [
+    {name = "Andrea Borruso", email = "aborruso@gmail.com"}
+]
+keywords = ["akoma", "ntoso", "xml", "markdown", "converter", "legal", "documents", "normattiva"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Legal Industry",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Text Processing :: Markup",
+    "Topic :: Text Processing :: Markup :: XML",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "requests>=2.25.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/aborruso/normattiva_2_md"
+Repository = "https://github.com/aborruso/normattiva_2_md"
+Issues = "https://github.com/aborruso/normattiva_2_md/issues"
+
+[project.scripts]
+akoma2md = "convert_akomantoso:main"
+
+[tool.setuptools]
+py-modules = ["convert_akomantoso"]

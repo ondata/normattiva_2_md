@@ -16,13 +16,13 @@ def read_readme():
 
 setup(
     name="akoma2md",
-    version="1.0.0",
-    description="Convertitore da XML Akoma Ntoso a formato Markdown",
+    version="1.1.1",
+    description="Convertitore da XML Akoma Ntoso a formato Markdown con supporto URL normattiva.it",
     long_description=read_readme(),
     long_description_content_type="text/markdown",
-    author="AkomaNtoso Converter",
-    author_email="converter@example.com",
-    url="https://github.com/yourusername/akoma2md",
+    author="Andrea Borruso",
+    author_email="aborruso@gmail.com",
+    url="https://github.com/aborruso/normattiva_2_md",
 
     # Classificatori per PyPI
     classifiers=[
@@ -45,7 +45,7 @@ setup(
     # Dipendenze
     python_requires=">=3.7",
     install_requires=[
-        # Solo librerie standard, nessuna dipendenza esterna
+        "requests>=2.25.0",
     ],
 
     # Moduli Python
