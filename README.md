@@ -23,6 +23,8 @@ Convertire le norme legali da XML Akoma Ntoso a Markdown offre vantaggi signific
 - ✅ **Gestione degli articoli** con numerazione corretta
 - ✅ **Supporto per le modifiche legislative** con evidenziazione `((modifiche))`
 - ✅ **Preservazione della struttura gerarchica** (capitoli, sezioni, articoli)
+- ✅ **Front matter YAML** con metadati completi (URL, dataGU, codiceRedaz, dataVigenza)
+- ✅ **Struttura ottimizzata per LLM** con gerarchia heading bilanciata
 - ✅ **CLI flessibile** con argomenti posizionali e nominati
 - ✅ **Gestione errori robusta** con messaggi informativi
 - ✅ **Nessuna dipendenza esterna** (solo librerie standard Python)
@@ -147,16 +149,29 @@ Lo strumento supporta documenti XML in formato **Akoma Ntoso 3.0**, inclusi:
 
 Il Markdown generato include:
 
-- **Intestazioni gerarchiche** (`#`, `##`, `###`)
+- **Front matter YAML** con metadati completi (URL, dataGU, codiceRedaz, dataVigenza)
+- **Intestazioni gerarchiche ottimizzate** (`#` per titolo, `##` per articoli, `###` per capitoli)
 - **Liste puntate** per le definizioni
 - **Numerazione corretta** dei commi e articoli
 - **Evidenziazione delle modifiche** con `((testo modificato))`
-- **Struttura pulita e leggibile**
+- **Struttura ottimizzata per LLM** e lettura umana
 
 ### Esempio di output
 
 ```markdown
-# Art. 1 - Definizioni
+---
+url: https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2005-03-07;005G0104
+url_xml: https://www.normattiva.it/do/atto/caricaAKN?dataGU=20050307&codiceRedaz=005G0104&dataVigenza=20250130
+dataGU: 20050307
+codiceRedaz: 005G0104
+dataVigenza: 20250130
+---
+
+# Codice dell'amministrazione digitale.
+
+### Capo I - PRINCIPI GENERALI
+
+## Art. 1 - Definizioni
 
 1. Ai fini del presente codice si intende per:
 
@@ -164,7 +179,7 @@ Il Markdown generato include:
 - b) firma digitale: un particolare tipo di firma...
 - c) ((identità digitale)): la rappresentazione informatica...
 
-# Art. 2 - Finalità e ambito di applicazione
+## Art. 2 - Finalità e ambito di applicazione
 
 1. Lo Stato, le Regioni e le autonomie locali...
 ```

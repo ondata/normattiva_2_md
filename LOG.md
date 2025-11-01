@@ -4,6 +4,33 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2025-11-01
 
+### 🎉 Release v1.3.0: Miglioramento Struttura Documenti e Metadati
+
+**Ottimizzazione per LLM**: Struttura Markdown migliorata con front matter e gerarchia heading ottimizzata per modelli linguistici
+
+#### ✅ Front Matter YAML
+- **Metadati strutturati**: Aggiunto front matter YAML con campi `url`, `url_xml`, `dataGU`, `codiceRedaz`, `dataVigenza`
+- **Estrazione automatica**: Implementata estrazione metadati da XML Akoma Ntoso e parametri URL
+- **Costruzione URL**: Generazione automatica degli URL normattiva.it dal metadati estratti
+
+#### ✅ Gerarchia Heading Riadattata
+- **Titolo principale H1**: Il titolo della norma rimane prominente come H1
+- **Struttura ottimizzata**: Tutti gli elementi strutturali abbassati di un livello per migliore leggibilità
+- **Progressione logica**: H1 (titolo) → H2 (articoli) → H3 (capitoli/parti) → H4 (sezioni)
+
+#### 🧪 Testing e Qualità
+- Aggiornati tutti i test esistenti per riflettere i nuovi livelli heading
+- Aggiunti test completi per generazione front matter e estrazione metadati
+- Suite di test completa: 14/14 tests passati
+- Verifica end-to-end della conversione con metadati
+
+#### 📚 Documentazione
+- Aggiornato README.md con descrizione delle nuove funzionalità
+- Aggiornato PRD.md con requisiti implementati
+- Implementazione completa del change proposal OpenSpec
+
+## 2025-11-01
+
 ### Riorganizzazione documentazione e script
 
 - Creati `docs/` e `scripts/` per raccogliere rispettivamente documentazione ausiliaria e utility shell.

@@ -14,11 +14,14 @@ L'obiettivo principale di `akoma2md` è fornire un modo semplice ed efficiente p
 
 *   **Input:** Il tool accetterà un file XML valido in formato Akoma Ntoso come input.
 *   **Output:** Il tool genererà un file Markdown (`.md`) contenente il testo convertito.
+*   **Front Matter:** Generazione automatica di front matter YAML contenente metadati del documento (URL, dataGU, codiceRedaz, dataVigenza).
 *   **Gestione della Struttura:**
-    *   **Titolo del Documento:** Estrazione e formattazione del titolo del documento (se presente) come intestazione di primo livello (`#`).
+    *   **Titolo del Documento:** Estrazione e formattazione del titolo del documento come intestazione di primo livello (`#`), prominente per LLM.
     *   **Preambolo:** Estrazione del contenuto del preambolo, inclusi paragrafi e citazioni.
-    *   **Capitoli e Sezioni:** Riconoscimento e formattazione di capitoli e sezioni come intestazioni di secondo (`##`) e terzo livello (`###`) rispettivamente.
-    *   **Articoli:** Riconoscimento e formattazione degli articoli. Il numero dell'articolo e l'intestazione (se presente) saranno combinati in un'intestazione di primo livello (`# Art. X - Titolo`).
+    *   **Capitoli e Sezioni:** Riconoscimento e formattazione di capitoli e sezioni come intestazioni di terzo (`###`) e quarto livello (`####`) per struttura ottimizzata.
+    *   **Articoli:** Riconoscimento e formattazione degli articoli. Il numero dell'articolo e l'intestazione (se presente) saranno combinati in un'intestazione di secondo livello (`## Art. X - Titolo`).
+    *   **Parti e Titoli:** Gestione di parti e titoli strutturali come intestazioni di terzo livello (`###`).
+    *   **Allegati:** Formattazione degli allegati come sezioni dedicate di terzo livello (`###`).
     *   **Paragrafi:** Estrazione del contenuto dei paragrafi. I paragrafi numerati saranno formattati con il loro numero seguito da un punto (es. `1. Testo del paragrafo`).
     *   **Elenchi:** Riconoscimento e formattazione degli elenchi puntati o numerati all'interno di paragrafi o articoli. Gli elementi dell'elenco saranno preceduti da un trattino (`-`).
 *   **Gestione della Formattazione Inline:**
@@ -27,17 +30,26 @@ L'obiettivo principale di `akoma2md` è fornire un modo semplice ed efficiente p
     *   **Riferimenti (`<ref>`):** Il contenuto testuale dei tag `<ref>` sarà incluso nel testo convertito.
     *   **Modifiche (`<ins>`, `<del>`):** Il testo all'interno di tag `<ins>` (inserimenti) e `<del>` (cancellazioni) sarà racchiuso tra doppie parentesi `((testo))`.
 
-### 3.2. Interfaccia a Riga di Comando (CLI)
+### 3.2. Supporto URL normattiva.it
+
+*   **Riconoscimento URL:** Il tool riconosce automaticamente gli URL di normattiva.it e scarica il documento XML Akoma Ntoso corrispondente.
+*   **Estrazione Parametri:** Analizza gli URL per estrarre parametri necessari (dataGU, codiceRedaz, dataVigenza).
+*   **Download Sicuro:** Utilizza richieste HTTP sicure per scaricare i documenti XML.
+*   **Fallback Locale:** Supporta anche file XML locali quando l'accesso web non è disponibile.
+
+### 3.3. Interfaccia a Riga di Comando (CLI)
 
 *   **Argomenti Posizionali:** Supporto per l'input e l'output come argomenti posizionali (es. `akoma2md input.xml output.md`).
 *   **Argomenti Nominati:** Supporto per argomenti nominati per input e output (es. `akoma2md -i input.xml -o output.md` o `akoma2md --input input.xml --output output.md`).
-*   **Messaggi di Errore:** Fornire messaggi di errore chiari in caso di file mancanti, errori di parsing XML o problemi di scrittura del file.
-*   **Messaggi di Successo:** Conferma della corretta conversione.
+*   **Input da URL:** Supporto diretto per URL normattiva.it come input (es. `akoma2md "https://www.normattiva.it/..." output.md`).
+*   **Opzioni Avanzate:** Flag per mantenere file XML temporanei scaricati (`--keep-xml`).
+*   **Messaggi di Errore:** Fornire messaggi di errore chiari in caso di file mancanti, errori di parsing XML, problemi di rete o problemi di scrittura del file.
+*   **Messaggi di Successo:** Conferma della corretta conversione con dettagli sui file generati.
 
 ## 4. Requisiti Tecnici
 
 *   **Linguaggio di Programmazione:** Python 3.7 o superiore.
-*   **Dipendenze:** Il tool utilizzerà solo librerie standard di Python (es. `xml.etree.ElementTree`, `re`, `argparse`). Non sono previste dipendenze esterne.
+*   **Dipendenze:** Il tool utilizza librerie standard di Python (es. `xml.etree.ElementTree`, `re`, `argparse`) più la libreria `requests` per il download di documenti da URL normattiva.it.
 *   **Compatibilità del Sistema Operativo:** Indipendente dal sistema operativo (testato su Linux, ma dovrebbe funzionare su Windows e macOS).
 
 ## 5. Requisiti di Performance

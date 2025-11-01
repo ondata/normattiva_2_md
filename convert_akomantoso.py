@@ -7,6 +7,90 @@ import requests
 from datetime import datetime
 
 AKN_NAMESPACE = {'akn': 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0'}
+GU_NAMESPACE = {'gu': 'http://www.gazzettaufficiale.it/eli/'}
+ELI_NAMESPACE = {'eli': 'http://data.europa.eu/eli/ontology#'}
+
+def extract_metadata_from_xml(root):
+    """
+    Extract metadata from Akoma Ntoso XML meta section.
+
+    Returns dict with keys: dataGU, codiceRedaz, dataVigenza, url, url_xml
+    Returns None for missing fields.
+    """
+    metadata = {}
+
+    # Extract from meta section
+    meta = root.find('.//akn:meta', AKN_NAMESPACE)
+    if meta is None:
+        return metadata
+
+    # Extract codiceRedaz (eli:id_local) - try both eli and gu namespaces
+    id_local = meta.find('.//eli:id_local', ELI_NAMESPACE)
+    if id_local is None:
+        id_local = meta.find('.//gu:id_local', GU_NAMESPACE)
+    if id_local is not None and id_local.text:
+        metadata['codiceRedaz'] = id_local.text.strip()
+
+    # Extract dataGU (eli:date_document) - try both eli and gu namespaces
+    date_doc = meta.find('.//eli:date_document', ELI_NAMESPACE)
+    if date_doc is None:
+        date_doc = meta.find('.//gu:date_document', GU_NAMESPACE)
+    if date_doc is not None and date_doc.text:
+        # Convert from YYYY-MM-DD to YYYYMMDD format
+        try:
+            date_obj = datetime.strptime(date_doc.text.strip(), '%Y-%m-%d')
+            metadata['dataGU'] = date_obj.strftime('%Y%m%d')
+        except ValueError:
+            metadata['dataGU'] = date_doc.text.strip()
+
+    # Extract dataVigenza from FRBRExpression date
+    frbr_expr = meta.find('.//akn:FRBRExpression', AKN_NAMESPACE)
+    if frbr_expr is not None:
+        date_expr = frbr_expr.find('./akn:FRBRdate', AKN_NAMESPACE)
+        if date_expr is not None and date_expr.get('date'):
+            # Convert from YYYY-MM-DD to YYYYMMDD format
+            try:
+                date_obj = datetime.strptime(date_expr.get('date'), '%Y-%m-%d')
+                metadata['dataVigenza'] = date_obj.strftime('%Y%m%d')
+            except ValueError:
+                metadata['dataVigenza'] = date_expr.get('date')
+
+    # Construct URLs if we have the required metadata
+    if metadata.get('dataGU') and metadata.get('codiceRedaz') and metadata.get('dataVigenza'):
+        base_url = "https://www.normattiva.it/uri-res/N2Ls"
+        urn = f"urn:nir:stato:legge:{metadata['dataGU'][:4]}-{metadata['dataGU'][4:6]}-{metadata['dataGU'][6:]};{metadata['codiceRedaz']}"
+        metadata['url'] = f"{base_url}?{urn}"
+
+        metadata['url_xml'] = f"https://www.normattiva.it/do/atto/caricaAKN?dataGU={metadata['dataGU']}&codiceRedaz={metadata['codiceRedaz']}&dataVigenza={metadata['dataVigenza']}"
+
+    return metadata
+
+def generate_front_matter(metadata):
+    """
+    Generate YAML front matter from metadata dictionary.
+
+    Returns front matter string or empty string if no metadata available.
+    """
+    if not metadata:
+        return ""
+
+    # Collect non-None values
+    front_matter_data = {}
+    for key in ['url', 'url_xml', 'dataGU', 'codiceRedaz', 'dataVigenza']:
+        if metadata.get(key):
+            front_matter_data[key] = metadata[key]
+
+    if not front_matter_data:
+        return ""
+
+    # Generate YAML front matter
+    lines = ["---"]
+    for key, value in front_matter_data.items():
+        lines.append(f"{key}: {value}")
+    lines.append("---")
+    lines.append("")  # Empty line after front matter
+
+    return "\n".join(lines)
 
 def parse_chapter_heading(heading_text):
     """
@@ -245,11 +329,16 @@ def download_akoma_ntoso(params, output_path, session=None, quiet=False):
         print(f"❌ Errore durante il download: {e}", file=sys.stderr)
         return False
 
-def convert_akomantoso_to_markdown_improved(xml_file_path, markdown_file_path=None):
+def convert_akomantoso_to_markdown_improved(xml_file_path, markdown_file_path=None, metadata=None):
     try:
         tree = ET.parse(xml_file_path)
         root = tree.getroot()
-        markdown_fragments = generate_markdown_fragments(root, AKN_NAMESPACE)
+
+        # Extract metadata from XML if not provided (for local files)
+        if metadata is None:
+            metadata = extract_metadata_from_xml(root)
+
+        markdown_fragments = generate_markdown_fragments(root, AKN_NAMESPACE, metadata)
     except ET.ParseError as e:
         print(f"Errore durante il parsing del file XML: {e}", file=sys.stderr)
         return False
@@ -279,20 +368,27 @@ def convert_akomantoso_to_markdown_improved(xml_file_path, markdown_file_path=No
         return False
 
 
-def generate_markdown_fragments(root, ns):
+def generate_markdown_fragments(root, ns, metadata=None):
     """Build the markdown fragments for a parsed Akoma Ntoso document."""
 
     fragments = []
+
+    # Add front matter if metadata is available
+    if metadata:
+        front_matter = generate_front_matter(metadata)
+        if front_matter:
+            fragments.append(front_matter)
+
     fragments.extend(extract_document_title(root, ns))
     fragments.extend(extract_preamble_fragments(root, ns))
     fragments.extend(extract_body_fragments(root, ns))
     return fragments
 
 
-def generate_markdown_text(root, ns=AKN_NAMESPACE):
+def generate_markdown_text(root, ns=AKN_NAMESPACE, metadata=None):
     """Return the Markdown rendering for the provided Akoma Ntoso root."""
 
-    return ''.join(generate_markdown_fragments(root, ns))
+    return ''.join(generate_markdown_fragments(root, ns, metadata))
 
 
 def extract_document_title(root, ns):
@@ -364,9 +460,9 @@ def process_chapter(chapter_element, ns):
     if heading_element is not None and heading_element.text:
         clean_heading = clean_text_content(heading_element)
         parsed = parse_chapter_heading(clean_heading)
-        chapter_fragments.append(f"## {parsed['capo']}\n\n")
+        chapter_fragments.append(f"### {parsed['capo']}\n\n")
         if parsed['sezione']:
-            chapter_fragments.append(f"### {parsed['sezione']}\n\n")
+            chapter_fragments.append(f"#### {parsed['sezione']}\n\n")
 
     for child in chapter_element:
         if child.tag.endswith('section'):
@@ -383,7 +479,7 @@ def process_section(section_element, ns):
     heading_element = section_element.find('./akn:heading', ns)
     if heading_element is not None and heading_element.text:
         clean_heading = clean_text_content(heading_element)
-        section_fragments.append(f"### {clean_heading}\n\n")
+        section_fragments.append(f"#### {clean_heading}\n\n")
 
     for article in section_element.findall('./akn:article', ns):
         process_article(article, section_fragments, ns)
@@ -392,14 +488,14 @@ def process_section(section_element, ns):
 
 def process_title(title_element, ns):
     """
-    Convert a title element to Markdown H1 heading.
+    Convert a title element to Markdown H2 heading.
     Titles are top-level structural elements.
     """
     title_fragments = []
     heading_element = title_element.find('./akn:heading', ns)
     if heading_element is not None and heading_element.text:
         clean_heading = clean_text_content(heading_element)
-        title_fragments.append(f"# {clean_heading}\n\n")
+        title_fragments.append(f"## {clean_heading}\n\n")
 
     # Process any nested content (chapters, articles, etc.)
     for child in title_element:
@@ -414,13 +510,13 @@ def process_title(title_element, ns):
 def process_part(part_element, ns):
     """
     Convert a part element to Markdown fragments.
-    Parts are major structural divisions, rendered as H2.
+    Parts are major structural divisions, rendered as H3.
     """
     part_fragments = []
     heading_element = part_element.find('./akn:heading', ns)
     if heading_element is not None and heading_element.text:
         clean_heading = clean_text_content(heading_element)
-        part_fragments.append(f"## {clean_heading}\n\n")
+        part_fragments.append(f"### {clean_heading}\n\n")
 
     # Process nested content (chapters, articles, etc.)
     for child in part_element:
@@ -441,9 +537,9 @@ def process_attachment(attachment_element, ns):
     heading_element = attachment_element.find('./akn:heading', ns)
     if heading_element is not None and heading_element.text:
         clean_heading = clean_text_content(heading_element)
-        attachment_fragments.append(f"## Allegato: {clean_heading}\n\n")
+        attachment_fragments.append(f"### Allegato: {clean_heading}\n\n")
     else:
-        attachment_fragments.append("## Allegato\n\n")
+        attachment_fragments.append("### Allegato\n\n")
 
     # Process attachment content (similar to body processing)
     for child in attachment_element:
@@ -508,9 +604,9 @@ def process_article(article_element, markdown_content_list, ns):
         if article_heading_element is not None and article_heading_element.text:
             clean_article_heading = clean_text_content(article_heading_element)
             # Improved formatting: "Art. X - Title" format
-            markdown_content_list.append(f"# {article_num} - {clean_article_heading}\n\n")
+            markdown_content_list.append(f"## {article_num} - {clean_article_heading}\n\n")
         else:
-            markdown_content_list.append(f"# {article_num}\n\n")
+            markdown_content_list.append(f"## {article_num}\n\n")
 
     # Process paragraphs and lists within articles
     for child_of_article in article_element:
@@ -693,7 +789,17 @@ Esempi d'uso:
         # Converti a Markdown
         if not args.quiet:
             print(f"\nConversione in Markdown...", file=sys.stderr)
-        success = convert_akomantoso_to_markdown_improved(xml_temp_path, output_file)
+
+        # Prepare metadata dict for front matter
+        metadata = {
+            'dataGU': params['dataGU'],
+            'codiceRedaz': params['codiceRedaz'],
+            'dataVigenza': params['dataVigenza'],
+            'url': input_source,  # The original URL
+            'url_xml': f"https://www.normattiva.it/do/atto/caricaAKN?dataGU={params['dataGU']}&codiceRedaz={params['codiceRedaz']}&dataVigenza={params['dataVigenza']}"
+        }
+
+        success = convert_akomantoso_to_markdown_improved(xml_temp_path, output_file, metadata)
 
         if success:
             if not args.quiet:
