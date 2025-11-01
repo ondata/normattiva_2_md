@@ -34,6 +34,9 @@ jobs:
       - name: Build binary
         run: pyinstaller --onefile --name akoma2md convert_akomantoso.py
 
+      - name: Copy XML fixture
+        run: cp test_data/20050516_005G0104_VIGENZA_20250130.xml .
+
       - name: Run tests
         run: make test
 
@@ -80,6 +83,10 @@ jobs:
       - name: Build binary
         shell: pwsh
         run: pyinstaller --onefile --name akoma2md convert_akomantoso.py
+
+      - name: Copy XML fixture
+        shell: pwsh
+        run: Copy-Item test_data/20050516_005G0104_VIGENZA_20250130.xml .
 
       - name: Run unit tests
         shell: pwsh
