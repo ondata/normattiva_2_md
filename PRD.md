@@ -2,11 +2,11 @@
 
 ## 1. Introduzione
 
-Questo documento descrive i requisiti per `akoma2md`, uno strumento a riga di comando progettato per convertire file XML conformi allo standard Akoma Ntoso in documenti Markdown leggibili.
+Questo documento descrive i requisiti per `akoma2md`, uno strumento a riga di comando progettato per convertire file XML conformi allo standard Akoma Ntoso in documenti Markdown leggibili. La finalità di base è produrre file facilmente condivisibili con modelli linguistici di grandi dimensioni (LLM) e altri sistemi di Intelligenza Artificiale, così da semplificare analisi, verifica e automazione dei contenuti normativi.
 
 ## 2. Scopo
 
-L'obiettivo principale di `akoma2md` è fornire un modo semplice ed efficiente per convertire le norme pubblicate su `normattiva.it` (esportabili in formato Akoma Ntoso) in documenti Markdown. Questo formato testuale strutturato è ideale per essere utilizzato come input per Large Language Models (LLM) e sistemi di Intelligenza Artificiale, facilitando la creazione di bot specializzati basati su normative legali. Lo strumento mira a rendere il contenuto delle norme più accessibile e fruibile per applicazioni AI, superando la complessità dei file XML Akoma Ntoso originali.
+L'obiettivo principale di `akoma2md` è fornire un modo semplice ed efficiente per convertire le norme pubblicate su `normattiva.it` (esportabili in formato Akoma Ntoso) in documenti Markdown. Questo formato testuale strutturato è ideale per essere utilizzato come input per Large Language Models (LLM) e sistemi di Intelligenza Artificiale, facilitando la creazione di bot specializzati basati su normative legali. In particolare, il progetto mira a rendere immediato il passaggio da XML complessi a Markdown pronto per essere incollato o caricato come contesto in strumenti LLM, riducendo tempi di preparazione e rischio di errori.
 
 ## 3. Funzionalità
 

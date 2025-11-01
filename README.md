@@ -5,7 +5,7 @@
 [![Licenza](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Download](https://img.shields.io/pypi/dm/akoma2md.svg)](https://pypi.org/project/akoma2md/)
 
-**Akoma2MD** è uno strumento da riga di comando progettato per convertire documenti XML in formato **Akoma Ntoso** (in particolare le norme pubblicate su `normattiva.it`) in documenti **Markdown** leggibili e ben formattati.
+**Akoma2MD** è uno strumento da riga di comando progettato per convertire documenti XML in formato **Akoma Ntoso** (in particolare le norme pubblicate su `normattiva.it`) in documenti **Markdown** leggibili e ben formattati. L'obiettivo principale è offrire un formato compatto e immediatamente riutilizzabile quando le norme devono essere fornite come contesto a un **Large Language Model (LLM)** o elaborate in pipeline di Intelligenza Artificiale.
 
 ## 🎯 Perché Markdown per le norme?
 
@@ -30,6 +30,8 @@ Convertire le norme legali da XML Akoma Ntoso a Markdown offre vantaggi signific
 ## 📦 Installazione
 
 ### Installazione da PyPI (Raccomandato)
+
+Il pacchetto è pubblicato su [PyPI](https://pypi.org/project/akoma2md/).
 
 ```bash
 # Con uv
@@ -63,17 +65,17 @@ python convert_akomantoso.py input.xml output.md
 
 ### Metodo 1: Da URL Normattiva (consigliato)
 
-Converti direttamente da un URL di normattiva.it:
+La CLI riconosce automaticamente gli URL di `normattiva.it` e scarica il documento Akoma Ntoso prima di convertirlo:
 
 ```bash
-# Conversione diretta URL → Markdown
-python fetch_from_url.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" -o legge.md
+# Conversione diretta URL → Markdown (output su file)
+akoma2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" legge.md
 
-# Salva solo il file XML Akoma Ntoso
-python fetch_from_url.py "URL_NORMATTIVA" --xml-only -o documento.xml
+# Conversione diretta con output su stdout (utile per pipe)
+akoma2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2005-03-07;82"
 
-# Mantieni il file XML dopo la conversione
-python fetch_from_url.py "URL_NORMATTIVA" -o legge.md --keep-xml
+# Conservare l'XML scaricato
+akoma2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" legge.md --keep-xml
 ```
 
 ### Metodo 2: Da file XML locale
@@ -90,9 +92,6 @@ akoma2md --input input.xml --output output.md
 ### Esempi pratici
 
 ```bash
-# Convertire da URL normattiva
-python fetch_from_url.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2005-03-07;82" -o cad.md
-
 # Convertire un file XML locale
 akoma2md decreto_82_2005.xml codice_amministrazione_digitale.md
 
@@ -101,7 +100,6 @@ akoma2md /percorso/documento.xml /percorso/output.md
 
 # Visualizzare l'aiuto
 akoma2md --help
-python fetch_from_url.py --help
 ```
 
 ### Opzioni disponibili
@@ -226,7 +224,6 @@ I contributi sono benvenuti! Segui questi passaggi:
 
 - 🐛 **Segnalazioni di bug**: [pagina delle segnalazioni](https://github.com/aborruso/normattiva_2_md/issues)
 - 💡 **Proposte di nuove funzionalità**: [pagina delle segnalazioni](https://github.com/aborruso/normattiva_2_md/issues)
-- 📖 **Documentazione estesa**: [Wiki](https://github.com/aborruso/normattiva_2_md/wiki)
 
 ## 🏗️ Stato del progetto
 
