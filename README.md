@@ -1,10 +1,21 @@
 # 🔄 Akoma2MD - Convertitore Akoma Ntoso to Markdown
 
+[![PyPI version](https://img.shields.io/pypi/v/akoma2md.svg)](https://pypi.org/project/akoma2md/)
 [![Python Version](https://img.shields.io/badge/python-3.7+-blue.svg)](https://python.org)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![CLI Tool](https://img.shields.io/badge/type-CLI%20Tool-orange.svg)](https://github.com/yourusername/akoma2md)
+[![Downloads](https://img.shields.io/pypi/dm/akoma2md.svg)](https://pypi.org/project/akoma2md/)
 
-**Akoma2MD** è uno strumento da riga di comando progettato per convertire documenti XML in formato **Akoma Ntoso** (in particolare le norme pubblicate su `normattiva.it`) in documenti **Markdown** leggibili e ben formattati. L'output Markdown è ottimizzato per essere utilizzato come input per Large Language Models (LLM) e sistemi di Intelligenza Artificiale, facilitando la creazione di bot specializzati basati su normative legali.
+**Akoma2MD** è uno strumento da riga di comando progettato per convertire documenti XML in formato **Akoma Ntoso** (in particolare le norme pubblicate su `normattiva.it`) in documenti **Markdown** leggibili e ben formattati.
+
+## 🎯 Perché Markdown per le norme?
+
+Convertire le norme legali da XML Akoma Ntoso a Markdown offre vantaggi significativi:
+
+- **📝 LLM-friendly**: Il formato Markdown è ideale per Large Language Models (Claude, ChatGPT, ecc.), permettendo di passare intere normative come contesto per analisi, interpretazione e risposta a domande legali
+- **🤖 AI Applications**: Facilita la creazione di chatbot legali, assistenti normativi e sistemi di Q&A automatizzati
+- **👁️ Leggibilità**: Il testo è immediatamente leggibile sia da umani che da macchine, senza tag XML complessi
+- **🔍 Ricerca e analisi**: Formato ottimale per indicizzazione, ricerca semantica e processamento del linguaggio naturale
+- **📊 Documentazione**: Facile integrazione in wiki, knowledge base e sistemi di documentazione
 
 ## 🚀 Caratteristiche
 
@@ -18,20 +29,24 @@
 
 ## 📦 Installazione
 
-### Installazione con uv (Raccomandato)
+### Installazione da PyPI (Raccomandato)
 
 ```bash
-git clone https://github.com/yourusername/akoma2md.git
-cd akoma2md
-uv tool install .
+# Con uv
+uv tool install akoma2md
+
+# Con pip
+pip install akoma2md
+
+# Utilizzo
 akoma2md input.xml output.md
 ```
 
 ### Installazione da sorgenti
 
 ```bash
-git clone https://github.com/yourusername/akoma2md.git
-cd akoma2md
+git clone https://github.com/aborruso/normattiva_2_md.git
+cd normattiva_2_md
 pip install -e .
 akoma2md input.xml output.md
 ```
@@ -39,8 +54,8 @@ akoma2md input.xml output.md
 ### Esecuzione diretta (senza installazione)
 
 ```bash
-git clone https://github.com/yourusername/akoma2md.git
-cd akoma2md
+git clone https://github.com/aborruso/normattiva_2_md.git
+cd normattiva_2_md
 python convert_akomantoso.py input.xml output.md
 ```
 
@@ -166,8 +181,8 @@ Il Markdown generato include:
 ### Setup ambiente di sviluppo
 
 ```bash
-git clone https://github.com/yourusername/akoma2md.git
-cd akoma2md
+git clone https://github.com/aborruso/normattiva_2_md.git
+cd normattiva_2_md
 python -m venv venv
 source venv/bin/activate  # Su Windows: venv\Scripts\activate
 pip install -e .
@@ -209,9 +224,9 @@ I contributi sono benvenuti! Per favore:
 
 ## 📞 Supporto
 
-- 🐛 **Bug Reports**: [Issues](https://github.com/yourusername/akoma2md/issues)
-- 💡 **Feature Requests**: [Issues](https://github.com/yourusername/akoma2md/issues)
-- 📖 **Documentazione**: [Wiki](https://github.com/yourusername/akoma2md/wiki)
+- 🐛 **Bug Reports**: [Issues](https://github.com/aborruso/normattiva_2_md/issues)
+- 💡 **Feature Requests**: [Issues](https://github.com/aborruso/normattiva_2_md/issues)
+- 📖 **Documentazione**: [Wiki](https://github.com/aborruso/normattiva_2_md/wiki)
 
 ## 🏗️ Stato del progetto
 
