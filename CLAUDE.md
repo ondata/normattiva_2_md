@@ -10,19 +10,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Main Components
 
-- `convert_akomantoso.py`: Core converter (Akoma Ntoso XML → Markdown)
-  - Uses only Python standard library (no external deps)
-  - Entry point: `main()` function
-  - Key function: `convert_akomantoso_to_markdown_improved(xml_path, md_path)`
+- `convert_akomantoso.py`: Unified CLI tool (requires `requests`)
+  - Entry point: `main()` function with auto-detect URL/file
+  - URL support: `is_normattiva_url()`, `extract_params_from_normattiva_url()`, `download_akoma_ntoso()`
+  - Core conversion: `convert_akomantoso_to_markdown_improved(xml_path, md_path=None)` - outputs to stdout if md_path is None
   - Text extraction: `clean_text_content(element)` handles inline formatting, refs, and modifications
   - Article processing: `process_article(article_element, markdown_list, ns)` handles paragraphs and lists
-
-- `fetch_from_url.py`: **Recommended** URL-based fetcher (requires `requests`)
-  - Downloads documents directly from normattiva.it page URLs
-  - Extracts parameters from HTML (dataGU, codiceRedaz, dataVigenza)
-  - Uses session-based requests to maintain cookies
-  - Downloads Akoma Ntoso XML and converts to Markdown
-  - Entry point: `main()` with argparse CLI
+  - Status messages: routed to stderr when outputting markdown to stdout
 
 - `fetch_normattiva.py`: Alternative fetcher (requires `tulit` library)
   - Downloads documents from normattiva.it API
@@ -46,30 +40,29 @@ Document structure extraction:
 
 ## Common Development Tasks
 
-### Running the converter from URL (recommended)
+### Running the converter (auto-detect URL/file)
 
 ```bash
-# Convert directly from normattiva.it URL
-python fetch_from_url.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" -o output.md
-
-# Download XML only
-python fetch_from_url.py "URL" --xml-only -o document.xml
-
-# Keep XML after conversion
-python fetch_from_url.py "URL" -o output.md --keep-xml
-```
-
-### Running the converter from local XML
-
-```bash
-# Direct Python execution
+# Output to file
 python convert_akomantoso.py input.xml output.md
-
-# Using installed package
 akoma2md input.xml output.md
+
+# Output to stdout (default when -o omitted)
+python convert_akomantoso.py input.xml
+akoma2md input.xml > output.md
+akoma2md -i input.xml
+
+# From normattiva.it URL (auto-detected)
+python convert_akomantoso.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" output.md
+akoma2md "URL" > output.md
+akoma2md -i "URL" -o output.md
 
 # With named arguments
 akoma2md -i input.xml -o output.md
+
+# Keep temporary XML from URL
+akoma2md "URL" output.md --keep-xml
+akoma2md "URL" --keep-xml > output.md
 ```
 
 ### Alternative: Fetching with specific parameters
@@ -127,7 +120,10 @@ pip install .
 
 ## Project Constraints
 
-- **Zero external dependencies** for core converter (convert_akomantoso.py)
+- **Minimal dependencies**: only `requests` for URL fetching
 - Python 3.7+ compatibility
 - CLI must support both positional and named arguments
+- Auto-detect URL vs file input
+- Output defaults to stdout when not specified (file optional)
+- Status messages always go to stderr to keep stdout clean for piping
 - Output must be LLM-friendly Markdown
