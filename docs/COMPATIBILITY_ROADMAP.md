@@ -1,7 +1,7 @@
 # 🔄 Roadmap Compatibilità Akoma2MD
 
 ## 📊 Stato Attuale
-Il convertitore funziona con **80-85%** dei documenti Normattiva testati.
+Il convertitore funziona con **85-90%** dei documenti Normattiva testati.
 
 ## 🎯 Miglioramenti Prioritari
 
@@ -14,12 +14,12 @@ Il convertitore funziona con **80-85%** dei documenti Normattiva testati.
 ### 2. Elementi Specifici Mancanti
 - [ ] **Tabelle** (`<akn:table>`)
 - [ ] **Note a piè di pagina** (`<akn:footnote>`)
-- [ ] **Riferimenti normativi** (`<akn:ref>`)
+- [x] **Riferimenti normativi** (`<akn:ref>`) - ✅ Implementato
 - [ ] **Citazioni** (`<akn:quotedStructure>`)
 
 ### 3. Tipologie Documento da Testare
 - [ ] Costituzione italiana
-- [ ] Codici (Civile, Penale, Procedura)
+- [x] **Codici** (Civile, Penale, Procedura) - ✅ Codice dell'amministrazione digitale testato
 - [ ] Regolamenti ministeriali
 - [ ] Testi Unici
 
