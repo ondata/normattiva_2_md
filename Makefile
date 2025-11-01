@@ -54,19 +54,22 @@ install:
 # Test di base
 test:
 	@echo "🧪 Esecuzione test..."
-	@if [ -f "20050516_005G0104_VIGENZA_20250130.xml" ]; then \
-		echo "Test 1: Script Python"; \
-		$(PYTHON) $(MAIN_SCRIPT) 20050516_005G0104_VIGENZA_20250130.xml test_output_python.md; \
-		echo "Test 2: Eseguibile standalone"; \
-		./dist/$(PACKAGE_NAME) 20050516_005G0104_VIGENZA_20250130.xml test_output_exe.md; \
-		echo "Test 3: Comando installato"; \
-		$(PACKAGE_NAME) 20050516_005G0104_VIGENZA_20250130.xml test_output_cmd.md; \
-		echo "✅ Tutti i test completati"; \
-		echo "📊 File generati:"; \
-		ls -la test_output_*.md; \
-	else \
-		echo "⚠️  File di test XML non trovato"; \
-	fi
+	@set -e; \
+		echo "Test 1: Unittest"; \
+		$(PYTHON) -m unittest discover -s tests; \
+		if [ -f "20050516_005G0104_VIGENZA_20250130.xml" ]; then \
+			echo "Test 2: Script Python"; \
+			$(PYTHON) $(MAIN_SCRIPT) 20050516_005G0104_VIGENZA_20250130.xml test_output_python.md; \
+			echo "Test 3: Eseguibile standalone"; \
+			./dist/$(PACKAGE_NAME) 20050516_005G0104_VIGENZA_20250130.xml test_output_exe.md; \
+			echo "Test 4: Comando installato"; \
+			$(PACKAGE_NAME) 20050516_005G0104_VIGENZA_20250130.xml test_output_cmd.md; \
+			echo "✅ Test di integrazione completati"; \
+			echo "📊 File generati:"; \
+			ls -la test_output_*.md; \
+		else \
+			echo "⚠️  File di test XML non trovato. Eseguiti solo gli unit test."; \
+		fi
 
 # Creazione pacchetti per la distribuzione
 package: clean
