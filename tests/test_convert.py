@@ -2,7 +2,7 @@ import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from convert_akomantoso import generate_markdown_text, clean_text_content, process_table
+from convert_akomantoso import generate_markdown_text, clean_text_content, process_table, process_title, process_part, process_attachment
 
 
 FIXTURE_PATH = Path(__file__).resolve().parents[1] / "test_data" / "20050516_005G0104_VIGENZA_20250130.xml"
@@ -79,6 +79,56 @@ class ConvertAkomaNtosoTest(unittest.TestCase):
         self.assertIn('|', result)
         self.assertIn('Header 1', result)
         self.assertIn('Data 1', result)
+
+    def test_title_element_handling(self):
+        """Test that title elements are converted to H1 headings"""
+        # Create a simple XML title
+        title_xml = '''<akn:title xmlns:akn="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
+            <akn:heading>TITOLO I</akn:heading>
+            <akn:chapter>
+                <akn:heading>Capo I DISPOSIZIONI GENERALI</akn:heading>
+            </akn:chapter>
+        </akn:title>'''
+        root = ET.fromstring(title_xml)
+        ns = {'akn': 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0'}
+        result_fragments = process_title(root, ns)
+        result = ''.join(result_fragments)
+        # Should contain H1 heading
+        self.assertIn('# TITOLO I', result)
+        # Should contain nested chapter
+        self.assertIn('## Capo I - DISPOSIZIONI GENERALI', result)
+
+    def test_part_element_handling(self):
+        """Test that part elements are converted to H2 headings"""
+        # Create a simple XML part
+        part_xml = '''<akn:part xmlns:akn="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
+            <akn:heading>Parte I - DISPOSIZIONI GENERALI</akn:heading>
+        </akn:part>'''
+        root = ET.fromstring(part_xml)
+        ns = {'akn': 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0'}
+        result_fragments = process_part(root, ns)
+        result = ''.join(result_fragments)
+        # Should contain H2 heading
+        self.assertIn('## Parte I - DISPOSIZIONI GENERALI', result)
+
+    def test_attachment_element_handling(self):
+        """Test that attachment elements are converted to separate sections"""
+        # Create a simple XML attachment
+        attachment_xml = '''<akn:attachment xmlns:akn="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
+            <akn:heading>Allegato A</akn:heading>
+            <akn:article>
+                <akn:num>Art. 1</akn:num>
+                <akn:heading>Test Article</akn:heading>
+            </akn:article>
+        </akn:attachment>'''
+        root = ET.fromstring(attachment_xml)
+        ns = {'akn': 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0'}
+        result_fragments = process_attachment(root, ns)
+        result = ''.join(result_fragments)
+        # Should contain attachment section
+        self.assertIn('## Allegato: Allegato A', result)
+        # Should contain nested article
+        self.assertIn('# Art. 1 - Test Article', result)
 
 
 if __name__ == "__main__":

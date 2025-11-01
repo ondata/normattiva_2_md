@@ -341,12 +341,18 @@ def extract_body_fragments(root, ns):
 def process_body_element(element, ns):
     """Process a direct child of `<body>` producing Markdown fragments."""
 
+    if element.tag.endswith('title'):
+        return process_title(element, ns)
+    if element.tag.endswith('part'):
+        return process_part(element, ns)
     if element.tag.endswith('chapter'):
         return process_chapter(element, ns)
     if element.tag.endswith('article'):
         article_fragments = []
         process_article(element, article_fragments, ns)
         return article_fragments
+    if element.tag.endswith('attachment'):
+        return process_attachment(element, ns)
     return []
 
 
@@ -382,6 +388,71 @@ def process_section(section_element, ns):
     for article in section_element.findall('./akn:article', ns):
         process_article(article, section_fragments, ns)
     return section_fragments
+
+
+def process_title(title_element, ns):
+    """
+    Convert a title element to Markdown H1 heading.
+    Titles are top-level structural elements.
+    """
+    title_fragments = []
+    heading_element = title_element.find('./akn:heading', ns)
+    if heading_element is not None and heading_element.text:
+        clean_heading = clean_text_content(heading_element)
+        title_fragments.append(f"# {clean_heading}\n\n")
+
+    # Process any nested content (chapters, articles, etc.)
+    for child in title_element:
+        if child.tag.endswith('chapter'):
+            title_fragments.extend(process_chapter(child, ns))
+        elif child.tag.endswith('article'):
+            process_article(child, title_fragments, ns)
+
+    return title_fragments
+
+
+def process_part(part_element, ns):
+    """
+    Convert a part element to Markdown fragments.
+    Parts are major structural divisions, rendered as H2.
+    """
+    part_fragments = []
+    heading_element = part_element.find('./akn:heading', ns)
+    if heading_element is not None and heading_element.text:
+        clean_heading = clean_text_content(heading_element)
+        part_fragments.append(f"## {clean_heading}\n\n")
+
+    # Process nested content (chapters, articles, etc.)
+    for child in part_element:
+        if child.tag.endswith('chapter'):
+            part_fragments.extend(process_chapter(child, ns))
+        elif child.tag.endswith('article'):
+            process_article(child, part_fragments, ns)
+
+    return part_fragments
+
+
+def process_attachment(attachment_element, ns):
+    """
+    Convert an attachment element to Markdown fragments.
+    Attachments are rendered as a separate section.
+    """
+    attachment_fragments = []
+    heading_element = attachment_element.find('./akn:heading', ns)
+    if heading_element is not None and heading_element.text:
+        clean_heading = clean_text_content(heading_element)
+        attachment_fragments.append(f"## Allegato: {clean_heading}\n\n")
+    else:
+        attachment_fragments.append("## Allegato\n\n")
+
+    # Process attachment content (similar to body processing)
+    for child in attachment_element:
+        if child.tag.endswith('chapter'):
+            attachment_fragments.extend(process_chapter(child, ns))
+        elif child.tag.endswith('article'):
+            process_article(child, attachment_fragments, ns)
+
+    return attachment_fragments
 
 
 def process_table(table_element, ns):

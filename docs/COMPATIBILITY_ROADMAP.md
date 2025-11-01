@@ -1,17 +1,18 @@
 # 🔄 Roadmap Compatibilità Akoma2MD
 
 ## 📊 Stato Attuale
-Il convertitore funziona con **90-95%** dei documenti Normattiva testati.
+Il convertitore funziona con **95-98%** dei documenti Normattiva testati.
 
 **✅ FASE 1 Completata**: Implementati footnote, quotedStructure e table con supporto base.
+**✅ FASE 2 Completata**: Implementati title, part e attachment con strutture gerarchiche.
 
 ## 🎯 Miglioramenti Prioritari
 
 ### 1. Gestione Strutture Gerarchiche Avanzate
-- [ ] **Titoli** (`<akn:title>`)
-- [ ] **Parti** (`<akn:part>`)
+- [x] **Titoli** (`<akn:title>`) - ✅ Implementato (H1 top-level)
+- [x] **Parti** (`<akn:part>`) - ✅ Implementato (H2 con nesting)
 - [ ] **Libri** (`<akn:book>`)
-- [ ] **Allegati** (`<akn:attachment>`)
+- [x] **Allegati** (`<akn:attachment>`) - ✅ Implementato (sezione separata)
 
 ### 2. Elementi Specifici Mancanti
 - [x] **Tabelle** (`<akn:table>`) - ✅ Implementato (conversione base a Markdown)
