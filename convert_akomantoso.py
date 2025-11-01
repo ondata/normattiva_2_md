@@ -893,6 +893,9 @@ Esempi d'uso:
         """
     )
 
+    # Version flag
+    parser.add_argument('-v', '--version', action='version', version=f'%(prog)s {VERSION}')
+
     # Argomenti posizionali (compatibilità con uso semplice)
     parser.add_argument('input', nargs='?',
                        help='File XML locale o URL normattiva.it')

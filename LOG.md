@@ -2,6 +2,15 @@
 
 Questo file documenta gli avanzamenti significativi e le decisioni chiave del progetto `normattiva_2_md`.
 
+## 2025-11-02
+
+### ✅ Aggiunto flag --version/-v
+
+- Implementato flag CLI per mostrare versione pacchetto
+- Argparse action='version' con VERSION constant
+- Exit automatico senza conversione
+- Tests: flag lungo, corto, precedenza su input
+
 ## 2025-01-11
 
 ### 🔒 Release v1.4.2: Security Hardening
