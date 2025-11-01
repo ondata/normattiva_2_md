@@ -196,6 +196,15 @@ pyinstaller --onefile --name akoma2md convert_akomantoso.py
 # L'eseguibile sarà in dist/akoma2md
 ```
 
+### Binari precompilati su GitHub
+
+Ogni tag `v*` scatena la GitHub Action [`Build Releases`](.github/workflows/release-binaries.yml) che genera gli eseguibili standalone PyInstaller per **Linux x86_64** e **Windows x86_64**. I pacchetti (`.tar.gz` per Linux, `.zip` per Windows) vengono caricati come asset della release corrispondente e sono disponibili anche come artifact quando il workflow viene avviato manualmente (`workflow_dispatch`). Per pubblicare una nuova release:
+
+1. Aggiorna il numero di versione in `setup.py` (e negli altri file pertinenti, se necessario).
+2. Esegui i test locali (`make test`) e documenta eventuali cambiamenti in `LOG.md` e `VERIFICATION.md`.
+3. Crea un tag Git `vX.Y.Z` e pushalo su GitHub (`git tag vX.Y.Z && git push origin vX.Y.Z`), oppure avvia manualmente il workflow specificando lo stesso tag già pubblicato.
+4. Verifica che la release su GitHub contenga gli asset `akoma2md-X.Y.Z-linux-x86_64.tar.gz` e `akoma2md-X.Y.Z-windows-x86_64.zip`.
+
 ### Test
 
 ```bash

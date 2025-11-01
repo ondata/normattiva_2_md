@@ -1,0 +1,136 @@
+name: Build Releases
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  build-linux:
+    name: Linux Binary
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+          python -m pip install pyinstaller
+
+      - name: Capture package version
+        run: echo "AKOMA_VERSION=$(python setup.py --version)" >> $GITHUB_ENV
+
+      - name: Build binary
+        run: pyinstaller --onefile --name akoma2md convert_akomantoso.py
+
+      - name: Run tests
+        run: make test
+
+      - name: Clean test outputs
+        run: rm -f test_output_*.md demo_output.md
+
+      - name: Package artifact
+        run: |
+          tar -C dist -czf akoma2md-${AKOMA_VERSION}-linux-x86_64.tar.gz akoma2md
+        env:
+          AKOMA_VERSION: ${{ env.AKOMA_VERSION }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: akoma2md-linux
+          path: akoma2md-${{ env.AKOMA_VERSION }}-linux-x86_64.tar.gz
+
+  build-windows:
+    name: Windows Binary
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+          python -m pip install pyinstaller
+
+      - name: Capture package version
+        shell: pwsh
+        run: |
+          $version = python setup.py --version
+          echo "AKOMA_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Build binary
+        shell: pwsh
+        run: pyinstaller --onefile --name akoma2md convert_akomantoso.py
+
+      - name: Run unit tests
+        shell: pwsh
+        run: python -m unittest discover -s tests
+
+      - name: Exercise CLI scripts
+        shell: pwsh
+        run: |
+          python convert_akomantoso.py 20050516_005G0104_VIGENZA_20250130.xml test_output_python.md
+          ./dist/akoma2md.exe 20050516_005G0104_VIGENZA_20250130.xml test_output_exe.md
+          akoma2md 20050516_005G0104_VIGENZA_20250130.xml test_output_cmd.md
+
+      - name: Clean test outputs
+        shell: pwsh
+        run: Remove-Item test_output_*.md -ErrorAction SilentlyContinue
+
+      - name: Package artifact
+        shell: pwsh
+        env:
+          AKOMA_VERSION: ${{ env.AKOMA_VERSION }}
+        run: |
+          Compress-Archive -Path dist/akoma2md.exe -DestinationPath "akoma2md-$AKOMA_VERSION-windows-x86_64.zip"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: akoma2md-windows
+          path: akoma2md-${{ env.AKOMA_VERSION }}-windows-x86_64.zip
+
+  release:
+    name: Publish Release
+    needs:
+      - build-linux
+      - build-windows
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: write
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+
+      - name: List download contents
+        run: ls -R dist
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/akoma2md-linux/*
+            dist/akoma2md-windows/*
+*** End Patch

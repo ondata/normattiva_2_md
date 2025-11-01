@@ -4,6 +4,13 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2025-11-01
 
+### Automazione release binarie
+
+- Aggiunto workflow GitHub Actions `Build Releases` (`.github/workflows/release-binaries.yml`) per creare e impacchettare eseguibili PyInstaller Linux/Windows ad ogni tag `v*` o esecuzione manuale
+- Verifiche incluse nel workflow: `make test` su Linux, unittest + run CLI/exe su Windows
+- Asset generati: `akoma2md-<version>-linux-x86_64.tar.gz` e `akoma2md-<version>-windows-x86_64.zip` pubblicati automaticamente nelle release taggate
+- Aggiornato `README.md` con procedura operativa per pubblicare nuovi binari
+
 ### README: rimossi riferimenti release inesistenti
 
 - Rimossa sezione "Eseguibile Standalone" con link a release inesistenti
