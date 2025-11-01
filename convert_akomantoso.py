@@ -3,6 +3,58 @@ import re
 import sys
 import argparse
 
+def parse_chapter_heading(heading_text):
+    """
+    Separa heading che contengono sia Capo che Sezione.
+    Pattern: "Capo [N] [TITOLO] Sezione [N] [Titolo]"
+    Gestisce anche il caso in cui Sezione sia dentro modifiche legislative (( ))
+    Returns: {'capo': ..., 'sezione': ...} or {'capo': ..., 'sezione': None}
+    """
+    # Cerca "Sezione" nell'heading, anche se dentro (( ))
+    sezione_match = re.search(r'\(?\(?\s*(Sezione\s+[IVX]+)', heading_text, re.IGNORECASE)
+
+    if sezione_match and heading_text.startswith('Capo'):
+        # Split in base alla posizione di "Sezione"
+        split_pos = sezione_match.start()
+        capo_text = heading_text[:split_pos].strip()
+        sezione_text = heading_text[split_pos:].strip()
+
+        capo = format_heading_with_separator(capo_text)
+        sezione = format_heading_with_separator(sezione_text)
+        return {'capo': capo, 'sezione': sezione}
+
+    # Se non c'è match, formatta comunque l'heading
+    return {'capo': format_heading_with_separator(heading_text), 'sezione': None}
+
+def format_heading_with_separator(heading_text):
+    """
+    Formatta heading aggiungendo " - " dopo il numero romano.
+    Es: "Capo I PRINCIPI GENERALI" -> "Capo I - PRINCIPI GENERALI"
+    Gestisce anche modifiche legislative (( ))
+    """
+    # Estrai modifiche legislative se presenti
+    legislative_prefix = ""
+    legislative_suffix = ""
+    text_to_format = heading_text
+
+    # Se inizia con ((, estrai e processa il contenuto
+    if text_to_format.startswith('((') and text_to_format.endswith('))'):
+        text_to_format = text_to_format[2:-2].strip()
+        legislative_prefix = "(("
+        legislative_suffix = "))"
+
+    # Pattern per Capo o Sezione
+    pattern = r'^((?:Capo|Sezione)\s+[IVX]+)\s+(.+)$'
+    match = re.match(pattern, text_to_format, re.IGNORECASE)
+
+    if match:
+        prefix = match.group(1)  # "Capo I" o "Sezione I"
+        title = match.group(2)   # "PRINCIPI GENERALI"
+        formatted = f"{prefix} - {title}"
+        return f"{legislative_prefix}{formatted}{legislative_suffix}"
+
+    return heading_text
+
 def clean_text_content(element):
     """
     Extracts text from an element, handling inline formatting and removing specific tags.
@@ -85,7 +137,15 @@ def convert_akomantoso_to_markdown_improved(xml_file_path, markdown_file_path):
                     if heading_element is not None and heading_element.text:
                         # Clean heading text, including removing (( )) if present
                         clean_heading = clean_text_content(heading_element)
-                        markdown_content.append(f"## {clean_heading}\n\n")
+                        # Parse to separate Capo and Sezione if both present
+                        parsed = parse_chapter_heading(clean_heading)
+                        if parsed['sezione']:
+                            # Separa in due heading distinti
+                            markdown_content.append(f"## {parsed['capo']}\n\n")
+                            markdown_content.append(f"### {parsed['sezione']}\n\n")
+                        else:
+                            # Heading singolo
+                            markdown_content.append(f"## {parsed['capo']}\n\n")
 
                     # Process articles directly under chapter or within sections
                     for element in chapter_or_article:

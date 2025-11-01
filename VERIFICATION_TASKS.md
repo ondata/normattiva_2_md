@@ -4,20 +4,29 @@ Questo documento elenca i task di verifica e i punti da controllare nell'output 
 
 ## Punti da Verificare nell'Output Markdown
 
-### 1. Intestazioni "Capo" e "Sezione"
+### 1. Intestazioni "Capo" e "Sezione" ✅ COMPLETATO
 
-- **Problema:** Le intestazioni come "Capo I PRINCIPI GENERALI" o "Sezione II" appaiono nel Markdown, ma potrebbero non essere presenti o essere presentate diversamente nella visualizzazione consolidata di Normattiva. Questo è dovuto al fatto che il file Akoma Ntoso include una struttura più dettagliata rispetto alla visualizzazione web.
-- **Task:** Valutare se queste intestazioni debbano essere rimosse, modificate (es. rimuovendo "Capo" o "Sezione" dal testo dell'intestazione) o gestite in modo diverso per allinearsi alla leggibilità del testo consolidato.
+- **Problema:** Le intestazioni come "Capo I PRINCIPI GENERALI Sezione I Definizioni" combinavano Capo e Sezione su un'unica riga, riducendo la leggibilità e perdendo la gerarchia.
+- **Soluzione Implementata (2025-11-01):**
+  - Aggiunte funzioni `parse_chapter_heading()` e `format_heading_with_separator()`
+  - Gli heading vengono separati automaticamente in due livelli gerarchici
+  - Formato: `## Capo I - TITOLO` + `### Sezione I - Titolo`
+  - Gestione modifiche legislative `(( ))` negli heading
+  - Test positivi su CAD, Codice Appalti
+- **File modificato:** `convert_akomantoso.py:6-56,117-130`
 
-### 2. Testo Abrogato/Non Consolidato (es. "Ai fini del presente codice si intende")
+### 2. Testo "0a) AgID" ✅ VERIFICATO - NON È PROBLEMA
 
-- **Problema:** Frasi o blocchi di testo che non sono presenti nella versione consolidata della norma su Normattiva (perché abrogati o modificati) appaiono ancora nel Markdown. L'esempio specifico è "Ai fini del presente codice si intende per: 0a) AgID: ...". Questo indica che la logica di filtraggio attuale non è sufficientemente robusta per tutti i casi di testo non consolidato.
-- **Task:** Migliorare la funzione `clean_text_content` in `convert_akomantoso.py` per identificare e filtrare in modo più efficace il testo abrogato o non pertinente alla versione consolidata. Potrebbe essere necessario analizzare pattern più complessi o la struttura circostante nel file Akoma Ntoso.
+- **Verifica (2025-11-01):** Il testo "0a) AgID: l'Agenzia per l'Italia digitale..." è effettivamente presente nella visualizzazione web ufficiale di normattiva.it
+- **Conclusione:** Non è testo abrogato. È una lettera aggiunta dopo le lettere alfabetiche standard, numerata con "0" per distinguerla
+- **Azione:** Nessuna modifica necessaria - il comportamento attuale è corretto
 
-### 3. Testo Mancante (es. "Sulla proposta del Ministro per le politiche comunitarie")
+### 3. Testo Preambolo "Sulla proposta del Ministro..." ✅ VERIFICATO - NON È PROBLEMA
 
-- **Problema:** Alcune parti del preambolo o altri blocchi di testo visibili sulla pagina web di Normattiva non sono presenti nell'output Markdown. L'esempio specifico è "Sulla proposta del Ministro per le politiche comunitarie". Questo suggerisce che il parser Akoma Ntoso di `tulit` (o la nostra logica di estrazione dal XML) potrebbe non catturare tutti gli elementi del preambolo o altri blocchi di testo che Normattiva include nella sua visualizzazione.
-- **Task:** Indagare se questi elementi mancanti sono presenti nel file Akoma Ntoso scaricato e, in caso affermativo, modificare `convert_akomantoso.py` per estrarli e includerli correttamente nel Markdown. Se non sono presenti nell'Akoma Ntoso, potrebbe essere una limitazione del formato o del parser di `tulit`.
+- **Verifica (2025-11-01):** Il testo "Sulla proposta del Ministro per l'innovazione e le tecnologie..." è presente nel Markdown generato per il CAD
+- **Evidenza:** `grep -i "Sulla proposta" verification_cad.md` trova il testo
+- **Conclusione:** Il preambolo è correttamente estratto e incluso nel Markdown
+- **Azione:** Nessuna modifica necessaria
 
 ## Priorità
 
