@@ -446,7 +446,7 @@ def process_body_element(element, ns):
         return process_chapter(element, ns)
     if element.tag.endswith('article'):
         article_fragments = []
-        process_article(element, article_fragments, ns)
+        process_article(element, article_fragments, ns, level=2)
         return article_fragments
     if element.tag.endswith('attachment'):
         return process_attachment(element, ns)
@@ -469,7 +469,7 @@ def process_chapter(chapter_element, ns):
         if child.tag.endswith('section'):
             chapter_fragments.extend(process_section(child, ns))
         elif child.tag.endswith('article'):
-            process_article(child, chapter_fragments, ns)
+            process_article(child, chapter_fragments, ns, level=3)
     return chapter_fragments
 
 
@@ -483,7 +483,7 @@ def process_section(section_element, ns):
         section_fragments.append(f"#### {clean_heading}\n\n")
 
     for article in section_element.findall('./akn:article', ns):
-        process_article(article, section_fragments, ns)
+        process_article(article, section_fragments, ns, level=4)
     return section_fragments
 
 
@@ -503,7 +503,7 @@ def process_title(title_element, ns):
         if child.tag.endswith('chapter'):
             title_fragments.extend(process_chapter(child, ns))
         elif child.tag.endswith('article'):
-            process_article(child, title_fragments, ns)
+            process_article(child, title_fragments, ns, level=3)
 
     return title_fragments
 
@@ -524,7 +524,7 @@ def process_part(part_element, ns):
         if child.tag.endswith('chapter'):
             part_fragments.extend(process_chapter(child, ns))
         elif child.tag.endswith('article'):
-            process_article(child, part_fragments, ns)
+            process_article(child, part_fragments, ns, level=3)
 
     return part_fragments
 
@@ -547,7 +547,7 @@ def process_attachment(attachment_element, ns):
         if child.tag.endswith('chapter'):
             attachment_fragments.extend(process_chapter(child, ns))
         elif child.tag.endswith('article'):
-            process_article(child, attachment_fragments, ns)
+            process_article(child, attachment_fragments, ns, level=4)
 
     return attachment_fragments
 
@@ -596,7 +596,7 @@ def process_table(table_element, ns):
     return markdown_table
 
 
-def process_article(article_element, markdown_content_list, ns):
+def process_article(article_element, markdown_content_list, ns, level=2):
     article_num_element = article_element.find('./akn:num', ns)
     article_heading_element = article_element.find('./akn:heading', ns)
 
@@ -605,9 +605,11 @@ def process_article(article_element, markdown_content_list, ns):
         if article_heading_element is not None and article_heading_element.text:
             clean_article_heading = clean_text_content(article_heading_element)
             # Improved formatting: "Art. X - Title" format
-            markdown_content_list.append(f"## {article_num} - {clean_article_heading}\n\n")
+            heading_prefix = "#" * level
+            markdown_content_list.append(f"{heading_prefix} {article_num} - {clean_article_heading}\n\n")
         else:
-            markdown_content_list.append(f"## {article_num}\n\n")
+            heading_prefix = "#" * level
+            markdown_content_list.append(f"{heading_prefix} {article_num}\n\n")
 
     # Process paragraphs and lists within articles
     for child_of_article in article_element:

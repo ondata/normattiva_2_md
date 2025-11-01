@@ -23,7 +23,7 @@ class ConvertAkomaNtosoTest(unittest.TestCase):
 
     def test_first_article_heading_is_present(self):
         self.assertIn(
-            "## Art. 1. - Definizioni",
+            "### Art. 1. - Definizioni",
             self.markdown_output,
             "Il primo articolo dovrebbe contenere l'intestazione attesa",
         )
@@ -125,10 +125,10 @@ class ConvertAkomaNtosoTest(unittest.TestCase):
         ns = {'akn': 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0'}
         result_fragments = process_attachment(root, ns)
         result = ''.join(result_fragments)
-        # Should contain attachment section
+        # Should contain attachment section (H3)
         self.assertIn('### Allegato: Allegato A', result)
         # Should contain nested article
-        self.assertIn('## Art. 1 - Test Article', result)
+        self.assertIn('#### Art. 1 - Test Article', result)
 
     def test_generate_front_matter_complete(self):
         """Test front matter generation with complete metadata"""
@@ -147,6 +147,7 @@ dataGU: 20231201
 codiceRedaz: 123ABC
 dataVigenza: 20231231
 ---
+
 """
         self.assertEqual(result, expected)
 
@@ -161,6 +162,7 @@ dataVigenza: 20231231
 url: https://example.com
 dataGU: 20231201
 ---
+
 """
         self.assertEqual(result, expected)
 

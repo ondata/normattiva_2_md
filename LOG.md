@@ -4,6 +4,23 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2025-11-01
 
+### 🎉 Release v1.3.2: Correzione Gerarchia Heading
+
+**Fix gerarchico**: Articoli ora rispettano la struttura documentale corretta
+
+#### ✅ Gerarchia Heading Corretta
+- **Articoli contestuali**: Gli articoli ora usano il livello corretto a seconda del contesto
+- **Corretto H2→H3**: Articoli dentro capitoli ora H3 invece di H2
+- **Corretto H2→H4**: Articoli dentro sezioni ora H4
+- **Struttura logica**: Capitoli (H3) > Articoli (H3) > Sezioni (H4) > Articoli in sezioni (H4)
+
+#### 🧪 Testing e Qualità
+- Aggiornati test per riflettere la nuova gerarchia
+- Verifica struttura documentale corretta
+- Tutti i test passati
+
+## 2025-11-01
+
 ### 🎉 Release v1.3.1: Output Pulito e Formattazione Migliorata
 
 **Ottimizzazione UX**: Output silenzioso per stdout, formattazione front matter migliorata
