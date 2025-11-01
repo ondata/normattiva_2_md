@@ -3,7 +3,6 @@
 [![Versione PyPI](https://img.shields.io/pypi/v/akoma2md.svg)](https://pypi.org/project/akoma2md/)
 [![Versione Python](https://img.shields.io/badge/python-3.7+-blue.svg)](https://python.org)
 [![Licenza](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Download](https://img.shields.io/pypi/dm/akoma2md.svg)](https://pypi.org/project/akoma2md/)
 
 **Akoma2MD** è uno strumento da riga di comando progettato per convertire documenti XML in formato **Akoma Ntoso** (in particolare le norme pubblicate su `normattiva.it`) in documenti **Markdown** leggibili e ben formattati. L'obiettivo principale è offrire un formato compatto e immediatamente riutilizzabile quando le norme devono essere fornite come contesto a un **Large Language Model (LLM)** o elaborate in pipeline di Intelligenza Artificiale.
 
