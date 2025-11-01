@@ -108,13 +108,13 @@ jobs:
         env:
           AKOMA_VERSION: ${{ env.AKOMA_VERSION }}
         run: |
-          Compress-Archive -Path dist/akoma2md.exe -DestinationPath "akoma2md-$AKOMA_VERSION-windows-x86_64.zip"
+          Compress-Archive -Path dist/akoma2md.exe -DestinationPath "dist/akoma2md-$AKOMA_VERSION-windows-x86_64.zip" -Force
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: akoma2md-windows
-          path: akoma2md-${{ env.AKOMA_VERSION }}-windows-x86_64.zip
+          path: dist/akoma2md-${{ env.AKOMA_VERSION }}-windows-x86_64.zip
 
   release:
     name: Publish Release
