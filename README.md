@@ -27,7 +27,7 @@ Convertire le norme legali da XML Akoma Ntoso a Markdown offre vantaggi signific
 - ✅ **CLI flessibile** con argomenti posizionali e nominati
 - ✅ **Gestione errori robusta** con messaggi informativi
 - ✅ **Nessuna dipendenza esterna** per conversione XML→Markdown (solo librerie standard Python)
-- ✅ **Ricerca per nome naturale** richiede [Gemini CLI](https://github.com/google/gemini-cli) per l'integrazione AI
+- ✅ **Ricerca per nome naturale** richiede [Gemini CLI](https://github.com/google-gemini/gemini-cli) per l'integrazione AI
 
 ## 📦 Installazione
 
@@ -48,7 +48,7 @@ akoma2md input.xml output.md
 
 ### Installazione Gemini CLI (Opzionale - per ricerca per nome)
 
-Per utilizzare la funzionalità di ricerca per nome naturale (`--search`), è necessario installare [Gemini CLI](https://github.com/google/gemini-cli):
+Per utilizzare la funzionalità di ricerca per nome naturale (`--search`), è necessario installare [Gemini CLI](https://github.com/google-gemini/gemini-cli):
 
 ```bash
 # Installazione globale
@@ -252,7 +252,7 @@ dataVigenza: 20251101
 
 - Python 3.7+
 - Nessuna dipendenza esterna per conversione XML→Markdown (solo librerie standard Python)
-- [Gemini CLI](https://github.com/google/gemini-cli) per funzionalità ricerca per nome naturale
+- [Gemini CLI](https://github.com/google-gemini/gemini-cli) per funzionalità ricerca per nome naturale
 
 ### Configurazione dell'ambiente di sviluppo
 
