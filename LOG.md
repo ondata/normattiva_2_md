@@ -4,14 +4,22 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2025-11-02
 
-### ✅ Release Completata e Testata
+### ✅ Release v1.5.0 Completata con Successo
 
-**Stato**: Release v1.5.0 distribuita con successo
-- ✅ GitHub Actions completato: Binari Linux/Windows generati automaticamente
-- ✅ Release GitHub creata: https://github.com/aborruso/normattiva_2_md/releases/tag/v1.5.0
-- ✅ PyPI aggiornato: Versione 1.5.0 disponibile per installazione
-- ✅ Funzionalità testata: Ricerca "legge di bilancio 2024" → conversione riuscita
-- ✅ Binari standalone: Linux (21MB) e Windows (9MB) disponibili per download
+**Stato**: Release v1.5.0 distribuita correttamente
+- ✅ **Problema risolto**: Binari ora hanno nomi versione corretti (1.5.0)
+- ✅ **Tag corretto**: v1.5.0 punta al commit con funzionalità ricerca completa
+- ✅ **Workflow riuscito**: GitHub Actions completato con binari corretti generati
+- ✅ **Release creata**: https://github.com/aborruso/normattiva_2_md/releases/tag/v1.5.0
+- ✅ **Binari disponibili**: Linux (21.9MB) e Windows (9.4MB) con versione corretta
+- ✅ **PyPI aggiornato**: Versione 1.5.0 disponibile per installazione
+- ✅ **Documentazione aggiornata**: Chiariti requisiti per funzionalità ricerca
+
+#### 🐛 Problema Risolto: Nomi Binari Errati
+- **Issue**: Prima release aveva binari nominati `akoma2md-1.4.2-*` invece di `1.5.0`
+- **Causa**: Tag v1.5.0 creato su commit senza funzionalità ricerca
+- **Fix**: Tag spostato su commit corretto, workflow rigenerato, release ricreata
+- **Risultato**: Binari ora correttamente nominati `akoma2md-1.5.0-*`
 
 #### 📦 Distribuzione
 - **PyPI**: `pip install akoma2md==1.5.0`
