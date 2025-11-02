@@ -4,6 +4,52 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2025-11-02
 
+### ✅ Release Completata e Testata
+
+**Stato**: Release v1.5.0 distribuita con successo
+- ✅ GitHub Actions completato: Binari Linux/Windows generati automaticamente
+- ✅ Release GitHub creata: https://github.com/aborruso/normattiva_2_md/releases/tag/v1.5.0
+- ✅ PyPI aggiornato: Versione 1.5.0 disponibile per installazione
+- ✅ Funzionalità testata: Ricerca "legge di bilancio 2024" → conversione riuscita
+- ✅ Binari standalone: Linux (21MB) e Windows (9MB) disponibili per download
+
+#### 📦 Distribuzione
+- **PyPI**: `pip install akoma2md==1.5.0`
+- **GitHub Releases**: Binari standalone per sistemi senza Python
+- **Installazione Gemini CLI**: Richiesta per funzionalità ricerca (`gemini --help`)
+
+### 🔍 Test Funzionalità Ricerca
+Comando testato: `python3 convert_akomantoso.py --search "legge di bilancio 2024"`
+- ✅ Gemini CLI integrato correttamente
+- ✅ URL trovato: https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2023-12-30;213
+- ✅ Conversione XML→Markdown completata
+- ✅ Documento: "Bilancio di previsione dello Stato per l'anno finanziario 2024"
+
+## 2025-11-02
+
+### 🚀 Release v1.5.0: Ricerca Naturale con Gemini CLI
+
+**Nuova funzionalità principale**: Ricerca intelligente di documenti legali per nome naturale
+
+#### ✨ Nuove Funzionalità
+- Aggiunto flag `--search/-s` per ricerca per nome naturale
+- Integrazione con Gemini CLI per ricerca intelligente su normattiva.it
+- Conversione automatica da nome a URL a documento Markdown
+- Mantenimento compatibilità con metodi esistenti
+
+#### 🔧 Implementazione Tecnica
+- Nuovo modulo `lookup_normattiva_url()` con Gemini CLI headless
+- Parsing JSON strutturato per risposte AI
+- Gestione errori robusta per CLI non installato/configurato
+- Tests unitari e di integrazione completi
+
+#### 📚 Documentazione
+- Aggiornato README con esempi ricerca naturale
+- Istruzioni complete installazione e configurazione Gemini CLI
+- Esempi pratici per tutti i metodi di input
+
+## 2025-11-02
+
 ### ✅ Aggiunto flag --version/-v
 
 - Implementato flag CLI per mostrare versione pacchetto

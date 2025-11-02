@@ -17,7 +17,7 @@ ALLOWED_DOMAINS = ['www.normattiva.it', 'normattiva.it']
 MAX_FILE_SIZE_MB = 50
 MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
 DEFAULT_TIMEOUT = 30
-VERSION = '1.4.2'
+VERSION = '1.5.0'
 
 def extract_metadata_from_xml(root):
     """
@@ -862,6 +862,72 @@ def process_article(article_element, markdown_content_list, ns, level=2):
                 markdown_content_list.append('\n'.join(quoted_lines))
                 markdown_content_list.append("\n")
 
+def lookup_normattiva_url(search_query):
+    """
+    Usa Gemini CLI per cercare l'URL normattiva.it corrispondente alla query di ricerca.
+
+    Args:
+        search_query (str): La stringa di ricerca naturale (es. "legge stanca")
+
+    Returns:
+        str or None: L'URL trovato, oppure None se non trovato o errore
+    """
+    import subprocess
+    import re
+    import json
+
+    # Prompt semplificato per Gemini CLI
+    prompt = f"""Cerca su normattiva.it l'URL della "{search_query}" e restituisci solo l'URL completo che inizia con https://www.normattiva.it/"""
+
+    try:
+        # Chiama Gemini CLI con il prompt via stdin e output JSON
+        result = subprocess.run(
+            ['gemini', '--output-format', 'json'],
+            input=prompt,
+            capture_output=True,
+            text=True,
+            timeout=60  # Aumentato il timeout per ricerche più complesse
+        )
+
+        if result.returncode != 0:
+            print(f"❌ Errore Gemini CLI: {result.stderr}", file=sys.stderr)
+            return None
+
+        # Parse JSON response
+        try:
+            json_response = json.loads(result.stdout.strip())
+            response_text = json_response.get('response', '').strip()
+        except json.JSONDecodeError as e:
+            print(f"❌ Errore nel parsing JSON da Gemini CLI: {e}", file=sys.stderr)
+            return None
+
+        # Cerca URL normattiva.it nella risposta
+        url_pattern = r'https://www\.normattiva\.it/[^\s]+'
+        match = re.search(url_pattern, response_text)
+
+        if match:
+            url = match.group(0)
+            # Valida che sia un URL normattiva valido
+            if is_normattiva_url(url):
+                return url
+            else:
+                print(f"❌ URL trovato non è valido per normattiva.it: {url}", file=sys.stderr)
+                return None
+        else:
+            print(f"❌ Nessun URL normattiva.it trovato nella risposta di Gemini", file=sys.stderr)
+            return None
+
+    except subprocess.TimeoutExpired:
+        print("❌ Timeout nella chiamata a Gemini CLI", file=sys.stderr)
+        return None
+    except FileNotFoundError:
+        print("❌ Gemini CLI non trovato. Installalo con: gemini --help", file=sys.stderr)
+        print("   Per istruzioni: https://github.com/google/gemini-cli", file=sys.stderr)
+        return None
+    except Exception as e:
+        print(f"❌ Errore nella ricerca URL: {e}", file=sys.stderr)
+        return None
+
 def main():
     """
     Funzione principale che gestisce gli argomenti della riga di comando
@@ -871,26 +937,30 @@ def main():
         description='Converte documenti Akoma Ntoso in formato Markdown da file XML o URL normattiva.it',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
-Esempi d'uso:
+ Esempi d'uso:
 
-  # Output a file
-  python convert_akomantoso.py input.xml output.md
-  python convert_akomantoso.py -i input.xml -o output.md
+   # Output a file
+   python convert_akomantoso.py input.xml output.md
+   python convert_akomantoso.py -i input.xml -o output.md
 
-  # Output a stdout (default se -o omesso)
-  python convert_akomantoso.py input.xml
-  python convert_akomantoso.py input.xml > output.md
-  python convert_akomantoso.py -i input.xml
+   # Output a stdout (default se -o omesso)
+   python convert_akomantoso.py input.xml
+   python convert_akomantoso.py input.xml > output.md
+   python convert_akomantoso.py -i input.xml
 
-  # Da URL normattiva.it (auto-detect)
-  python convert_akomantoso.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" output.md
-  python convert_akomantoso.py "URL" > output.md
-  python convert_akomantoso.py -i "URL" -o output.md
+   # Da URL normattiva.it (auto-detect)
+   python convert_akomantoso.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" output.md
+   python convert_akomantoso.py "URL" > output.md
+   python convert_akomantoso.py -i "URL" -o output.md
 
-  # Mantenere XML scaricato da URL
-  python convert_akomantoso.py "URL" output.md --keep-xml
-  python convert_akomantoso.py "URL" --keep-xml > output.md
-        """
+   # Ricerca per nome naturale (richiede Gemini CLI)
+   python convert_akomantoso.py -s "legge stanca" output.md
+   python convert_akomantoso.py --search "decreto dignità" > output.md
+
+   # Mantenere XML scaricato da URL
+   python convert_akomantoso.py "URL" output.md --keep-xml
+   python convert_akomantoso.py "URL" --keep-xml > output.md
+         """
     )
 
     # Version flag
@@ -904,19 +974,30 @@ Esempi d'uso:
 
     # Argomenti opzionali (per maggiore flessibilità)
     parser.add_argument('-i', '--input', dest='input_named',
-                       help='File XML locale o URL normattiva.it')
+                        help='File XML locale o URL normattiva.it')
     parser.add_argument('-o', '--output', dest='output_named',
-                       help='File Markdown di output (default: stdout)')
+                        help='File Markdown di output (default: stdout)')
+    parser.add_argument('-s', '--search', dest='search_query',
+                        help='Cerca documento legale per nome naturale (es. "legge stanca")')
     parser.add_argument('--keep-xml', action='store_true',
-                       help='Mantieni file XML temporaneo dopo conversione da URL')
+                        help='Mantieni file XML temporaneo dopo conversione da URL')
     parser.add_argument('-q', '--quiet', action='store_true',
-                       help='Modalità silenziosa: mostra solo errori')
+                        help='Modalità silenziosa: mostra solo errori')
 
     args = parser.parse_args()
 
     # Determina input e output
     input_source = args.input or args.input_named
+    search_query = args.search_query
     output_file = args.output or args.output_named
+
+    # Valida che almeno input o search sia specificato
+    if not input_source and not search_query:
+        parser.error("Input richiesto.\n"
+                    "Uso: python convert_akomantoso.py <input> [output.md]\n"
+                    "oppure: python convert_akomantoso.py -i <input> [-o output.md]\n"
+                    "oppure: python convert_akomantoso.py -s <query> [-o output.md]\n"
+                    "Se output omesso, markdown va a stdout")
 
     # Sanitize output path if provided
     if output_file:
@@ -926,12 +1007,18 @@ Esempi d'uso:
             print(f"❌ Errore nel path di output: {e}", file=sys.stderr)
             sys.exit(1)
 
-    # Valida che input sia specificato
-    if not input_source:
-        parser.error("Input richiesto.\n"
-                    "Uso: python convert_akomantoso.py <input> [output.md]\n"
-                    "oppure: python convert_akomantoso.py -i <input> [-o output.md]\n"
-                    "Se output omesso, markdown va a stdout")
+    # Gestisci ricerca naturale se specificata
+    if search_query:
+        if not args.quiet:
+            print(f"🔍 Ricerca documento: {search_query}", file=sys.stderr)
+
+        input_source = lookup_normattiva_url(search_query)
+        if not input_source:
+            print("❌ Impossibile trovare URL per la ricerca specificata", file=sys.stderr)
+            sys.exit(1)
+
+        if not args.quiet:
+            print(f"✅ URL trovato: {input_source}", file=sys.stderr)
 
     # Auto-detect: URL o file locale?
     if is_normattiva_url(input_source):

@@ -62,6 +62,21 @@ cd normattiva_2_md
 python convert_akomantoso.py input.xml output.md
 ```
 
+### Installazione Gemini CLI (opzionale)
+
+Per utilizzare la funzionalità di ricerca per nome naturale, installa [Gemini CLI](https://github.com/google/gemini-cli):
+
+```bash
+# Installazione globale
+npm install -g @google/gemini-cli
+
+# Oppure esecuzione diretta senza installazione
+npx @google/gemini-cli
+
+# Configurazione (richiede API key Google AI)
+gemini setup
+```
+
 ## 💻 Utilizzo
 
 ### Metodo 1: Da URL Normattiva (consigliato)
@@ -90,6 +105,49 @@ akoma2md -i input.xml -o output.md
 akoma2md --input input.xml --output output.md
 ```
 
+### Metodo 3: Ricerca per nome naturale (con Gemini CLI)
+
+**⚠️ Richiede Gemini CLI installato e configurato come dipendenza esterna**
+
+Prima di utilizzare questa funzionalità:
+
+1. **Installa Gemini CLI**: [Installazione Gemini CLI](https://geminicli.com/docs/get-started/installation/)
+2. **Ottieni una API Key**: Vai su [Google AI Studio](https://aistudio.google.com/app/apikey) e crea una API key
+3. **Configura l'autenticazione**: [Autenticazione Gemini CLI](https://geminicli.com/docs/get-started/authentication/)
+
+```bash
+# Installazione
+npm install -g @google/gemini-cli
+
+# Configurazione interattiva (apre browser per login)
+gemini setup
+
+# OPPURE configura manualmente con API key
+export GEMINI_API_KEY="your-api-key-here"
+```
+
+Poi puoi usare la ricerca per nome in due modi:
+
+#### Argomenti posizionali (più semplice)
+```bash
+# Ricerca diretta con argomenti posizionali
+akoma2md "legge stanca" output.md
+akoma2md "decreto dignità" > decreto.md
+
+# Output su stdout
+akoma2md "codice della strada"
+```
+
+#### Argomenti nominati
+```bash
+# Ricerca con flag espliciti
+akoma2md -s "legge stanca" output.md
+akoma2md --search "decreto dignità" > decreto.md
+
+# Output su stdout
+akoma2md -s "codice della strada" > codice_strada.md
+```
+
 ### Esempi pratici
 
 ```bash
@@ -98,6 +156,10 @@ akoma2md decreto_82_2005.xml codice_amministrazione_digitale.md
 
 # Con percorsi assoluti
 akoma2md /percorso/documento.xml /percorso/output.md
+
+# Ricerca per nome naturale (richiede Gemini CLI)
+akoma2md "legge stanca" legge_stanca.md
+akoma2md "decreto dignità" > decreto.md
 
 # Visualizzare l'aiuto
 akoma2md --help
@@ -120,6 +182,12 @@ opzioni:
                         File XML di input in formato Akoma Ntoso
   -o OUTPUT, --output OUTPUT
                         File Markdown di output
+  -s SEARCH, --search SEARCH
+                        Cerca documento per nome naturale (richiede Gemini CLI)
+
+argomenti posizionali:
+  input                 File XML locale, URL normattiva.it, oppure stringa di ricerca (con Gemini CLI)
+  output                File Markdown di output (default: stdout)
 ```
 
 ## 📋 Formato di input supportato

@@ -16,6 +16,7 @@ from convert_akomantoso import (
     validate_normattiva_url,
     sanitize_output_path,
     is_normattiva_url,
+    lookup_normattiva_url,
     MAX_FILE_SIZE_BYTES
 )
 
@@ -302,6 +303,58 @@ class SecurityTests(unittest.TestCase):
         # Should be reasonable (e.g., 50MB)
         self.assertGreater(MAX_FILE_SIZE_BYTES, 1024 * 1024)  # > 1MB
         self.assertLess(MAX_FILE_SIZE_BYTES, 1024 * 1024 * 1024)  # < 1GB
+
+
+class URLLookupTest(unittest.TestCase):
+    """Test cases for natural language URL lookup functionality"""
+
+    def test_lookup_normattiva_url_with_mock_success(self):
+        """Test successful URL lookup with mocked Gemini CLI"""
+        import unittest.mock as mock
+
+        # Mock successful subprocess call
+        mock_result = mock.MagicMock()
+        mock_result.returncode = 0
+        mock_result.stdout = "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2018-12-30;205"
+        mock_result.stderr = ""
+
+        with mock.patch('subprocess.run', return_value=mock_result):
+            result = lookup_normattiva_url("legge stanca")
+            self.assertEqual(result, "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2018-12-30;205")
+
+    def test_lookup_normattiva_url_no_url_found(self):
+        """Test when Gemini doesn't return a valid URL"""
+        import unittest.mock as mock
+
+        mock_result = mock.MagicMock()
+        mock_result.returncode = 0
+        mock_result.stdout = "Non ho trovato corrispondenze"
+        mock_result.stderr = ""
+
+        with mock.patch('subprocess.run', return_value=mock_result):
+            result = lookup_normattiva_url("legge inesistente")
+            self.assertIsNone(result)
+
+    def test_lookup_normattiva_url_gemini_error(self):
+        """Test when Gemini CLI returns an error"""
+        import unittest.mock as mock
+
+        mock_result = mock.MagicMock()
+        mock_result.returncode = 1
+        mock_result.stdout = ""
+        mock_result.stderr = "Error from Gemini"
+
+        with mock.patch('subprocess.run', return_value=mock_result):
+            result = lookup_normattiva_url("test query")
+            self.assertIsNone(result)
+
+    def test_lookup_normattiva_url_cli_not_found(self):
+        """Test when Gemini CLI is not installed"""
+        import unittest.mock as mock
+
+        with mock.patch('subprocess.run', side_effect=FileNotFoundError):
+            result = lookup_normattiva_url("test query")
+            self.assertIsNone(result)
 
 
 if __name__ == "__main__":
