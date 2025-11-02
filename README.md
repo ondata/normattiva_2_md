@@ -26,7 +26,8 @@ Convertire le norme legali da XML Akoma Ntoso a Markdown offre vantaggi signific
 - ✅ **Machine-to-machine ready** per LLM, RAG e parsing automatico
 - ✅ **CLI flessibile** con argomenti posizionali e nominati
 - ✅ **Gestione errori robusta** con messaggi informativi
-- ✅ **Nessuna dipendenza esterna** (solo librerie standard Python)
+- ✅ **Nessuna dipendenza esterna** per conversione XML→Markdown (solo librerie standard Python)
+- ✅ **Ricerca per nome naturale** richiede [Gemini CLI](https://github.com/google/gemini-cli) per l'integrazione AI
 
 ## 📦 Installazione
 
@@ -43,6 +44,18 @@ pip install akoma2md
 
 # Utilizzo
 akoma2md input.xml output.md
+```
+
+### Installazione Gemini CLI (Opzionale - per ricerca per nome)
+
+Per utilizzare la funzionalità di ricerca per nome naturale (`--search`), è necessario installare [Gemini CLI](https://github.com/google/gemini-cli):
+
+```bash
+# Installazione globale
+npm install -g @google/gemini-cli
+
+# Verifica installazione
+gemini --help
 ```
 
 ### Installazione da sorgenti
@@ -107,24 +120,9 @@ akoma2md --input input.xml --output output.md
 
 ### Metodo 3: Ricerca per nome naturale (con Gemini CLI)
 
-**⚠️ Richiede Gemini CLI installato e configurato come dipendenza esterna**
+**⚠️ Richiede Gemini CLI installato e configurato**
 
-Prima di utilizzare questa funzionalità:
-
-1. **Installa Gemini CLI**: [Installazione Gemini CLI](https://geminicli.com/docs/get-started/installation/)
-2. **Ottieni una API Key**: Vai su [Google AI Studio](https://aistudio.google.com/app/apikey) e crea una API key
-3. **Configura l'autenticazione**: [Autenticazione Gemini CLI](https://geminicli.com/docs/get-started/authentication/)
-
-```bash
-# Installazione
-npm install -g @google/gemini-cli
-
-# Configurazione interattiva (apre browser per login)
-gemini setup
-
-# OPPURE configura manualmente con API key
-export GEMINI_API_KEY="your-api-key-here"
-```
+Prima di utilizzare questa funzionalità, assicurati di aver installato e configurato [Gemini CLI](#installazione-gemini-cli-opzionale---per-ricerca-per-nome).
 
 Poi puoi usare la ricerca per nome in due modi:
 
