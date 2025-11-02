@@ -312,10 +312,10 @@ class URLLookupTest(unittest.TestCase):
         """Test successful URL lookup with mocked Gemini CLI"""
         import unittest.mock as mock
 
-        # Mock successful subprocess call
+        # Mock successful subprocess call - Gemini CLI returns JSON
         mock_result = mock.MagicMock()
         mock_result.returncode = 0
-        mock_result.stdout = "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2018-12-30;205"
+        mock_result.stdout = '{"response": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2018-12-30;205"}'
         mock_result.stderr = ""
 
         with mock.patch('subprocess.run', return_value=mock_result):
@@ -328,7 +328,7 @@ class URLLookupTest(unittest.TestCase):
 
         mock_result = mock.MagicMock()
         mock_result.returncode = 0
-        mock_result.stdout = "Non ho trovato corrispondenze"
+        mock_result.stdout = '{"response": "Non ho trovato corrispondenze per questa ricerca"}'
         mock_result.stderr = ""
 
         with mock.patch('subprocess.run', return_value=mock_result):
