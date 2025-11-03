@@ -4,6 +4,33 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2025-11-03
 
+### 🚀 Release v1.7.1: Caricamento Automatico .env
+
+**Miglioramento usabilità:** Caricamento automatico dell'API key Exa dal file .env senza esportazione manuale
+
+#### ✨ Nuove Funzionalità
+- **Caricamento Automatico .env**: L'API key di Exa viene caricata automaticamente dal file `.env` all'avvio del programma
+- **Configurazione Semplificata**: Basta creare un file `.env` con `EXA_API_KEY="your-key"` - niente più esportazioni manuali
+- **Retrocompatibilità**: Le variabili d'ambiente esportate continuano a funzionare normalmente
+
+#### 🔧 Implementazione Tecnica
+- **Funzione load_env_file()**: Carica automaticamente le variabili dal file `.env` alla partenza
+- **Parsing Sicuro**: Gestione corretta di virgolette e commenti nel file `.env`
+- **Fallback Graceful**: Se il file `.env` non esiste o ha errori, il programma continua normalmente
+
+#### 🧪 Testing e Qualità
+- **Funzionalità Verificata**: Ricerca funziona senza esportazione manuale dell'API key
+- **Retrocompatibilità**: Variabili d'ambiente esportate continuano a funzionare
+- **Sicurezza**: File `.env` già incluso nel `.gitignore`
+
+#### 📦 Distribuzione
+- **Versione**: 1.7.1 con changelog completo
+- **PyPI**: Pubblicazione automatica su Python Package Index
+- **GitHub Releases**: Binari standalone per Linux e Windows
+- **Documentazione**: README aggiornato con istruzioni per entrambi i metodi di configurazione
+
+## 2025-11-03
+
 ### 🚀 Release v1.7.0: Ricerca AI con Exa - Performance e Semplicità
 
 **Maggiore velocità e semplicità:** Sostituzione infrastruttura ricerca da Gemini CLI a Exa AI API con prestazioni significativamente migliorate
