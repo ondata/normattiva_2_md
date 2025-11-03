@@ -22,8 +22,18 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 - Messaggi di errore informativi per URL non supportati
 - Mantenimento compatibilità con URL permalink esistenti
 
-#### 📦 Pubblicazione
-- Versione 1.6.1 pronta per rilascio su PyPI e GitHub
+#### 📦 Pubblicazione PyPI
+- ✅ Pacchetto v1.6.1 caricato con successo su PyPI
+- ✅ Verifica installazione riuscita da repository remoto
+
+#### 🚀 Rilascio GitHub
+- ✅ Release v1.6.1 creata automaticamente con binari Linux e Windows
+- ✅ CI/CD pipeline completata con successo
+
+#### 📦 Distribuzione
+- Versione 1.6.1 disponibile su PyPI
+- Binari standalone per Linux e Windows generati automaticamente
+- Compatibilità mantenuta con versioni precedenti
 
 ## 2025-11-05
 
