@@ -2,6 +2,110 @@
 
 Questo file documenta gli avanzamenti significativi e le decisioni chiave del progetto `normattiva_2_md`.
 
+## 2025-11-05
+
+### 🚀 Rilascio Versione 1.6.0
+
+**Nuove funzionalità principali:**
+- ✅ Supporto URL articolo-specifici (`~art3`, `~art16bis`, etc.)
+- ✅ Flag `--completo` (`-c`) per forzare download legge completa
+- ✅ Migliorato riconoscimento Gemini CLI nel PATH
+
+#### ✨ Funzionalità Aggiunte
+- **URL Articolo-Specifici**: Possibilità di convertire singoli articoli da URL normattiva.it
+- **Flag --completo**: Override per scaricare legge completa anche con URL articolo-specifici
+- **Ricerca AI Migliorata**: Gemini CLI ora riconosciuto correttamente in tutti gli ambienti
+
+#### 🔧 Miglioramenti Tecnici
+- Implementazione robusta del riconoscimento comandi nel PATH
+- Gestione errori migliorata per configurazioni Gemini incomplete
+- Documentazione aggiornata con nuovi esempi di utilizzo
+
+#### 📦 Distribuzione
+- Versione 1.6.0 disponibile su PyPI
+- Binari standalone per Linux e Windows generati automaticamente
+- Compatibilità mantenuta con versioni precedenti
+
+## 2025-11-05
+
+### ✅ Aggiunto Flag --completo per Override Articolo-Specifico
+
+**Nuova funzionalità**: Flag `--completo` (`-c`) per forzare download legge completa anche con URL articolo-specifico
+
+#### ✨ Funzionalità Implementata
+- Nuovo parametro `--completo` / `-c` nella CLI
+- Override automatico del filtro articolo quando flag attivo
+- Conversione completa del documento anche con URL `~artN`
+- Mantenimento metadata originale con riferimento articolo per tracciabilità
+- Compatibilità totale con URL legge completa (nessun effetto)
+
+#### 🔧 Implementazione Tecnica
+- Modifica `argparse` per aggiungere flag `--completo`
+- Logica condizionale in `main()` per override filtro articolo
+- Aggiornamento metadata per includere riferimento articolo originale
+- Aggiornamento help text e esempi CLI
+
+#### 📚 Esempi Utilizzo
+```bash
+# Conversione articolo specifico
+akoma2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto-legge:2018-07-12;87~art3" art3.md
+
+# Forza conversione completa stesso URL
+akoma2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto-legge:2018-07-12;87~art3" --completo legge_completa.md
+```
+
+## 2025-11-04
+
+### ✅ Aggiunto Supporto URL Articolo-Specifico
+
+**Nuova funzionalità**: Supporto per URL che puntano ad articoli specifici nelle leggi
+
+#### ✨ Funzionalità Implementata
+- Riconoscimento automatico URL con riferimenti articolo (`~art3`, `~art16bis`, etc.)
+- Filtraggio documenti XML per estrarre solo l'articolo richiesto
+- Generazione metadata con riferimento articolo nel front matter
+- Validazione esistenza articolo nel documento con messaggi errore chiari
+- Mantenimento compatibilità con URL legge completi
+
+#### 🔧 Implementazione Tecnica
+- Nuove funzioni: `parse_article_reference()`, `filter_xml_to_article()`
+- Modifica pipeline conversione per gestire documenti singolo-articolo
+- Aggiornamento generazione front matter per includere campo `article`
+- Estensioni articolo supportate: bis, ter, quater, quinquies, sexies, etc.
+
+#### 📚 Esempi URL Supportati
+- `https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto-legge:2018-07-12;87~art3`
+- `https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53~art16bis`
+
+## 2025-11-03
+
+### ✅ Aggiunto Supporto URL Atto Intero
+
+**Nuova funzionalità**: Supporto per URL di esportazione "atto intero" di normattiva.it
+
+#### ✨ Funzionalità Implementata
+- Riconoscimento automatico URL atto intero (`/esporta/attoCompleto?`)
+- Estrazione parametri direttamente dalla query string dell'URL
+- Conversione automatica in URL legge equivalente per processamento
+- Mantenimento compatibilità con URL legge esistenti
+
+#### 🔧 Implementazione Tecnica
+- Nuove funzioni: `is_normattiva_export_url()`, `convert_export_url_to_law_url()`
+- Modifica `extract_params_from_normattiva_url()` per gestire due tipi di URL
+- Validazione parametri URL con regex per formato corretto
+- Conversione URN automatica da parametri estratti
+
+#### 📚 Documentazione Aggiornata
+- Aggiornati esempi CLI con URL atto intero
+- Migliorati help text per input supportati
+- Aggiunti commenti esplicativi per i due path di processamento URL
+
+#### 🧪 Testing
+- Test regressione con URL legge esistenti
+- Test nuovi URL atto intero
+- Test error handling per URL invalidi
+- Suite test completa: tutti passati
+
 ## 2025-11-02
 
 ### ✅ Release v1.5.0 Completata con Successo

@@ -19,10 +19,11 @@ Convertire le norme legali da XML Akoma Ntoso a Markdown offre vantaggi signific
 ## 🚀 Caratteristiche
 
 - ✅ **Conversione completa** da XML Akoma Ntoso a Markdown
+- ✅ **Supporto URL articolo-specifico** (`~art3`, `~art16bis`, etc.) per estrarre singoli articoli
 - ✅ **Gestione degli articoli** con numerazione corretta
 - ✅ **Supporto per le modifiche legislative** con evidenziazione `((modifiche))`
 - ✅ **Gerarchia book-style intelligente** con parsing strutturato (H1→H2→H3→H4)
-- ✅ **Front matter YAML** con metadati completi (URL, dataGU, codiceRedaz, dataVigenza)
+- ✅ **Front matter YAML** con metadati completi (URL, dataGU, codiceRedaz, dataVigenza, article)
 - ✅ **Machine-to-machine ready** per LLM, RAG e parsing automatico
 - ✅ **CLI flessibile** con argomenti posizionali e nominati
 - ✅ **Gestione errori robusta** con messaggi informativi
@@ -87,6 +88,16 @@ akoma2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" le
 
 # Conversione diretta con output su stdout (utile per pipe)
 akoma2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2005-03-07;82"
+
+# Conversione articolo specifico (solo art. 3)
+akoma2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto-legge:2018-07-12;87~art3" art3.md
+
+# Conversione articolo con estensione (art. 16-bis)
+akoma2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53~art16bis" art16bis.md
+
+# Forza conversione completa anche con URL articolo-specifico
+akoma2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto-legge:2018-07-12;87~art3" --completo legge_completa.md
+akoma2md -c "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53~art16bis" legge_completa.md
 
 # Conservare l'XML scaricato
 akoma2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" legge.md --keep-xml

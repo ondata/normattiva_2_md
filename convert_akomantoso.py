@@ -17,7 +17,7 @@ ALLOWED_DOMAINS = ['www.normattiva.it', 'normattiva.it']
 MAX_FILE_SIZE_MB = 50
 MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
 DEFAULT_TIMEOUT = 30
-VERSION = '1.5.0'
+VERSION = '1.6.0'
 
 def extract_metadata_from_xml(root):
     """
@@ -147,7 +147,7 @@ def generate_front_matter(metadata):
 
     # Collect non-None values
     front_matter_data = {}
-    for key in ['url', 'url_xml', 'dataGU', 'codiceRedaz', 'dataVigenza']:
+    for key in ['url', 'url_xml', 'dataGU', 'codiceRedaz', 'dataVigenza', 'article']:
         if metadata.get(key):
             front_matter_data[key] = metadata[key]
 
@@ -310,9 +310,248 @@ def is_normattiva_url(input_str):
     except ValueError:
         return False
 
+def is_normattiva_export_url(url):
+    """
+    Verifica se l'URL è un URL di esportazione atto intero di normattiva.it
+
+    Args:
+        url: URL da verificare
+
+    Returns:
+        bool: True se è un URL di esportazione atto intero
+    """
+    if not isinstance(url, str):
+        return False
+
+    # Check if it's an export URL
+    return '/esporta/attoCompleto' in url and is_normattiva_url(url)
+
+def parse_article_reference(url):
+    """
+    Estrae il riferimento all'articolo dall'URL se presente
+
+    Args:
+        url: URL da analizzare
+
+    Returns:
+        str or None: identificatore articolo (es. "art_3", "art_16bis") o None se non presente
+    """
+    if not isinstance(url, str):
+        return None
+
+    # Cerca pattern ~artN o ~artNbis etc.
+    import re
+    match = re.search(r'~art(\d+(?:bis|ter|quater|quinquies|sexies|septies|octies|novies|decies|vices|tricies|quadragies)?)', url, re.IGNORECASE)
+    if match:
+        article_num = match.group(1)
+        # Converti in formato eId: art_3, art_16bis, etc.
+        return f"art_{article_num}"
+
+    return None
+
+def convert_export_url_to_law_url(export_url):
+    """
+    Converte un URL di esportazione atto intero nell'URL equivalente della pagina legge
+
+    Args:
+        export_url: URL di esportazione
+
+    Returns:
+        str: URL della pagina legge o None se errore
+    """
+    from urllib.parse import urlparse, parse_qs
+
+    try:
+        parsed = urlparse(export_url)
+        query_params = parse_qs(parsed.query)
+
+        data_gu = query_params.get('atto.dataPubblicazioneGazzetta', [None])[0]
+        codice_redaz = query_params.get('atto.codiceRedazionale', [None])[0]
+
+        if not data_gu or not codice_redaz:
+            return None
+
+        # Validate formats
+        if not re.match(r'^\d{4}-\d{2}-\d{2}$', data_gu):
+            return None
+        if not re.match(r'^\d{2}[A-Z]\d{5}$', codice_redaz):
+            return None
+
+        # Extract year, month, day
+        year, month, day = data_gu.split('-')
+        
+        # Extract number from codice_redaz (remove leading zeros)
+        number = codice_redaz[3:].lstrip('0')
+        
+        # Assume decreto-legge for now (can be improved)
+        urn = f"urn:nir:stato:decreto-legge:{year}-{month}-{day};{number}"
+        law_url = f"https://www.normattiva.it/uri-res/N2Ls?{urn}"
+        
+        return law_url
+
+    except Exception:
+        return None
+
+def extract_params_from_export_url(url, session=None, quiet=False):
+    """
+    Estrae i parametri dall'URL di esportazione atto intero
+
+    Args:
+        url: URL di esportazione atto intero
+        session: sessione requests da usare (opzionale)
+        quiet: se True, stampa solo errori
+
+    Returns:
+        tuple: (params dict, session) o (None, session) se errore
+    """
+    from urllib.parse import urlparse, parse_qs
+
+    if session is None:
+        session = requests.Session()
+
+    # Visit the export page to get cookies/session
+    headers = {
+        'User-Agent': f'Akoma2MD/{VERSION} (https://github.com/ondata/akoma2md)',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'it-IT,it;q=0.9,en;q=0.9,en;q=0.8'
+    }
+
+    try:
+        if not quiet:
+            print(f"Visito pagina esportazione {url}...", file=sys.stderr)
+        response = session.get(url, headers=headers, timeout=DEFAULT_TIMEOUT, verify=True)
+        response.raise_for_status()
+    except requests.RequestException as e:
+        print(f"Errore nel visitare la pagina di esportazione: {e}", file=sys.stderr)
+        return None, session
+
+    try:
+        parsed = urlparse(url)
+        query_params = parse_qs(parsed.query)
+
+        # Extract parameters from query string
+        data_gu = query_params.get('atto.dataPubblicazioneGazzetta', [None])[0]
+        codice_redaz = query_params.get('atto.codiceRedazionale', [None])[0]
+
+        if not data_gu or not codice_redaz:
+            return None, session
+
+        # Validate date format (YYYY-MM-DD)
+        if not re.match(r'^\d{4}-\d{2}-\d{2}$', data_gu):
+            return None, session
+
+        # Validate codice redazionale format (e.g., 18G00112)
+        if not re.match(r'^\d{2}[A-Z]\d{5}$', codice_redaz):
+            return None, session
+
+        # For dataVigenza, try to extract from the page like the original function
+        html = response.text
+        match_vigenza = re.search(r'<input[^>]*value="(\d{2}/\d{2}/\d{4})"[^>]*>', html)
+        if match_vigenza:
+            # Converti da formato DD/MM/YYYY a YYYYMMDD
+            date_parts = match_vigenza.group(1).split('/')
+            data_vigenza = f"{date_parts[2]}{date_parts[1]}{date_parts[0]}"
+        else:
+            # Usa data odierna se non trovata
+            from datetime import datetime
+            data_vigenza = datetime.now().strftime('%Y%m%d')
+
+        return {
+            'dataGU': data_gu.replace('-', ''),
+            'codiceRedaz': codice_redaz,
+            'dataVigenza': data_vigenza
+        }, session
+
+    except Exception:
+        return None, session
+
+        # Validate date format (YYYY-MM-DD)
+        if not re.match(r'^\d{4}-\d{2}-\d{2}$', data_gu):
+            return None
+
+        # Validate codice redazionale format (e.g., 18G00112)
+        if not re.match(r'^\d{2}[A-Z]\d{5}$', codice_redaz):
+            return None
+
+        # Validate date format (YYYY-MM-DD)
+        if not re.match(r'^\d{4}-\d{2}-\d{2}$', data_gu):
+            print(f"Debug: data_gu format invalid: {data_gu}", file=sys.stderr)
+            return None
+
+        # Validate codice redazionale format (e.g., 18G00112)
+        if not re.match(r'^\d{2}[A-Z]\d{5}$', codice_redaz):
+            print(f"Debug: codice_redaz format invalid: {codice_redaz}", file=sys.stderr)
+            return None
+
+        # Convert date format from YYYY-MM-DD to YYYYMMDD
+        data_gu = data_gu.replace('-', '')
+
+        # For dataVigenza, use current date as fallback (same as original function)
+        from datetime import datetime
+        data_vigenza = datetime.now().strftime('%Y%m%d')
+
+        return {
+            'dataGU': data_gu,
+            'codiceRedaz': codice_redaz,
+            'dataVigenza': data_vigenza
+        }
+
+    except Exception:
+        return None
+
+def filter_xml_to_article(root, article_eid, ns):
+    """
+    Filtra il documento XML per estrarre solo l'articolo specificato
+
+    Args:
+        root: elemento root del documento XML
+        article_eid: eId dell'articolo da estrarre (es. "art_3")
+        ns: namespace Akoma Ntoso
+
+    Returns:
+        ET.Element or None: nuovo root con solo l'articolo, o None se articolo non trovato
+    """
+    # Trova l'articolo specifico
+    article = root.find(f'.//akn:article[@eId="{article_eid}"]', ns)
+    if article is None:
+        return None
+
+    # Crea un nuovo documento con solo l'articolo
+    # Copia meta e altri elementi di livello superiore
+    new_root = ET.Element(root.tag, root.attrib)
+
+    # Copia namespace declarations
+    for prefix, uri in ns.items():
+        if prefix:
+            new_root.set(f'xmlns:{prefix}', uri)
+        else:
+            new_root.set('xmlns', uri)
+
+    # Copia meta section
+    meta = root.find('.//akn:meta', ns)
+    if meta is not None:
+        new_root.append(meta)
+
+    # Crea un nuovo body con solo l'articolo
+    # Copy namespace from the original body
+    original_body = root.find('.//akn:body', ns)
+    if original_body is not None:
+        body = ET.SubElement(new_root, original_body.tag, original_body.attrib)
+    else:
+        body = ET.SubElement(new_root, 'body')
+    body.append(article)
+
+    return new_root
+
 def extract_params_from_normattiva_url(url, session=None, quiet=False):
     """
     Scarica la pagina normattiva e estrae i parametri necessari per il download
+
+    Supporta due tipi di URL normattiva.it:
+    1. URL pagine legge: https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:...
+       - Vengono scaricate e i parametri estratti dagli input hidden
+    2. URL esportazione atto intero: https://www.normattiva.it/esporta/attoCompleto?...
+       - Vengono convertiti nell'URL legge equivalente e processati come sopra
 
     Args:
         url: URL della norma su normattiva.it
@@ -322,6 +561,18 @@ def extract_params_from_normattiva_url(url, session=None, quiet=False):
     Returns:
         tuple: (params dict, session)
     """
+    # Check if it's an export URL - convert to equivalent law URL and process as law page
+    if is_normattiva_export_url(url):
+        law_url = convert_export_url_to_law_url(url)
+        if law_url:
+            if not quiet:
+                print(f"Converto URL esportazione a URL legge: {law_url}", file=sys.stderr)
+            # Recursively call with the law URL
+            return extract_params_from_normattiva_url(law_url, session, quiet)
+        else:
+            return None, session
+
+    # Otherwise, scrape the law page as before
     if not quiet:
         print(f"Caricamento pagina {url}...", file=sys.stderr)
 
@@ -433,7 +684,7 @@ def download_akoma_ntoso(params, output_path, session=None, quiet=False):
         print(f"❌ Errore durante il download: {e}", file=sys.stderr)
         return False
 
-def convert_akomantoso_to_markdown_improved(xml_file_path, markdown_file_path=None, metadata=None):
+def convert_akomantoso_to_markdown_improved(xml_file_path, markdown_file_path=None, metadata=None, article_ref=None):
     try:
         # Check file size before parsing (XML bomb protection)
         file_size = os.path.getsize(xml_file_path)
@@ -444,6 +695,14 @@ def convert_akomantoso_to_markdown_improved(xml_file_path, markdown_file_path=No
         # Parse XML with defusedxml would be better, but using size limit for now
         tree = ET.parse(xml_file_path)
         root = tree.getroot()
+
+        # Filter XML to specific article if requested
+        if article_ref:
+            filtered_root = filter_xml_to_article(root, article_ref, AKN_NAMESPACE)
+            if filtered_root is None:
+                print(f"❌ Articolo '{article_ref}' non trovato nel documento", file=sys.stderr)
+                return False
+            root = filtered_root
 
         # Extract metadata from XML if not provided (for local files)
         if metadata is None:
@@ -880,9 +1139,17 @@ def lookup_normattiva_url(search_query):
     prompt = f"""Cerca su normattiva.it l'URL della "{search_query}" e restituisci solo l'URL completo che inizia con https://www.normattiva.it/"""
 
     try:
+        # Verifica che gemini sia disponibile
+        import shutil
+        gemini_path = shutil.which('gemini')
+        if not gemini_path:
+            print("❌ Gemini CLI non trovato nel PATH. Installalo con: npm install -g @google/gemini-cli", file=sys.stderr)
+            print("   Per istruzioni: https://github.com/google/gemini-cli", file=sys.stderr)
+            return None
+
         # Chiama Gemini CLI con il prompt via stdin e output JSON
         result = subprocess.run(
-            ['gemini', '--output-format', 'json'],
+            [gemini_path, '--output-format', 'json'],
             input=prompt,
             capture_output=True,
             text=True,
@@ -920,10 +1187,6 @@ def lookup_normattiva_url(search_query):
     except subprocess.TimeoutExpired:
         print("❌ Timeout nella chiamata a Gemini CLI", file=sys.stderr)
         return None
-    except FileNotFoundError:
-        print("❌ Gemini CLI non trovato. Installalo con: gemini --help", file=sys.stderr)
-        print("   Per istruzioni: https://github.com/google/gemini-cli", file=sys.stderr)
-        return None
     except Exception as e:
         print(f"❌ Errore nella ricerca URL: {e}", file=sys.stderr)
         return None
@@ -937,30 +1200,39 @@ def main():
         description='Converte documenti Akoma Ntoso in formato Markdown da file XML o URL normattiva.it',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
- Esempi d'uso:
+  Esempi d'uso:
 
-   # Output a file
-   python convert_akomantoso.py input.xml output.md
-   python convert_akomantoso.py -i input.xml -o output.md
+    # Output a file
+    python convert_akomantoso.py input.xml output.md
+    python convert_akomantoso.py -i input.xml -o output.md
 
-   # Output a stdout (default se -o omesso)
-   python convert_akomantoso.py input.xml
-   python convert_akomantoso.py input.xml > output.md
-   python convert_akomantoso.py -i input.xml
+    # Output a stdout (default se -o omesso)
+    python convert_akomantoso.py input.xml
+    python convert_akomantoso.py input.xml > output.md
+    python convert_akomantoso.py -i input.xml
 
-   # Da URL normattiva.it (auto-detect)
-   python convert_akomantoso.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" output.md
-   python convert_akomantoso.py "URL" > output.md
-   python convert_akomantoso.py -i "URL" -o output.md
+    # Da URL normattiva.it (auto-detect)
+    python convert_akomantoso.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" output.md
+    python convert_akomantoso.py "https://www.normattiva.it/esporta/attoCompleto?atto.dataPubblicazioneGazzetta=2018-07-13&atto.codiceRedazionale=18G00112" output.md
+    python convert_akomantoso.py "URL" > output.md
+    python convert_akomantoso.py -i "URL" -o output.md
 
-   # Ricerca per nome naturale (richiede Gemini CLI)
-   python convert_akomantoso.py -s "legge stanca" output.md
-   python convert_akomantoso.py --search "decreto dignità" > output.md
+    # Da URL normattiva.it con articolo specifico
+    python convert_akomantoso.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto-legge:2018-07-12;87~art3" output.md
+    python convert_akomantoso.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53~art16bis" output.md
 
-   # Mantenere XML scaricato da URL
-   python convert_akomantoso.py "URL" output.md --keep-xml
-   python convert_akomantoso.py "URL" --keep-xml > output.md
-         """
+    # Forza conversione completa anche con URL articolo-specifico
+    python convert_akomantoso.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto-legge:2018-07-12;87~art3" --completo output.md
+    python convert_akomantoso.py -c "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53~art16bis" output.md
+
+    # Ricerca per nome naturale (richiede Gemini CLI)
+    python convert_akomantoso.py -s "legge stanca" output.md
+    python convert_akomantoso.py --search "decreto dignità" > output.md
+
+    # Mantenere XML scaricato da URL
+    python convert_akomantoso.py "URL" output.md --keep-xml
+    python convert_akomantoso.py "URL" --keep-xml > output.md
+          """
     )
 
     # Version flag
@@ -968,13 +1240,13 @@ def main():
 
     # Argomenti posizionali (compatibilità con uso semplice)
     parser.add_argument('input', nargs='?',
-                       help='File XML locale o URL normattiva.it')
+                       help='File XML locale o URL normattiva.it (inclusi URL atto intero)')
     parser.add_argument('output', nargs='?',
                        help='File Markdown di output (default: stdout)')
 
     # Argomenti opzionali (per maggiore flessibilità)
     parser.add_argument('-i', '--input', dest='input_named',
-                        help='File XML locale o URL normattiva.it')
+                         help='File XML locale o URL normattiva.it (inclusi URL atto intero)')
     parser.add_argument('-o', '--output', dest='output_named',
                         help='File Markdown di output (default: stdout)')
     parser.add_argument('-s', '--search', dest='search_query',
@@ -983,6 +1255,8 @@ def main():
                         help='Mantieni file XML temporaneo dopo conversione da URL')
     parser.add_argument('-q', '--quiet', action='store_true',
                         help='Modalità silenziosa: mostra solo errori')
+    parser.add_argument('-c', '--completo', action='store_true',
+                        help='Scarica e converti la legge completa anche se l\'URL specifica un singolo articolo')
 
     args = parser.parse_args()
 
@@ -1034,6 +1308,17 @@ def main():
             print(f"❌ Errore validazione URL: {e}", file=sys.stderr)
             sys.exit(1)
 
+        # Check for article reference in URL
+        article_ref = parse_article_reference(input_source)
+        if article_ref and not quiet_mode:
+            print(f"Rilevato riferimento articolo: {article_ref}", file=sys.stderr)
+
+        # Determine if we should filter to article or convert complete document
+        force_complete = args.completo
+        if force_complete and article_ref and not quiet_mode:
+            print(f"Forzando conversione completa della legge (--completo)", file=sys.stderr)
+            article_ref = None  # Override article filtering
+
         # Estrai parametri dalla pagina
         params, session = extract_params_from_normattiva_url(input_source, quiet=quiet_mode)
         if not params:
@@ -1068,7 +1353,14 @@ def main():
             'url_xml': f"https://www.normattiva.it/do/atto/caricaAKN?dataGU={params['dataGU']}&codiceRedaz={params['codiceRedaz']}&dataVigenza={params['dataVigenza']}"
         }
 
-        success = convert_akomantoso_to_markdown_improved(xml_temp_path, output_file, metadata)
+        # Add article reference to metadata if present (or if overridden by --completo)
+        if article_ref:
+            metadata['article'] = article_ref
+        elif force_complete and parse_article_reference(input_source):
+            # Note that complete conversion was forced
+            metadata['article'] = parse_article_reference(input_source)  # Include original article ref for reference
+
+        success = convert_akomantoso_to_markdown_improved(xml_temp_path, output_file, metadata, article_ref)
 
         if success:
             if not quiet_mode:
