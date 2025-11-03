@@ -4,6 +4,13 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2025-11-04
 
+### 🐛 Fix: Gestione BrokenPipeError
+
+- Gestito `BrokenPipeError` quando stdout viene chiuso prematuramente
+- Fix per piping a `less`, `head`, `more` e simili
+- Gestito anche `KeyboardInterrupt` (CTRL+C) in modo graceful
+- No più traceback quando si esce da pager
+
 ### 🚀 Release v1.7.2: Fix Query Exa API
 
 - Rimosso parametro ridondante `site:normattiva.it` dalla query Exa

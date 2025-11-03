@@ -1293,4 +1293,15 @@ def main():
             sys.exit(1)
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except BrokenPipeError:
+        # Gestisce il caso in cui stdout viene chiuso (es. piping a less e quit)
+        # Chiude stdout e stderr per evitare errori successivi
+        import os
+        devnull = os.open(os.devnull, os.O_WRONLY)
+        os.dup2(devnull, sys.stdout.fileno())
+        sys.exit(0)
+    except KeyboardInterrupt:
+        # Gestisce CTRL+C in modo graceful
+        sys.exit(130)
