@@ -109,26 +109,16 @@ akoma2md --input input.xml --output output.md
 
 Prima di utilizzare questa funzionalità, assicurati di aver installato e configurato [Gemini CLI](#installazione-gemini-cli-opzionale---per-ricerca-per-nome).
 
-Poi puoi usare la ricerca per nome in due modi:
+**Importante**: Per la ricerca in linguaggio naturale devi **sempre usare il flag `-s` o `--search`**:
 
-#### Argomenti posizionali (più semplice)
 ```bash
-# Ricerca diretta con argomenti posizionali
-akoma2md "legge stanca" output.md
-akoma2md "decreto dignità" > decreto.md
-
-# Output su stdout
-akoma2md "codice della strada"
-```
-
-#### Argomenti nominati
-```bash
-# Ricerca con flag espliciti
+# Ricerca per nome (usa SEMPRE -s/--search)
 akoma2md -s "legge stanca" output.md
 akoma2md --search "decreto dignità" > decreto.md
 
 # Output su stdout
-akoma2md -s "codice della strada" > codice_strada.md
+akoma2md -s "codice della strada"
+akoma2md -s "legge stanca" > legge_stanca.md
 ```
 
 ### Esempi pratici
@@ -140,9 +130,9 @@ akoma2md decreto_82_2005.xml codice_amministrazione_digitale.md
 # Con percorsi assoluti
 akoma2md /percorso/documento.xml /percorso/output.md
 
-# Ricerca per nome naturale (richiede Gemini CLI)
-akoma2md "legge stanca" legge_stanca.md
-akoma2md "decreto dignità" > decreto.md
+# Ricerca per nome naturale (richiede Gemini CLI - usa SEMPRE -s)
+akoma2md -s "legge stanca" legge_stanca.md
+akoma2md -s "decreto dignità" > decreto.md
 
 # Visualizzare l'aiuto
 akoma2md --help
@@ -169,8 +159,10 @@ opzioni:
                         Cerca documento per nome naturale (richiede Gemini CLI)
 
 argomenti posizionali:
-  input                 File XML locale, URL normattiva.it, oppure stringa di ricerca (con Gemini CLI)
+  input                 File XML locale o URL normattiva.it
   output                File Markdown di output (default: stdout)
+
+nota: per ricerca in linguaggio naturale usare -s/--search
 ```
 
 ## 📋 Formato di input supportato
