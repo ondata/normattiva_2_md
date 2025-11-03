@@ -16,6 +16,7 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 #### 🔧 Miglioramenti Tecnici
 - **API Moderna**: Integrazione diretta con Exa AI API invece di subprocess CLI
+- **Caricamento Automatico**: API key caricata automaticamente dal file `.env` all'avvio
 - **Gestione Errori**: Timeout 30s, validazione HTTP status, parsing JSON robusto
 - **Sicurezza**: API key protetta in file `.env` (già nel `.gitignore`)
 - **Codice Pulito**: Refactoring completo di `lookup_normattiva_url()` senza dipendenze esterne

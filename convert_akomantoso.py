@@ -17,7 +17,36 @@ ALLOWED_DOMAINS = ['www.normattiva.it', 'normattiva.it']
 MAX_FILE_SIZE_MB = 50
 MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
 DEFAULT_TIMEOUT = 30
-VERSION = '1.6.1'
+VERSION = '1.7.0'
+
+def load_env_file():
+    """
+    Load environment variables from .env file if it exists.
+    This allows storing API keys locally without exporting them each time.
+    """
+    env_path = os.path.join(os.path.dirname(__file__), '.env')
+    if os.path.exists(env_path):
+        try:
+            with open(env_path, 'r', encoding='utf-8') as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith('#'):
+                        # Split on first '=' to handle values with '='
+                        if '=' in line:
+                            key, value = line.split('=', 1)
+                            key = key.strip()
+                            value = value.strip()
+                            # Remove quotes if present
+                            if (value.startswith('"') and value.endswith('"')) or \
+                               (value.startswith("'") and value.endswith("'")):
+                                value = value[1:-1]
+                            os.environ[key] = value
+        except Exception as e:
+            # Silently ignore errors loading .env file
+            pass
+
+# Load .env file at startup
+load_env_file()
 
 def extract_metadata_from_xml(root):
     """

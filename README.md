@@ -49,7 +49,25 @@ akoma2md input.xml output.md
 
 ### Configurazione Exa AI API (Opzionale - per ricerca per nome)
 
-Per utilizzare la funzionalità di ricerca per nome naturale (`--search`), è necessario configurare una [API key di Exa AI](https://exa.ai):
+Per utilizzare la funzionalità di ricerca per nome naturale (`--search`), è necessario configurare una [API key di Exa AI](https://exa.ai).
+
+#### Metodo 1: File .env (Raccomandato)
+
+Crea un file `.env` nella directory del progetto:
+
+```bash
+# Crea il file .env
+echo 'EXA_API_KEY="your-exa-api-key-here"' > .env
+
+# Verifica che sia configurato
+cat .env
+```
+
+Il programma caricherà automaticamente l'API key dal file `.env` all'avvio.
+
+#### Metodo 2: Variabile d'ambiente
+
+In alternativa, puoi esportare la variabile manualmente:
 
 ```bash
 # Configura la variabile d'ambiente con la tua API key
