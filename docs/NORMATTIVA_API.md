@@ -116,11 +116,13 @@ def lookup_normattiva_url(search_query):
 Se normattiva.it pubblicasse API JSON ufficiali, si potrebbero implementare:
 
 1. **Ricerca diretta**:
+
    ```
    GET /api/v1/search?q=decreto+dignità&format=json
    ```
 
 2. **Metadati strutturati**:
+
    ```json
    {
      "total": 88795,
@@ -137,6 +139,7 @@ Se normattiva.it pubblicasse API JSON ufficiali, si potrebbero implementare:
    ```
 
 3. **Autocomplete**:
+
    ```
    GET /api/v1/suggest?q=decreto+dig&limit=10
    ```
