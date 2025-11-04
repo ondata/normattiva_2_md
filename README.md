@@ -1,6 +1,6 @@
-# 🔄 Akoma2MD - Convertitore Akoma Ntoso in Markdown
+# 🔄 Normattiva2MD - Convertitore Akoma Ntoso in Markdown
 
-[![Versione PyPI](https://img.shields.io/pypi/v/akoma2md.svg)](https://pypi.org/project/akoma2md/)
+[![Versione PyPI](https://img.shields.io/pypi/v/normattiva2md.svg)](https://pypi.org/project/normattiva2md/)
 [![Versione Python](https://img.shields.io/badge/python-3.7+-blue.svg)](https://python.org)
 [![Licenza](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
@@ -34,17 +34,17 @@ Convertire le norme legali da XML Akoma Ntoso a Markdown offre vantaggi signific
 
 ### Installazione da PyPI (Raccomandato)
 
-Il pacchetto è pubblicato su [PyPI](https://pypi.org/project/akoma2md/).
+Il pacchetto è pubblicato su [PyPI](https://pypi.org/project/normattiva2md/).
 
 ```bash
 # Con uv
-uv tool install akoma2md
+uv tool install normattiva2md
 
 # Con pip
-pip install akoma2md
+pip install normattiva2md
 
 # Utilizzo
-akoma2md input.xml output.md
+normattiva2md input.xml output.md
 ```
 
 ### Configurazione Exa AI API (Opzionale - per ricerca per nome)
@@ -83,7 +83,7 @@ echo $EXA_API_KEY
 git clone https://github.com/aborruso/normattiva_2_md.git
 cd normattiva_2_md
 pip install -e .
-akoma2md input.xml output.md
+normattiva2md input.xml output.md
 ```
 
 ### Esecuzione diretta (senza installazione)
@@ -102,34 +102,34 @@ La CLI riconosce automaticamente gli URL di `normattiva.it` e scarica il documen
 
 ```bash
 # Conversione diretta URL → Markdown (output su file)
-akoma2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" legge.md
+normattiva2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" legge.md
 
 # Conversione diretta con output su stdout (utile per pipe)
-akoma2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2005-03-07;82"
+normattiva2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2005-03-07;82"
 
 # Conversione articolo specifico (solo art. 3)
-akoma2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto-legge:2018-07-12;87~art3" art3.md
+normattiva2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto-legge:2018-07-12;87~art3" art3.md
 
 # Conversione articolo con estensione (art. 16-bis)
-akoma2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53~art16bis" art16bis.md
+normattiva2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53~art16bis" art16bis.md
 
 # Forza conversione completa anche con URL articolo-specifico
-akoma2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto-legge:2018-07-12;87~art3" --completo legge_completa.md
-akoma2md -c "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53~art16bis" legge_completa.md
+normattiva2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto-legge:2018-07-12;87~art3" --completo legge_completa.md
+normattiva2md -c "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53~art16bis" legge_completa.md
 
 # Conservare l'XML scaricato
-akoma2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" legge.md --keep-xml
+normattiva2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" legge.md --keep-xml
 ```
 
 ### Metodo 2: Da file XML locale
 
 ```bash
 # Argomenti posizionali (più semplice)
-akoma2md input.xml output.md
+normattiva2md input.xml output.md
 
 # Argomenti nominati
-akoma2md -i input.xml -o output.md
-akoma2md --input input.xml --output output.md
+normattiva2md -i input.xml -o output.md
+normattiva2md --input input.xml --output output.md
 ```
 
 ### Metodo 3: Ricerca per nome naturale (con Exa AI)
@@ -142,35 +142,35 @@ Prima di utilizzare questa funzionalità, assicurati di aver configurato l'[API 
 
 ```bash
 # Ricerca per nome (usa SEMPRE -s/--search)
-akoma2md -s "legge stanca" output.md
-akoma2md --search "decreto dignità" > decreto.md
+normattiva2md -s "legge stanca" output.md
+normattiva2md --search "decreto dignità" > decreto.md
 
 # Output su stdout
-akoma2md -s "codice della strada"
-akoma2md -s "legge stanca" > legge_stanca.md
+normattiva2md -s "codice della strada"
+normattiva2md -s "legge stanca" > legge_stanca.md
 ```
 
 ### Esempi pratici
 
 ```bash
 # Convertire un file XML locale
-akoma2md decreto_82_2005.xml codice_amministrazione_digitale.md
+normattiva2md decreto_82_2005.xml codice_amministrazione_digitale.md
 
 # Con percorsi assoluti
-akoma2md /percorso/documento.xml /percorso/output.md
+normattiva2md /percorso/documento.xml /percorso/output.md
 
 # Ricerca per nome naturale (richiede Exa AI API - usa SEMPRE -s)
-akoma2md -s "legge stanca" legge_stanca.md
-akoma2md -s "decreto dignità" > decreto.md
+normattiva2md -s "legge stanca" legge_stanca.md
+normattiva2md -s "decreto dignità" > decreto.md
 
 # Visualizzare l'aiuto
-akoma2md --help
+normattiva2md --help
 ```
 
 ### Opzioni disponibili
 
 ```
-utilizzo: akoma2md [-h] [-i INPUT] [-o OUTPUT] [file_input] [file_output]
+utilizzo: normattiva2md [-h] [-i INPUT] [-o OUTPUT] [file_input] [file_output]
 
 Converte un file XML Akoma Ntoso in formato Markdown
 
@@ -291,8 +291,8 @@ Per creare un eseguibile autonomo per uso locale:
 
 ```bash
 pip install pyinstaller
-pyinstaller --onefile --name akoma2md convert_akomantoso.py
-# L'eseguibile sarà in dist/akoma2md
+pyinstaller --onefile --name normattiva2md convert_akomantoso.py
+# L'eseguibile sarà in dist/normattiva2md
 ```
 
 ### Binari precompilati su GitHub
@@ -302,7 +302,7 @@ Ogni tag `v*` scatena la GitHub Action [`Build Releases`](.github/workflows/rele
 1. Aggiorna il numero di versione in `setup.py` (e negli altri file pertinenti, se necessario).
 2. Esegui i test locali (`make test`) e documenta eventuali cambiamenti in `LOG.md` e `VERIFICATION.md`.
 3. Crea un tag Git `vX.Y.Z` e pushalo su GitHub (`git tag vX.Y.Z && git push origin vX.Y.Z`), oppure avvia manualmente il workflow specificando lo stesso tag già pubblicato.
-4. Verifica che la release su GitHub contenga gli asset `akoma2md-X.Y.Z-linux-x86_64.tar.gz` e `akoma2md-X.Y.Z-windows-x86_64.zip`.
+4. Verifica che la release su GitHub contenga gli asset `normattiva2md-X.Y.Z-linux-x86_64.tar.gz` e `normattiva2md-X.Y.Z-windows-x86_64.zip`.
 
 ### Test
 
@@ -311,7 +311,7 @@ Ogni tag `v*` scatena la GitHub Action [`Build Releases`](.github/workflows/rele
 python convert_akomantoso.py sample.xml output.md
 
 # Test dell'eseguibile
-./dist/akoma2md sample.xml output.md
+./dist/normattiva2md sample.xml output.md
 ```
 
 ## 📝 Licenza

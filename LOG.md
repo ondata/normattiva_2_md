@@ -4,6 +4,46 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2025-11-04
 
+### 🔄 CLI Rename: akoma2md → normattiva2md
+
+**Breaking change**: Renamed command-line interface for better discoverability
+
+#### 🎯 Motivation
+- **Current name**: `akoma2md` was generic and didn't clearly indicate Italian legal document focus
+- **New name**: `normattiva2md` better communicates the tool's specialization in normattiva.it documents
+- **User impact**: Existing users will need to update scripts/commands
+
+#### 🔧 Changes Made
+- **Entry points**: Updated console_scripts in setup.py and project.scripts in pyproject.toml
+- **Documentation**: Updated all README.md references, examples, and installation instructions
+- **Branding**: Changed project title from "Akoma2MD" to "Normattiva2MD"
+- **Build process**: Updated PyInstaller examples and release asset naming
+
+#### ✅ Validation
+- **Tests**: All existing tests pass, functionality unchanged
+- **CLI**: New command `normattiva2md --help` works correctly
+- **Conversion**: Basic XML conversion functionality verified
+
+### 🚀 Release v2.0.0: CLI Rename - Breaking Change
+
+**Major version bump**: Renamed CLI from `akoma2md` to `normattiva2md` for better discoverability
+
+#### 🆕 New Features
+- **CLI Name**: Renamed from `akoma2md` to `normattiva2md` for clearer branding
+- **Better Discoverability**: Name now clearly indicates focus on normattiva.it Italian legal documents
+
+#### ⚠️ Breaking Changes
+- **CLI Command**: `akoma2md` command no longer available - use `normattiva2md` instead
+- **Migration Required**: Existing users must update scripts and workflows
+- **Binary Names**: Release binaries now named `normattiva2md-*` instead of `akoma2md-*`
+
+#### 📦 Distribution
+- **PyPI Package**: Updated to support new CLI name
+- **GitHub Releases**: Binary releases will use new naming convention
+- **Installation**: Same installation methods, different command name
+
+## 2025-11-04
+
 ### 🚀 Release v1.9.4: Critical Bug Fix - Missing Time Import
 
 **Emergency fix**: Resolved critical runtime error in --with-references mode

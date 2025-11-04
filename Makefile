@@ -1,17 +1,17 @@
-# Makefile per akoma2md - Convertitore Akoma Ntoso to Markdown
+# Makefile per normattiva2md - Convertitore Akoma Ntoso to Markdown
 
 .PHONY: help clean build install test package upload
 
 # Variabili
 PYTHON := python3
 PIP := pip3
-PACKAGE_NAME := akoma2md
+PACKAGE_NAME := normattiva2md
 SCRIPT_NAME := convert_akomantoso.py
 MAIN_SCRIPT := convert_akomantoso.py
 
 # Target di default
 help:
-	@echo "🔄 Akoma2MD - Convertitore Akoma Ntoso to Markdown"
+	@echo "🔄 Normattiva2MD - Convertitore Akoma Ntoso to Markdown"
 	@echo ""
 	@echo "Comandi disponibili:"
 	@echo "  help        - Mostra questo help"

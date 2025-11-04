@@ -32,7 +32,7 @@ jobs:
         run: echo "AKOMA_VERSION=$(python setup.py --version)" >> $GITHUB_ENV
 
       - name: Build binary
-        run: pyinstaller --onefile --name akoma2md convert_akomantoso.py
+        run: pyinstaller --onefile --name normattiva2md convert_akomantoso.py
 
       - name: Copy XML fixture
         run: cp test_data/20050516_005G0104_VIGENZA_20250130.xml .
@@ -45,15 +45,15 @@ jobs:
 
       - name: Package artifact
         run: |
-          tar -C dist -czf akoma2md-${AKOMA_VERSION}-linux-x86_64.tar.gz akoma2md
+          tar -C dist -czf normattiva2md-${AKOMA_VERSION}-linux-x86_64.tar.gz normattiva2md
         env:
           AKOMA_VERSION: ${{ env.AKOMA_VERSION }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: akoma2md-linux
-          path: akoma2md-${{ env.AKOMA_VERSION }}-linux-x86_64.tar.gz
+          name: normattiva2md-linux
+          path: normattiva2md-${{ env.AKOMA_VERSION }}-linux-x86_64.tar.gz
 
   build-windows:
     name: Windows Binary
@@ -82,7 +82,7 @@ jobs:
 
       - name: Build binary
         shell: pwsh
-        run: pyinstaller --onefile --name akoma2md convert_akomantoso.py
+        run: pyinstaller --onefile --name normattiva2md convert_akomantoso.py
 
       - name: Copy XML fixture
         shell: pwsh
@@ -96,8 +96,8 @@ jobs:
         shell: pwsh
         run: |
           python convert_akomantoso.py 20050516_005G0104_VIGENZA_20250130.xml test_output_python.md
-          ./dist/akoma2md.exe 20050516_005G0104_VIGENZA_20250130.xml test_output_exe.md
-          akoma2md 20050516_005G0104_VIGENZA_20250130.xml test_output_cmd.md
+          ./dist/normattiva2md.exe 20050516_005G0104_VIGENZA_20250130.xml test_output_exe.md
+          normattiva2md 20050516_005G0104_VIGENZA_20250130.xml test_output_cmd.md
 
       - name: Clean test outputs
         shell: pwsh
@@ -108,16 +108,16 @@ jobs:
         env:
           AKOMA_VERSION: ${{ env.AKOMA_VERSION }}
         run: |
-          $artifactPath = Join-Path "dist" "akoma2md-$env:AKOMA_VERSION-windows-x86_64.zip"
-          $binaryPath = Join-Path "dist" "akoma2md.exe"
+          $artifactPath = Join-Path "dist" "normattiva2md-$env:AKOMA_VERSION-windows-x86_64.zip"
+          $binaryPath = Join-Path "dist" "normattiva2md.exe"
           Compress-Archive -Path $binaryPath -DestinationPath $artifactPath -Force
           Get-Item $artifactPath
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: akoma2md-windows
-          path: dist/akoma2md-${{ env.AKOMA_VERSION }}-windows-x86_64.zip
+          name: normattiva2md-windows
+          path: dist/normattiva2md-${{ env.AKOMA_VERSION }}-windows-x86_64.zip
 
   release:
     name: Publish Release
@@ -141,6 +141,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            dist/akoma2md-linux/*
-            dist/akoma2md-windows/*
+            dist/normattiva2md-linux/*
+            dist/normattiva2md-windows/*
           prerelease: ${{ contains(github.ref, '-rc') }}
