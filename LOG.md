@@ -4,6 +4,17 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2025-11-04
 
+### 🚀 Release v1.8.0: Download Automatico Leggi Citare
+
+- **Nuova funzionalità `--with-references`**: Scarica automaticamente tutte le leggi citate in una struttura di cartelle organizzata
+- Creazione automatica di cartelle con legge principale + riferimenti
+- Estrazione intelligente dei riferimenti da tag XML `<ref>`
+- File indice per navigazione tra documenti correlati
+- Supporto per deduplicazione e gestione errori nei download batch
+- Esempio: `akoma2md --with-references "url-legge"` crea `codice_data/main.md` + `refs/*.md` + `index.md`
+
+## 2025-11-04
+
 ### 🚀 Release v1.7.4: Miglioramento Messaggi Errore
 
 - Messaggi errore più informativi quando input invalido

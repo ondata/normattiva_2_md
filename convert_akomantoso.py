@@ -17,7 +17,7 @@ ALLOWED_DOMAINS = ['www.normattiva.it', 'normattiva.it']
 MAX_FILE_SIZE_MB = 50
 MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
 DEFAULT_TIMEOUT = 30
-VERSION = '1.7.4'
+VERSION = '1.8.0'
 
 def load_env_file():
     """
@@ -1088,6 +1088,243 @@ def lookup_normattiva_url(search_query):
         print(f"❌ Errore nella ricerca URL: {e}", file=sys.stderr)
         return None
 
+def convert_with_references(url, quiet=False, keep_xml=False, force_complete=False):
+    """
+    Scarica e converte una legge con tutte le sue riferimenti, creando una struttura di cartelle.
+
+    Args:
+        url: URL normattiva.it della legge principale
+        quiet: se True, modalità silenziosa
+        keep_xml: se True, mantiene i file XML temporanei
+        force_complete: se True, forza download legge completa anche con URL articolo-specifico
+
+    Returns:
+        bool: True se il processo è completato con successo
+    """
+    try:
+        # Estrai parametri dalla pagina principale
+        if not quiet:
+            print(f"🔍 Analisi legge principale: {url}", file=sys.stderr)
+
+        params, session = extract_params_from_normattiva_url(url, quiet=quiet)
+        if not params:
+            print("❌ Impossibile estrarre parametri dalla legge principale", file=sys.stderr)
+            return False
+
+        # Crea nome cartella basato sui parametri della legge
+        folder_name = f"{params['codiceRedaz']}_{params['dataGU']}"
+        folder_path = os.path.join(os.getcwd(), folder_name)
+
+        if not quiet:
+            print(f"📁 Creazione struttura in: {folder_path}", file=sys.stderr)
+
+        # Crea struttura cartelle
+        os.makedirs(folder_path, exist_ok=True)
+        refs_path = os.path.join(folder_path, "refs")
+        os.makedirs(refs_path, exist_ok=True)
+
+        # Scarica legge principale
+        xml_temp_path = os.path.join(folder_path, f"{params['codiceRedaz']}.xml")
+        if not download_akoma_ntoso(params, xml_temp_path, session, quiet=quiet):
+            print("❌ Errore durante il download della legge principale", file=sys.stderr)
+            return False
+
+        # Estrai riferimenti dalla legge principale
+        if not quiet:
+            print(f"🔗 Estrazione riferimenti dalla legge principale...", file=sys.stderr)
+
+        cited_urls = extract_cited_laws(xml_temp_path)
+        if not quiet:
+            print(f"📋 Trovati {len(cited_urls)} riferimenti unici", file=sys.stderr)
+
+        # Scarica e converte legge principale
+        main_md_path = os.path.join(folder_path, "main.md")
+        metadata = {
+            'dataGU': params['dataGU'],
+            'codiceRedaz': params['codiceRedaz'],
+            'dataVigenza': params['dataVigenza'],
+            'url': url,
+            'url_xml': f"https://www.normattiva.it/do/atto/caricaAKN?dataGU={params['dataGU']}&codiceRedaz={params['codiceRedaz']}&dataVigenza={params['dataVigenza']}"
+        }
+
+        if not convert_akomantoso_to_markdown_improved(xml_temp_path, main_md_path, metadata):
+            print("❌ Errore durante la conversione della legge principale", file=sys.stderr)
+            return False
+
+        # Scarica e converte leggi citate
+        successful_downloads = 0
+        failed_downloads = 0
+
+        for i, cited_url in enumerate(cited_urls, 1):
+            if not quiet:
+                print(f"📥 [{i}/{len(cited_urls)}] Download legge citata: {cited_url}", file=sys.stderr)
+
+            try:
+                # Estrai parametri dalla URL citata
+                cited_params, cited_session = extract_params_from_normattiva_url(cited_url, quiet=True)
+                if not cited_params:
+                    if not quiet:
+                        print(f"⚠️  Impossibile estrarre parametri da: {cited_url}", file=sys.stderr)
+                    failed_downloads += 1
+                    continue
+
+                # Crea nome file per la legge citata
+                cited_filename = f"{cited_params['codiceRedaz']}_{cited_params['dataGU']}.md"
+                cited_md_path = os.path.join(refs_path, cited_filename)
+
+                # Scarica XML temporaneo per la legge citata
+                cited_xml_temp = os.path.join(folder_path, f"temp_{cited_params['codiceRedaz']}.xml")
+                if download_akoma_ntoso(cited_params, cited_xml_temp, cited_session, quiet=True):
+                    # Converti a markdown
+                    cited_metadata = {
+                        'dataGU': cited_params['dataGU'],
+                        'codiceRedaz': cited_params['codiceRedaz'],
+                        'dataVigenza': cited_params['dataVigenza'],
+                        'url': cited_url,
+                        'url_xml': f"https://www.normattiva.it/do/atto/caricaAKN?dataGU={cited_params['dataGU']}&codiceRedaz={cited_params['codiceRedaz']}&dataVigenza={cited_params['dataVigenza']}"
+                    }
+
+                    if convert_akomantoso_to_markdown_improved(cited_xml_temp, cited_md_path, cited_metadata):
+                        successful_downloads += 1
+                        if not quiet:
+                            print(f"✅ Convertita: {cited_filename}", file=sys.stderr)
+                    else:
+                        failed_downloads += 1
+                        if not quiet:
+                            print(f"❌ Errore conversione: {cited_filename}", file=sys.stderr)
+
+                    # Rimuovi XML temporaneo
+                    if not keep_xml:
+                        try:
+                            os.remove(cited_xml_temp)
+                        except OSError:
+                            pass
+                else:
+                    failed_downloads += 1
+                    if not quiet:
+                        print(f"❌ Errore download: {cited_url}", file=sys.stderr)
+
+            except Exception as e:
+                failed_downloads += 1
+                if not quiet:
+                    print(f"❌ Errore elaborazione {cited_url}: {e}", file=sys.stderr)
+
+        # Crea file indice
+        create_index_file(folder_path, params, cited_urls, successful_downloads, failed_downloads)
+
+        # Rimuovi XML principale se non richiesto
+        if not keep_xml:
+            try:
+                os.remove(xml_temp_path)
+            except OSError:
+                pass
+
+        if not quiet:
+            print(f"\n✅ Completato! {successful_downloads} leggi citate scaricate, {failed_downloads} fallite", file=sys.stderr)
+            print(f"📂 Struttura creata in: {folder_path}", file=sys.stderr)
+
+        return True
+
+    except Exception as e:
+        print(f"❌ Errore durante il processo con riferimenti: {e}", file=sys.stderr)
+        return False
+
+
+def extract_cited_laws(xml_file_path):
+    """
+    Estrae tutti gli URL delle leggi citate da un file XML Akoma Ntoso.
+
+    Args:
+        xml_file_path: percorso al file XML
+
+    Returns:
+        set: insieme di URL unici delle leggi citate
+    """
+    cited_urls = set()
+
+    try:
+        tree = ET.parse(xml_file_path)
+        root = tree.getroot()
+
+        # Trova tutti i tag <ref> con href
+        for ref in root.findall('.//akn:ref[@href]', AKN_NAMESPACE):
+            href = ref.get('href')
+            if href and href.startswith('/akn/'):
+                # Converti URI Akoma Ntoso in URL normattiva.it
+                url = akoma_uri_to_normattiva_url(href)
+                if url and is_normattiva_url(url):
+                    cited_urls.add(url)
+
+    except ET.ParseError as e:
+        print(f"Errore parsing XML per riferimenti: {e}", file=sys.stderr)
+    except Exception as e:
+        print(f"Errore estrazione riferimenti: {e}", file=sys.stderr)
+
+    return cited_urls
+
+
+def akoma_uri_to_normattiva_url(akoma_uri):
+    """
+    Converte un URI Akoma Ntoso in URL normattiva.it.
+
+    Args:
+        akoma_uri: URI Akoma Ntoso (es. /akn/it/act/legge/stato/2003-07-29/229/!main)
+
+    Returns:
+        str or None: URL normattiva.it corrispondente o None se conversione fallisce
+    """
+    try:
+        # Esempio: /akn/it/act/legge/stato/2003-07-29/229/!main
+        # Diventa: https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2003-07-29;229
+        parts = akoma_uri.strip('/').split('/')
+        if len(parts) >= 6 and parts[0] == 'akn' and parts[1] == 'it' and parts[2] == 'act':
+            tipo = parts[3]  # legge, decreto-legge, etc.
+            giurisdizione = parts[4]  # stato
+            data = parts[5]  # 2003-07-29
+            numero = parts[6]  # 229
+
+            # Gestisci tipi diversi
+            if tipo == 'legge':
+                urn = f"urn:nir:stato:legge:{data.replace('-', '-')};{numero}"
+            elif tipo == 'decreto-legge':
+                urn = f"urn:nir:stato:decreto-legge:{data.replace('-', '-')};{numero}"
+            elif tipo == 'decretoLegislativo':
+                urn = f"urn:nir:stato:decreto.legislativo:{data.replace('-', '-')};{numero}"
+            elif tipo == 'costituzione':
+                urn = f"urn:nir:stato:costituzione:{data.replace('-', '-')}"
+            else:
+                return None
+
+            return f"https://www.normattiva.it/uri-res/N2Ls?{urn}"
+    except:
+        pass
+
+    return None
+
+
+def create_index_file(folder_path, main_params, cited_urls, successful, failed):
+    """
+    Crea un file indice che elenca tutte le leggi scaricate.
+    """
+    index_path = os.path.join(folder_path, "index.md")
+
+    with open(index_path, 'w', encoding='utf-8') as f:
+        f.write(f"# Raccolta Legislativa\n\n")
+        f.write(f"**Legge principale:** {main_params['codiceRedaz']} del {main_params['dataGU']}\n\n")
+        f.write(f"**Le leggi citate scaricate:** {successful}\n\n")
+        f.write(f"**Le leggi citate non scaricate:** {failed}\n\n")
+
+        if successful > 0:
+            f.write("## Leggi Citare Scaricate\n\n")
+            refs_path = os.path.join(folder_path, "refs")
+            for filename in sorted(os.listdir(refs_path)):
+                if filename.endswith('.md'):
+                    f.write(f"- [{filename}](./refs/{filename})\n")
+            f.write("\n")
+
+        f.write(f"[Legge principale](./main.md)\n")
+
+
 def main():
     """
     Funzione principale che gestisce gli argomenti della riga di comando
@@ -1129,7 +1366,10 @@ def main():
     # Mantenere XML scaricato da URL
     python convert_akomantoso.py "URL" output.md --keep-xml
     python convert_akomantoso.py "URL" --keep-xml > output.md
-          """
+
+    # Scaricare anche tutte le leggi citate
+    python convert_akomantoso.py --with-references "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2005-03-07;82" output.md
+           """
     )
 
     # Version flag
@@ -1153,7 +1393,9 @@ def main():
     parser.add_argument('-q', '--quiet', action='store_true',
                         help='Modalità silenziosa: mostra solo errori')
     parser.add_argument('-c', '--completo', action='store_true',
-                        help='Scarica e converti la legge completa anche se l\'URL specifica un singolo articolo')
+                         help='Scarica e converti la legge completa anche se l\'URL specifica un singolo articolo')
+    parser.add_argument('--with-references', action='store_true',
+                         help='Scarica e converti anche tutte le leggi citate, creando una struttura di cartelle con collegamenti incrociati')
 
     args = parser.parse_args()
 
@@ -1161,6 +1403,7 @@ def main():
     input_source = args.input or args.input_named
     search_query = args.search_query
     output_file = args.output or args.output_named
+    with_references = args.with_references
 
     # Valida che almeno input o search sia specificato
     if not input_source and not search_query:
@@ -1169,6 +1412,15 @@ def main():
                     "oppure: python convert_akomantoso.py -i <input> [-o output.md]\n"
                     "oppure: python convert_akomantoso.py -s <query> [-o output.md]\n"
                     "Se output omesso, markdown va a stdout")
+
+    # Validate --with-references parameter
+    if with_references:
+        if not is_normattiva_url(input_source):
+            print("❌ --with-references può essere usato solo con URL normattiva.it", file=sys.stderr)
+            sys.exit(1)
+        if output_file:
+            print("❌ --with-references non supporta output file singolo, crea una struttura di cartelle", file=sys.stderr)
+            sys.exit(1)
 
     # Sanitize output path if provided
     if output_file:
@@ -1204,6 +1456,14 @@ def main():
         except ValueError as e:
             print(f"❌ Errore validazione URL: {e}", file=sys.stderr)
             sys.exit(1)
+
+        # Handle --with-references mode
+        if with_references:
+            success = convert_with_references(input_source, args.quiet, args.keep_xml, args.completo)
+            if success:
+                sys.exit(0)
+            else:
+                sys.exit(1)
 
         # Check for article reference in URL
         article_ref = parse_article_reference(input_source)

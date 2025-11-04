@@ -16,7 +16,7 @@ def read_readme():
 
 setup(
     name="akoma2md",
-    version="1.7.4",
+    version="1.8.0",
     description="Convertitore da XML Akoma Ntoso a formato Markdown con supporto URL normattiva.it",
     long_description=read_readme(),
     long_description_content_type="text/markdown",
