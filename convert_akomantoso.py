@@ -18,7 +18,7 @@ ALLOWED_DOMAINS = ['www.normattiva.it', 'normattiva.it']
 MAX_FILE_SIZE_MB = 50
 MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
 DEFAULT_TIMEOUT = 30
-VERSION = '2.0.4'
+VERSION = '2.0.7'
 
 def load_env_file():
     """
@@ -49,11 +49,35 @@ def load_env_file():
 # Load .env file at startup
 load_env_file()
 
+def build_permanent_url(dataGU, codiceRedaz, dataVigenza):
+    """
+    Build permanent URN-style URL with vigenza date.
+
+    Args:
+        dataGU: Publication date in YYYYMMDD format
+        codiceRedaz: Redaction code
+        dataVigenza: Vigenza date in YYYYMMDD format
+
+    Returns:
+        str: Permanent URL with URN and vigenza parameter
+    """
+    try:
+        # Convert dates to YYYY-MM-DD format
+        dataGU_formatted = f"{dataGU[:4]}-{dataGU[4:6]}-{dataGU[6:]}"
+        dataVigenza_formatted = f"{dataVigenza[:4]}-{dataVigenza[4:6]}-{dataVigenza[6:]}"
+
+        base_url = "https://www.normattiva.it/uri-res/N2Ls"
+        urn = f"urn:nir:stato:legge:{dataGU_formatted};{codiceRedaz}!vig={dataVigenza_formatted}"
+
+        return f"{base_url}?{urn}"
+    except (IndexError, ValueError):
+        return None
+
 def extract_metadata_from_xml(root):
     """
     Extract metadata from Akoma Ntoso XML meta section.
 
-    Returns dict with keys: dataGU, codiceRedaz, dataVigenza, url, url_xml
+    Returns dict with keys: dataGU, codiceRedaz, dataVigenza, url, url_xml, url_permanente
     Returns None for missing fields.
     """
     metadata = {}
@@ -94,6 +118,13 @@ def extract_metadata_from_xml(root):
             except ValueError:
                 metadata['dataVigenza'] = date_expr.get('date')
 
+    # Extract canonical URN-NIR from FRBRWork
+    frbr_work = meta.find('.//akn:FRBRWork', AKN_NAMESPACE)
+    if frbr_work is not None:
+        urn_alias = frbr_work.find('./akn:FRBRalias[@name="urn:nir"]', AKN_NAMESPACE)
+        if urn_alias is not None and urn_alias.get('value'):
+            metadata['urn_nir'] = urn_alias.get('value')
+
     # Construct URLs if we have the required metadata
     if metadata.get('dataGU') and metadata.get('codiceRedaz') and metadata.get('dataVigenza'):
         base_url = "https://www.normattiva.it/uri-res/N2Ls"
@@ -101,6 +132,20 @@ def extract_metadata_from_xml(root):
         metadata['url'] = f"{base_url}?{urn}"
 
         metadata['url_xml'] = f"https://www.normattiva.it/do/atto/caricaAKN?dataGU={metadata['dataGU']}&codiceRedaz={metadata['codiceRedaz']}&dataVigenza={metadata['dataVigenza']}"
+
+        # Build permanent URL using canonical URN-NIR with vigenza date
+        if metadata.get('urn_nir'):
+            # Convert dataVigenza to YYYY-MM-DD format for the URL
+            try:
+                vigenza_obj = datetime.strptime(metadata['dataVigenza'], '%Y%m%d')
+                vigenza_formatted = vigenza_obj.strftime('%Y-%m-%d')
+                metadata['url_permanente'] = f"{base_url}?{metadata['urn_nir']}!vig={vigenza_formatted}"
+            except ValueError:
+                # Fallback to old method if date conversion fails
+                metadata['url_permanente'] = build_permanent_url(metadata['dataGU'], metadata['codiceRedaz'], metadata['dataVigenza'])
+        else:
+            # Fallback to old method if URN-NIR not found
+            metadata['url_permanente'] = build_permanent_url(metadata['dataGU'], metadata['codiceRedaz'], metadata['dataVigenza'])
 
     return metadata
 
@@ -177,7 +222,7 @@ def generate_front_matter(metadata):
 
     # Collect non-None values
     front_matter_data = {}
-    for key in ['url', 'url_xml', 'dataGU', 'codiceRedaz', 'dataVigenza', 'article']:
+    for key in ['url', 'url_xml', 'url_permanente', 'dataGU', 'codiceRedaz', 'dataVigenza', 'article']:
         if metadata.get(key):
             front_matter_data[key] = metadata[key]
 
@@ -1095,16 +1140,17 @@ def lookup_normattiva_url(search_query, debug_json=False, auto_select=True):
             print(f"❌ Nessun risultato trovato per: {search_query}", file=sys.stderr)
             return None
 
-        # Debug: mostra tutti i risultati ricevuti
-        print(f"🔍 Risultati ricevuti da Exa ({len(results)}):", file=sys.stderr)
-        for i, result in enumerate(results, 1):
-            url = result.get('url', 'N/A')
-            title = result.get('title', 'N/A')[:100]  # Tronca titolo lungo
-            score = result.get('score', 'N/A')
-            print(f"  [{i}] URL: {url}", file=sys.stderr)
-            print(f"      Titolo: {title}...", file=sys.stderr)
-            print(f"      Score: {score}", file=sys.stderr)
-            print(file=sys.stderr)
+        # Debug: mostra tutti i risultati ricevuti solo in debug mode
+        if debug_json:
+            print(f"🔍 Risultati ricevuti da Exa ({len(results)}):", file=sys.stderr)
+            for i, result in enumerate(results, 1):
+                url = result.get('url', 'N/A')
+                title = result.get('title', 'N/A')[:100]  # Tronca titolo lungo
+                score = result.get('score', 'N/A')
+                print(f"  [{i}] URL: {url}", file=sys.stderr)
+                print(f"      Titolo: {title}...", file=sys.stderr)
+                print(f"      Score: {score}", file=sys.stderr)
+                print(file=sys.stderr)
 
         # Logica di selezione migliorata: preferisci URL senza riferimenti ad articoli specifici
         valid_results = []
@@ -1126,13 +1172,14 @@ def lookup_normattiva_url(search_query, debug_json=False, auto_select=True):
                 # Bonus per il primo risultato (probabilmente il più rilevante)
                 if i == 0:
                     preference_score += 3
+                    # Bonus extra se non è richiesto un articolo specifico
+                    if not requested_article:
+                        preference_score += 10
 
                 # Logica specifica per articoli richiesti
                 if requested_article:
-                    # Normalizza il numero articolo per il confronto (rimuovi spazi)
-                    normalized_requested = requested_article.replace(' ', '').lower()
                     # Se l'utente vuole un articolo specifico, dai bonus agli URL che lo contengono
-                    if f'~art{normalized_requested}' in url.lower():
+                    if f'~art{requested_article}' in url.lower():
                         preference_score += 20  # Bonus enorme per l'articolo esatto
                     elif '~art' in url:
                         preference_score -= 5  # Penalizza altri articoli
@@ -1209,8 +1256,17 @@ def lookup_normattiva_url(search_query, debug_json=False, auto_select=True):
 
         selected = valid_results[0]
 
-        print(f"✅ URL selezionato automaticamente (preferenza: {selected['preference_score']}, score: {selected['score']}): {selected['url']}", file=sys.stderr)
-        print(f"   Titolo: {selected['title']}", file=sys.stderr)
+        # Se l'utente non ha specificato un articolo ma il risultato selezionato è un articolo specifico,
+        # convertilo automaticamente nella legge completa
+        if not requested_article and '~art' in selected['url']:
+            complete_url = selected['url'].split('~art')[0]
+            if not debug_json:  # Solo in modalità non-debug mostra il messaggio di conversione
+                print(f"🔄 Convertito URL articolo specifico in URL legge completa: {complete_url}", file=sys.stderr)
+            selected['url'] = complete_url
+
+        if debug_json:
+            print(f"✅ URL selezionato automaticamente (preferenza: {selected['preference_score']}, score: {selected['score']}): {selected['url']}", file=sys.stderr)
+            print(f"   Titolo: {selected['title']}", file=sys.stderr)
 
         return selected['url']
 

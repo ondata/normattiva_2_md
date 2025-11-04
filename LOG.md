@@ -4,6 +4,109 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2025-11-04
 
+### 🚀 Release v2.0.7: Added Permanent Link Field to Frontmatter
+
+**New feature**: Added `url_permanente` field to YAML frontmatter with clean URN-style URLs including vigenza date
+
+#### 🎯 Problem Solved
+- **Issue**: No clean, permanent link format in frontmatter for sharing/archiving
+- **Impact**: Users couldn't easily get a standardized permanent URL for documents
+- **Need**: Clean URN URLs like `https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2023-11-24;168!vig=2025-11-04`
+
+#### 🔧 Changes Made
+- **New `build_permanent_url()` function**: Constructs URN URLs with vigenza date parameter
+- **Updated metadata extraction**: Added `url_permanente` field using canonical URN-NIR from XML
+- **Enhanced frontmatter**: `url_permanente` now included in YAML output alongside existing URL fields
+- **Canonical URN extraction**: Extracts URN-NIR from `<FRBRalias name="urn:nir">` in XML instead of constructing it
+- **Format**: `{canonical_urn}!vig={vigenza_date}` using the official URN-NIR with vigenza parameter
+
+#### 📊 Example Output
+```yaml
+---
+url: https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2005-03-07;005G0104
+url_xml: https://www.normattiva.it/do/atto/caricaAKN?dataGU=20050307&codiceRedaz=005G0104&dataVigenza=20250130
+url_permanente: https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2005-03-07;82!vig=2025-01-30
+dataGU: 20050307
+codiceRedaz: 005G0104
+dataVigenza: 20250130
+---
+```
+
+## 2025-11-04
+
+### 🚀 Release v2.0.6: Cleaner Search Output & Improved UX
+
+**UX enhancement release**: Reduced verbose output in normal mode for cleaner user experience
+
+#### 🎯 Problem Solved
+- **Issue**: Search output was too verbose in normal mode, showing detailed results even when not in debug mode
+- **Impact**: Users saw unnecessary technical details during normal searches
+- **Example**: Normal searches showed "Risultati ricevuti da Exa (5):" and detailed result lists
+
+#### 🔧 Changes Made
+- **Conditional debug output**: Results listing now only shown when `--debug-search` flag is used
+- **Cleaner normal mode**: Regular searches show only essential information
+- **Preserved debug functionality**: `--debug-search` still shows full Exa API responses and selection details
+- **Maintained conversion messages**: URL conversion notifications still appear when relevant
+
+#### 📊 Technical Details
+- **Output logic**: Added `if debug_json:` condition around verbose result display
+- **Preserved functionality**: All search logic and scoring unchanged
+- **Backward compatibility**: Debug mode works exactly as before
+
+#### ✅ Validation
+- **Normal mode**: `normattiva2md -s "violenza donne"` shows clean output
+- **Debug mode**: `normattiva2md -s "violenza donne" --debug-search` shows full details
+- **Functionality preserved**: Search accuracy and URL conversion work identically
+- **Suite test**: 27/27 tests passing without regressions
+
+#### 📦 Distribution
+- **PyPI Package**: `akoma2md` v2.0.6 with cleaner search output
+- **GitHub Release**: v2.0.6 tag with improved user experience
+- **Backward Compatibility**: All existing functionality preserved
+
+## 2025-11-04
+
+### 🚀 Release v2.0.5: Enhanced Exa Search Scoring & URL Conversion
+
+**Search enhancement release**: Improved scoring algorithm for better law document selection and automatic URL conversion
+
+#### 🎯 Problem Solved
+- **Issue**: Exa API searches often returned article-specific URLs (`~art7`) instead of complete law documents
+- **Impact**: Users searching for laws would get incomplete results pointing to single articles
+- **Example**: Search for "Disposizioni urgenti per favorire lo sviluppo..." returned `~art7` instead of full decree-law
+
+#### 🔧 Changes Made
+- **Smart URL conversion**: When first search result is article-specific, automatically convert to complete law URL
+- **Enhanced scoring logic**:
+  - +20 bonus points for exact article matches when requested
+  - -10 penalty for article URLs when complete law is desired
+  - +10 bonus for first result when no article specified
+  - Automatic conversion of first article-specific result to complete law
+- **Article recognition**: Extended regex to detect "articolo 7", "art 7", "art. 7" and complex numbers like "16bis", "16ter", etc.
+- **Debug features**: `--debug-search` flag shows full Exa API JSON response
+- **Manual selection**: `--auto-select` flag allows manual result picking
+
+#### 📊 Technical Details
+- **URL pattern detection**: Detects `~art{N}` patterns and strips them to get base law URL
+- **Priority logic**: First result gets special handling if it's article-specific
+- **Scoring algorithm**: Preference score calculation based on article requests vs. complete law needs
+- **Backward compatibility**: Existing searches work unchanged, improvements are automatic
+
+#### ✅ Validation
+- **Article Search**: `normattiva2md -s "legge art 7"` correctly selects article 7
+- **Law Search**: `normattiva2md -s "costituzione italiana"` selects complete constitution (not article)
+- **Debug Mode**: `--debug-search` shows full Exa API response
+- **Auto-selection**: Works correctly for both article-specific and complete law searches
+- **Suite test**: 27/27 tests passing without regressions
+
+#### 📦 Distribution
+- **PyPI Package**: `akoma2md` v2.0.5 with enhanced search capabilities
+- **GitHub Release**: v2.0.5 tag with improved article recognition and scoring
+- **Backward Compatibility**: All existing functionality preserved
+
+## 2025-11-04
+
 ### 🔍 Improved Exa Search: Better Result Selection & Debug Features
 
 **Version 2.0.4** - Enhanced search functionality with article-specific recognition
