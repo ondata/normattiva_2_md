@@ -18,7 +18,7 @@ ALLOWED_DOMAINS = ['www.normattiva.it', 'normattiva.it']
 MAX_FILE_SIZE_MB = 50
 MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
 DEFAULT_TIMEOUT = 30
-VERSION = '2.0.3'
+VERSION = '2.0.4'
 
 def load_env_file():
     """
@@ -1030,12 +1030,14 @@ def process_article(article_element, markdown_content_list, ns, level=2, cross_r
                 markdown_content_list.append('\n'.join(quoted_lines))
                 markdown_content_list.append("\n")
 
-def lookup_normattiva_url(search_query):
+def lookup_normattiva_url(search_query, debug_json=False, auto_select=True):
     """
     Usa Exa AI API per cercare l'URL normattiva.it corrispondente alla query di ricerca.
 
     Args:
         search_query (str): La stringa di ricerca naturale (es. "legge stanca")
+        debug_json (bool): Se True, mostra il JSON completo della risposta
+        auto_select (bool): Se True, seleziona automaticamente il miglior risultato
 
     Returns:
         str or None: L'URL trovato, oppure None se non trovato o errore
@@ -1081,21 +1083,136 @@ def lookup_normattiva_url(search_query):
             print(f"❌ Errore nel parsing JSON da Exa API: {e}", file=sys.stderr)
             return None
 
+        # Debug: mostra JSON completo se richiesto
+        if debug_json:
+            print(f"🔍 JSON completo da Exa API:", file=sys.stderr)
+            print(json.dumps(data, indent=2, ensure_ascii=False), file=sys.stderr)
+            print(file=sys.stderr)
+
         # Estrai risultati
         results = data.get('results', [])
         if not results:
             print(f"❌ Nessun risultato trovato per: {search_query}", file=sys.stderr)
             return None
 
-        # Prendi il primo risultato valido
-        for result in results:
+        # Debug: mostra tutti i risultati ricevuti
+        print(f"🔍 Risultati ricevuti da Exa ({len(results)}):", file=sys.stderr)
+        for i, result in enumerate(results, 1):
+            url = result.get('url', 'N/A')
+            title = result.get('title', 'N/A')[:100]  # Tronca titolo lungo
+            score = result.get('score', 'N/A')
+            print(f"  [{i}] URL: {url}", file=sys.stderr)
+            print(f"      Titolo: {title}...", file=sys.stderr)
+            print(f"      Score: {score}", file=sys.stderr)
+            print(file=sys.stderr)
+
+        # Logica di selezione migliorata: preferisci URL senza riferimenti ad articoli specifici
+        valid_results = []
+        query_lower = search_query.lower()
+
+        # Controlla se l'utente vuole un articolo specifico
+        import re
+        # Riconosce: "articolo 7", "art 7", "art. 7", "articolo 16bis", etc.
+        article_match = re.search(r'\b(?:articolo|art\.?|art)\s+(\d+(?:\s*(?:bis|ter|quater|quinquies|sexies|septies|octies|novies|decies|vices|tricies|quadragies))?)\b', query_lower, re.IGNORECASE)
+        requested_article = article_match.group(1).replace(' ', '') if article_match else None
+
+        for i, result in enumerate(results):
             url = result.get('url')
             if url and is_normattiva_url(url):
-                print(f"✅ URL trovato: {url}", file=sys.stderr)
-                return url
+                # Calcola un punteggio di preferenza
+                preference_score = 0
+                title = result.get('title', '').lower()
 
-        print(f"❌ Nessun URL normattiva.it valido trovato nei risultati", file=sys.stderr)
-        return None
+                # Bonus per il primo risultato (probabilmente il più rilevante)
+                if i == 0:
+                    preference_score += 3
+
+                # Logica specifica per articoli richiesti
+                if requested_article:
+                    # Normalizza il numero articolo per il confronto (rimuovi spazi)
+                    normalized_requested = requested_article.replace(' ', '').lower()
+                    # Se l'utente vuole un articolo specifico, dai bonus agli URL che lo contengono
+                    if f'~art{normalized_requested}' in url.lower():
+                        preference_score += 20  # Bonus enorme per l'articolo esatto
+                    elif '~art' in url:
+                        preference_score -= 5  # Penalizza altri articoli
+                else:
+                    # Se l'utente NON vuole un articolo specifico, penalizza URL con articoli
+                    if '~art' in url:
+                        preference_score -= 10
+                    else:
+                        # Bonus extra per URL di leggi complete
+                        preference_score += 2
+
+                # Bonus per titoli che sembrano leggi complete
+                if any(word in title for word in ['legge', 'decreto-legge', 'decreto legislativo']):
+                    preference_score += 5
+
+                # Bonus se il titolo contiene parole chiave della query
+                query_words = set(query_lower.split())
+                title_words = set(title.split())
+                common_words = query_words.intersection(title_words)
+                if common_words:
+                    preference_score += len(common_words) * 2
+
+                # Bonus extra se il titolo contiene la query quasi completa
+                if query_lower in title or title in query_lower:
+                    preference_score += 10
+
+                # Penalizza titoli che sembrano articoli specifici (solo se non richiesti)
+                if not requested_article and any(word in title for word in ['articolo', 'art.', 'comma']):
+                    preference_score -= 5
+
+                valid_results.append({
+                    'url': url,
+                    'title': result.get('title', ''),
+                    'score': result.get('score', 0),
+                    'preference_score': preference_score,
+                    'rank': i + 1
+                })
+
+        if not valid_results:
+            print(f"❌ Nessun URL normattiva.it valido trovato nei risultati", file=sys.stderr)
+            return None
+
+        # La logica di conversione automatica è ora integrata nel sistema di punteggio sopra
+
+        # Se auto_select è False, mostra i risultati e chiedi all'utente di scegliere
+        if not auto_select:
+            print(f"🔍 Risultati trovati per: {search_query}", file=sys.stderr)
+            print(f"Seleziona il numero del risultato desiderato (1-{len(valid_results)}), o 0 per annullare:", file=sys.stderr)
+            for i, result in enumerate(valid_results, 1):
+                print(f"  [{i}] {result['title'][:80]}...", file=sys.stderr)
+                print(f"      URL: {result['url']}", file=sys.stderr)
+                print(f"      Preferenza: {result['preference_score']}", file=sys.stderr)
+                print(file=sys.stderr)
+
+            try:
+                choice = int(input("Scelta: ").strip())
+                if choice == 0:
+                    print("❌ Ricerca annullata dall'utente", file=sys.stderr)
+                    return None
+                elif 1 <= choice <= len(valid_results):
+                    selected = valid_results[choice - 1]
+                    print(f"✅ URL selezionato manualmente: {selected['url']}", file=sys.stderr)
+                    return selected['url']
+                else:
+                    print(f"❌ Scelta non valida: {choice}", file=sys.stderr)
+                    return None
+            except (ValueError, EOFError):
+                print("❌ Input non valido, ricerca annullata", file=sys.stderr)
+                return None
+
+        # Selezione automatica
+        # Ordina per punteggio di preferenza decrescente, poi per score Exa
+        valid_results.sort(key=lambda x: (x['preference_score'], x['score']), reverse=True)
+
+        selected = valid_results[0]
+
+        print(f"✅ URL selezionato automaticamente (preferenza: {selected['preference_score']}, score: {selected['score']}): {selected['url']}", file=sys.stderr)
+        print(f"   Titolo: {selected['title']}", file=sys.stderr)
+
+        return selected['url']
 
     except requests.exceptions.Timeout:
         print("❌ Timeout nella chiamata a Exa API", file=sys.stderr)
@@ -1473,15 +1590,19 @@ def main():
     parser.add_argument('-o', '--output', dest='output_named',
                         help='File Markdown di output (default: stdout)')
     parser.add_argument('-s', '--search', dest='search_query',
-                        help='Cerca documento legale per nome naturale (es. "legge stanca")')
+                         help='Cerca documento legale per nome naturale (es. "legge stanca")')
     parser.add_argument('--keep-xml', action='store_true',
-                        help='Mantieni file XML temporaneo dopo conversione da URL')
+                         help='Mantieni file XML temporaneo dopo conversione da URL')
     parser.add_argument('-q', '--quiet', action='store_true',
-                        help='Modalità silenziosa: mostra solo errori')
+                         help='Modalità silenziosa: mostra solo errori')
     parser.add_argument('-c', '--completo', action='store_true',
-                         help='Scarica e converti la legge completa anche se l\'URL specifica un singolo articolo')
+                          help='Scarica e converti la legge completa anche se l\'URL specifica un singolo articolo')
     parser.add_argument('--with-references', action='store_true',
-                         help='Scarica e converti anche tutte le leggi citate, creando una struttura di cartelle con collegamenti incrociati')
+                          help='Scarica e converti anche tutte le leggi citate, creando una struttura di cartelle con collegamenti incrociati')
+    parser.add_argument('--debug-search', action='store_true',
+                         help='Mostra JSON completo da Exa API e permetti selezione manuale dei risultati di ricerca')
+    parser.add_argument('--auto-select', action='store_true', default=True,
+                         help='Seleziona automaticamente il miglior risultato di ricerca (default: True)')
 
     args = parser.parse_args()
 
@@ -1522,12 +1643,15 @@ def main():
         if not args.quiet:
             print(f"🔍 Ricerca documento: {search_query}", file=sys.stderr)
 
-        input_source = lookup_normattiva_url(search_query)
+        # Determina se usare selezione automatica o manuale
+        auto_select = args.auto_select and not args.debug_search
+
+        input_source = lookup_normattiva_url(search_query, debug_json=args.debug_search, auto_select=auto_select)
         if not input_source:
             print("❌ Impossibile trovare URL per la ricerca specificata", file=sys.stderr)
             sys.exit(1)
 
-        if not args.quiet:
+        if not args.quiet and not args.debug_search:
             print(f"✅ URL trovato: {input_source}", file=sys.stderr)
 
     # Auto-detect: URL o file locale?

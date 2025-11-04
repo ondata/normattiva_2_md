@@ -4,7 +4,30 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2025-11-04
 
-### 🔄 CLI Rename: akoma2md → normattiva2md
+### 🔍 Improved Exa Search: Better Result Selection & Debug Features
+
+**Version 2.0.4** - Enhanced search functionality with article-specific recognition
+
+**Enhancement**: Fixed search functionality to properly handle article-specific URLs and added debug capabilities
+
+#### 🎯 Problem Solved
+- **Issue**: Exa API often returns article-specific URLs (e.g., `~art7`) instead of complete law URLs
+- **Impact**: Users searching for laws would get incomplete results pointing to single articles
+- **Example**: Search for "Disposizioni urgenti per favorire lo sviluppo..." returned `~art7` instead of full decree-law
+
+#### 🔧 Changes Made
+- **Smart URL conversion**: When first search result is article-specific, automatically convert to complete law URL
+- **Article-specific search**: Recognize "articolo 7", "art 7", "art. 7" patterns to select specific articles
+- **Extended article recognition**: Support for complex article numbers (16bis, 16ter, etc.) with multiple formats
+- **Debug features**: Added `--debug-search` flag to show full Exa JSON response
+- **Manual selection**: Added `--auto-select` flag (default true) to allow manual result picking
+- **Improved scoring**: Enhanced preference algorithm to prioritize requested articles (+20 bonus) or complete laws
+
+#### 📊 Technical Details
+- **URL pattern**: Detects `~art{N}` patterns and strips them to get base law URL
+- **Priority logic**: First result gets special handling if it's article-specific
+- **Debug output**: Shows all search results with scores and allows user selection
+- **Backward compatibility**: Existing searches work unchanged, improvements are automatic
 
 **Breaking change**: Renamed command-line interface for better discoverability
 
@@ -42,6 +65,27 @@ The README on PyPI now correctly shows:
 - PyPI badge pointing to `akoma2md` package
 - Installation instructions for `akoma2md` package
 - Both `normattiva2md` and `akoma2md` CLI commands documented
+
+### 🚀 Release v2.0.4: Enhanced Article Recognition in Search
+
+**Enhancement release**: Improved search functionality with better article-specific recognition
+
+#### 🔧 Changes
+- **Article Pattern Recognition**: Extended regex to recognize "articolo 7", "art 7", "art. 7" and complex numbers like "16bis"
+- **Smart Article Selection**: +20 bonus points for URLs containing the exact requested article
+- **Automatic Law Conversion**: When no article specified, automatically converts article-specific URLs to complete laws
+- **Debug Features**: `--debug-search` flag shows full Exa API JSON response
+- **Manual Selection**: `--auto-select` flag allows manual result picking
+
+#### 📦 Distribution
+- **PyPI Package**: `akoma2md` v2.0.4 with enhanced search capabilities
+- **GitHub Release**: v2.0.4 tag with improved article recognition
+
+#### ✅ Verification
+- **Article Search**: `normattiva2md -s "legge art 7"` correctly selects article 7
+- **Law Search**: `normattiva2md -s "legge stanca"` selects complete law (not article)
+- **Debug Mode**: `--debug-search` shows full Exa API response
+- **Backward Compatibility**: All existing functionality preserved
 
 ### 🚀 Release v2.0.2: Backward Compatibility - Both CLI Names Supported
 
