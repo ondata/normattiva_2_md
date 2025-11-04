@@ -1,4 +1,4 @@
-# Roadmap - akoma2md
+# Roadmap - normattiva2md
 
 Punti da attenzionare per le prossime release, basati su code review approfondita.
 
@@ -23,7 +23,35 @@ Punti da attenzionare per le prossime release, basati su code review approfondit
 
 ---
 
-## 🟡 NEXT RELEASE - v1.10.0 (Prossima Release)
+## ✅ COMPLETED - v2.0.0 to v2.0.2 (2025-11-04)
+
+### CLI Rename: akoma2md → normattiva2md
+
+**Status**: ✅ Completed with backward compatibility
+
+#### Changes Made
+- **Entry Points**: Both `akoma2md` and `normattiva2md` commands supported
+- **Documentation**: Updated all references and examples
+- **Branding**: Project renamed for better discoverability
+- **Backward Compatibility**: Old command still works during transition
+
+#### Deprecation Timeline
+- **v2.0.x**: Both commands supported (current)
+- **v3.0.0** (Q2 2026): `akoma2md` command deprecated with warning
+- **v4.0.0** (Q1 2027): `akoma2md` command removed
+
+#### Migration Guide
+```bash
+# Recommended (new)
+normattiva2md input.xml output.md
+
+# Still works (deprecated in future)
+akoma2md input.xml output.md
+```
+
+---
+
+## 🟡 NEXT RELEASE - v2.1.0 (Prossima Release)
 
 ### 1. Refactoring `main()` function
 
@@ -517,19 +545,19 @@ akoma2md/
 
 ## 📊 Metriche di Successo
 
-### v1.5.0 Target
+### v2.1.0 Target (Current Sprint)
 - [ ] Test coverage > 85%
 - [ ] Funzioni max 50 linee
 - [ ] Performance: +20% su documenti >1000 articoli
 - [ ] Zero regressioni
 
-### v1.6.0 Target
+### v2.2.0 Target
 - [ ] Test coverage > 90%
 - [ ] Type hints 100%
 - [ ] Documentazione Sphinx completa
 - [ ] CI/CD con multiple Python versions
 
-### v2.0.0 Target
+### v3.0.0 Target
 - [ ] Architettura modulare completa
 - [ ] Plugin system
 - [ ] Multiple output formats (MD, HTML, PDF)
@@ -540,58 +568,59 @@ akoma2md/
 ## 📋 Issue GitHub da Creare
 
 ### Enhancement
-1. **[Performance] Precompile regex patterns** - v1.5.0
-2. **[Feature] Robust HTML parsing with BeautifulSoup** - v1.5.0
-3. **[Feature] Network retry logic** - v1.5.0
-4. **[DX] Add type hints throughout codebase** - v1.6.0
-5. **[Feature] Configuration file support** - v2.0.0
-6. **[Feature] Batch processing mode** - v2.0.0
+1. **[Performance] Precompile regex patterns** - v2.1.0
+2. **[Feature] Robust HTML parsing with BeautifulSoup** - v2.1.0
+3. **[Feature] Network retry logic** - v2.1.0
+4. **[DX] Add type hints throughout codebase** - v2.2.0
+5. **[Feature] Configuration file support** - v3.0.0
+6. **[Feature] Batch processing mode** - v3.0.0
 
 ### Bug
-1. **[Bug] Complete footnote implementation with global counter** - v1.5.0
+1. **[Bug] Complete footnote implementation with global counter** - v2.1.0
 
 ### Refactor
-1. **[Refactor] Split main() into smaller functions** - v1.5.0
-2. **[Refactor] Modularize codebase into package** - v2.0.0
+1. **[Refactor] Split main() into smaller functions** - v2.1.0
+2. **[Refactor] Modularize codebase into package** - v3.0.0
 
 ### Documentation
-1. **[Docs] Setup Sphinx documentation** - v1.6.0
-2. **[Docs] API reference with examples** - v1.6.0
+1. **[Docs] Setup Sphinx documentation** - v2.2.0
+2. **[Docs] API reference with examples** - v2.2.0
 
 ### Testing
-1. **[Testing] Add integration tests** - v1.5.0
-2. **[Testing] Add network error scenarios** - v1.5.0
+1. **[Testing] Add integration tests** - v2.1.0
+2. **[Testing] Add network error scenarios** - v2.1.0
 
 ### CI/CD
-1. **[CI] Complete GitHub Actions pipeline** - v1.6.0
-2. **[CI] Automated changelog generation** - v1.6.0
+1. **[CI] Complete GitHub Actions pipeline** - v2.2.0
+2. **[CI] Automated changelog generation** - v2.2.0
 
 ---
 
 ## 🎯 Timeline Proposta
 
-**Q1 2025 (Gennaio-Marzo)**:
-- v1.5.0: High priority items
+**Q4 2025 (Novembre-Dicembre)**:
+- v2.1.0: High priority refactoring items
 - Focus: Performance + Robustezza
 
-**Q2 2025 (Aprile-Giugno)**:
-- v1.6.0: Medium priority items
+**Q1 2026 (Gennaio-Marzo)**:
+- v2.2.0: Medium priority items
 - Focus: DX + Documentation
 
-**Q3-Q4 2025**:
-- v2.0.0: Low priority + modularizzazione
-- Focus: Architettura + Features avanzate
+**Q2-Q4 2026**:
+- v3.0.0: Major architecture + advanced features
+- Focus: Modularizzazione + Plugin system
 
 ---
 
 ## 📝 Note
 
-- Mantenere backward compatibility fino a v2.0.0
-- Deprecation warnings per funzioni da rimuovere
+- Mantenere backward compatibility per `akoma2md` fino a v3.0.0
+- Deprecation warning per `akoma2md` command da v3.0.0
+- Rimozione `akoma2md` command in v4.0.0
 - Semantic versioning rigoroso
 - Security patches immediate su tutte le versioni supportate
 
 ---
 
 **Ultimo aggiornamento**: 2025-11-04
-**Versione corrente**: v1.9.0
+**Versione corrente**: v2.0.2
