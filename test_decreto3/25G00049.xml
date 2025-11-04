@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="UTF-8"?><akomaNtoso xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0" xmlns:eli="http://data.europa.eu/eli/ontology#" xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0" xmlns:gu="http://www.gazzettaufficiale.it/eli/" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:na="http://www.normattiva.it/eli/" xmlns:nakn="http://normattiva.it/akn/vocabulary" xmlns:nrdfa="http://www.normattiva.it/rdfa/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfa="http://www.w3.org/1999/xhtml#">
+    <act name="monovigente">
+        <meta>
+            <identification source="">
+                <FRBRWork>
+                    <FRBRthis value="/akn/it/act/decreto-legge/stato/2025-03-28/36/!main"/>
+                    <FRBRuri value="/akn/it/act/decreto-legge/stato/2025-03-28/36"/>
+                    <FRBRalias name="urn:nir" value="urn:nir:stato:decreto.legge:2025-03-28;36"/>
+                    <FRBRalias name="eli" value="eli/id/2025/03/28/25G00049/CONSOLIDATED/20250524"/>
+                    <FRBRdate date="2025-03-28" name=""/>
+                    <FRBRauthor as="#author" href=""/>
+                    <preservation>
+                        <nrdfa:eli about="na:id/2025/03/28/25G00049/CONSOLIDATED/20250524" aknrelname="eli/id/2025/03/28/25G00049/CONSOLIDATED/20250524">
+                            <nrdfa:span property="rdf:type" resource="eli:LegalResource"/>
+                            <nrdfa:span content="Disposizioni urgenti in materia di cittadinanza. (25G00049)  " lang="it" property="eli:title" xml:lang="it"/>
+                            <nrdfa:span content="http://www.normattiva.it/eli/id/{yyyy}/{mm}/{dd}/{codiceRedazionale}/{tipoVersione}" property="eli:uri_schema"/>
+                            <nrdfa:span content="25G00049" property="eli:id_local"/>
+                            <nrdfa:span property="eli:type_document" resource="gu:tables/resource-type#DECRETO-LEGGE"/>
+                            <nrdfa:span content="2025-03-28" datatype="xsd:date" property="eli:date_document"/>
+                            <nrdfa:span property="eli:version" resource="gu:tables/versions#ORIGINAL"/>
+                        </nrdfa:eli>
+                    </preservation>
+                    <FRBRcountry value="it"/>
+                </FRBRWork>
+                <FRBRExpression>
+                    <FRBRthis value="/akn/it/act/decreto-legge/stato/2025-03-28/36/ita@2025-05-24/!main"/>
+                    <FRBRuri value="/akn/it/act/decreto-legge/stato/2025-03-28/36/ita@2025-05-24"/>
+                    <FRBRdate date="2025-05-24" name=""/>
+                    <FRBRauthor as="#author" href=""/>
+                    <preservation>
+                        <nrdfa:eli about="na:id/2025/03/28/25G00049/CONSOLIDATED/20250524/ita">
+                            <nrdfa:span property="rdf:type" resource="eli:LegalExpression"/>
+                            <nrdfa:span property="eli:realizes" resource="na:id/2025/03/28/25G00049/CONSOLIDATED/20250524"/>
+                            <nrdfa:span property="eli:is_embodied_by" resource="na:id/2025/03/28/25G00049/CONSOLIDATED/20250524/ita/akn"/>
+                            <nrdfa:span property="eli:language" resource="http://publications.europa.eu/resource/authority/language/ITA"/>
+                            <nrdfa:span property="eli:publisher_agent" resource="http://www.ipzs.it"/>
+                        </nrdfa:eli>
+                    </preservation>
+                    <FRBRlanguage language="ita"/>
+                </FRBRExpression>
+                <FRBRManifestation>
+                    <FRBRthis value="/akn/it/act/decreto-legge/stato/2025-03-28/36/ita@2025-05-24/!main.xml"/>
+                    <FRBRuri value="/akn/it/act/decreto-legge/stato/2025-03-28/36/ita@2025-05-24.xml"/>
+                    <FRBRdate date="2025-03-28" name=""/>
+                    <FRBRauthor as="#author" href=""/>
+                    <preservation>
+                        <nrdfa:eli about="na:id/2025/03/28/25G00049/CONSOLIDATED/20250524/ita/akn">
+                            <nrdfa:span property="rdf:type" resource="eli:Format"/>
+                            <nrdfa:span property="eli:format" resource="http://www.iana.org/assignments/media-types/xml"/>
+                        </nrdfa:eli>
+                    </preservation>
+                </FRBRManifestation>
+            </identification>
+            <publication date="2025-03-28" name="" number="73" showAs=""/>
+            <lifecycle source="">
+                <eventRef date="2025-03-28" eId="eventRef_0" source="ro1"/>
+                <eventRef date="2025-05-23" eId="eventRef_1" source="rp1"/>
+            </lifecycle>
+            <analysis source="">
+                <activeModifications>
+                    <textualMod eId="amod_0" type="insertion">
+                        <source href="urn:nir:stato:decreto.legge:2025-03-28;36#1"/>
+                        <destination href="urn:nir:stato:legge:1992-02-05;91#3 bis"/>
+                        <new>
+                            <nakn:text>ha disposto (con l'art. 1, comma 1) l'introduzione dell'art. 3-bis.</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="amod_1" type="insertion">
+                        <source href="urn:nir:stato:decreto.legge:2025-03-28;36#1"/>
+                        <destination href="urn:nir:stato:legge:1992-02-05;91#3 bis"/>
+                        <new>
+                            <nakn:text>convertito con modificazioni dalla L. 23 maggio 2025, n. 74 (in G.U. 23/05/2025, n. 118), ha disposto (con l'art. 1, comma 1) la modifica dell'art. 3-bis, comma 1, lettere c) e d), la soppressione della lettera e) dell'art. 3-bis, comma 1 e l'introduzione della lettera a-bis) all'art. 3-bis, comma 1.</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="amod_2" type="insertion">
+                        <source href="urn:nir:stato:decreto.legge:2025-03-28;36#1"/>
+                        <destination href="urn:nir:stato:legge:1992-02-05;91#4"/>
+                        <new>
+                            <nakn:text>convertito con modificazioni dalla L. 23 maggio 2025, n. 74 (in G.U. 23/05/2025, n. 118), ha disposto (con l'art. 1, comma 1-bis, lettera a)) la modifica dell'art. 4, comma 1, alinea; (con l'art. 1, comma 1-bis, lettera b)) l'introduzione dei commi 1-bis e 1-ter all'art. 4; (con l'art. 1, comma 1-ter) la modifica dell'art. 4, comma 1-bis, lettera b).</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="amod_3" type="insertion">
+                        <source href="urn:nir:stato:decreto.legge:2025-03-28;36#1"/>
+                        <destination href="urn:nir:stato:legge:1992-02-05;91#14"/>
+                        <new>
+                            <nakn:text>convertito con modificazioni dalla L. 23 maggio 2025, n. 74 (in G.U. 23/05/2025, n. 118), ha disposto (con l'art. 1, comma 1-quater) la modifica dell'art. 14, comma 1.</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="amod_4" type="insertion">
+                        <source href="urn:nir:stato:decreto.legge:2025-03-28;36#1"/>
+                        <destination href="urn:nir:stato:decreto.legislativo:2011-09-01;150#19 bis"/>
+                        <new>
+                            <nakn:text>ha disposto (con l'art. 1, comma 2, lettera a)) la modifica della rubrica dell'art. 19-bis; (con l'art. 1, comma 2, lettera b)) l'introduzione dei commi 2-bis e 2-ter all'art. 19-bis.</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="amod_5" type="insertion">
+                        <source href="urn:nir:stato:decreto.legge:2025-03-28;36#1 bis"/>
+                        <destination href="urn:nir:stato:legge:1992-02-05;91#9"/>
+                        <new>
+                            <nakn:text>convertito con modificazioni dalla L. 23 maggio 2025, n. 74 (in G.U. 23/05/2025, n. 118), ha disposto (con l'art. 1-bis, comma 2, lettera a)) la modifica dell'art. 9, comma 1, lettera a); (con l'art. 1-bis, comma 2, lettera b)) l'introduzione della lettera a-bis) all'art. 9, comma 1.</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="amod_6" type="insertion">
+                        <source href="urn:nir:stato:decreto.legge:2025-03-28;36#1 bis"/>
+                        <destination href="urn:nir:stato:decreto.legislativo:1998-07-25;286#27"/>
+                        <new>
+                            <nakn:text>convertito con modificazioni dalla L. 23 maggio 2025, n. 74 (in G.U. 23/05/2025, n. 118), ha disposto (con l'art. 1-bis, comma 1) l'introduzione del comma 1-octies all'art. 27.</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="amod_7" type="insertion">
+                        <source href="urn:nir:stato:decreto.legge:2025-03-28;36#1 ter"/>
+                        <destination href="urn:nir:stato:legge:1992-02-05;91#9 bis"/>
+                        <new>
+                            <nakn:text>convertito con modificazioni dalla L. 23 maggio 2025, n. 74 (in G.U. 23/05/2025, n. 118), ha disposto (con l'art. 1-ter, comma 1, lettera a)) la modifica dell'art. 9-bis, comma 2.</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="amod_8" type="insertion">
+                        <source href="urn:nir:stato:decreto.legge:2025-03-28;36#1 ter"/>
+                        <destination href="urn:nir:stato:legge:1992-02-05;91#17"/>
+                        <new>
+                            <nakn:text>convertito con modificazioni dalla L. 23 maggio 2025, n. 74 (in G.U. 23/05/2025, n. 118), ha disposto (con l'art. 1-ter, comma 1, lettera b)) la modifica dell'art. 17, comma 1.</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="amod_9" type="insertion">
+                        <source href="urn:nir:stato:decreto.legge:2025-03-28;36#1 ter"/>
+                        <destination href="urn:nir:stato:decreto.legislativo:2011-02-03;71#Allegato"/>
+                        <new>
+                            <nakn:text>convertito con modificazioni dalla L. 23 maggio 2025, n. 74 (in G.U. 23/05/2025, n. 118), ha disposto (con l'art. 1-ter, comma 2) la modifica della tabella.</nakn:text>
+                        </new>
+                    </textualMod>
+                </activeModifications>
+                <passiveModifications>
+                    <textualMod eId="pmod_0" type="insertion">
+                        <source href="#"/>
+                        <destination href="#ins_1"/>
+                        <new>
+                            <nakn:text>((lo stato di cittadino dell'interessato e' riconosciuto, nel rispetto della normativa applicabile al 27 marzo 2025, a seguito di domanda, corredata della necessaria documentazione, presentata all'ufficio consolare o al sindaco competenti nel giorno indicato da appuntamento comunicato all'interessato dall'ufficio competente entro le 23:59, ora di Roma, della medesima data del 27 marzo 2025))</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="pmod_1" type="insertion">
+                        <source href="#"/>
+                        <destination href="#ins_2"/>
+                        <new>
+                            <nakn:text>((un ascendente di primo o di secondo grado possiede, o possedeva al momento della morte, esclusivamente la cittadinanza italiana))</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="pmod_2" type="insertion">
+                        <source href="#"/>
+                        <destination href="#ins_3"/>
+                        <new>
+                            <nakn:text>((un genitore o adottante e' stato residente in Italia per almeno due anni continuativi successivamente all'acquisto della cittadinanza italiana e prima della data di nascita o di adozione del figlio))</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="pmod_3" type="insertion">
+                        <source href="#"/>
+                        <destination href="#ins_4"/>
+                        <new>
+                            <nakn:text>((LETTERA SOPPRESSA DALLA L. 23 MAGGIO 2025, N. 74))</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="pmod_4" type="insertion">
+                        <source href="#"/>
+                        <destination href="#ins_5"/>
+                        <new>
+                            <nakn:text>((All'articolo 4 della legge 5 febbraio 1992, n. 91, sono apportate le seguenti modificazioni: 
+ a) al comma 1, alinea, dopo le parole: "secondo grado" sono inserite le seguenti: "sono o"; 
+ b) dopo il comma 1 sono inseriti i seguenti: 
+ "1-bis. Il minore straniero o apolide, del quale il padre o la madre sono cittadini per nascita, diviene cittadino se i genitori o il tutore dichiarano la volonta' dell'acquisto della cittadinanza e ricorre uno dei seguenti requisiti: 
+ a) successivamente alla dichiarazione, il minore risiede legalmente per almeno due anni continuativi in Italia; 
+ b) la dichiarazione e' presentata entro un anno dalla nascita del minore o dalla data successiva in cui e' stabilita la filiazione, anche adottiva, da cittadino italiano. 
+ 1-ter. Divenuto maggiorenne, chi ha acquistato la cittadinanza ai sensi del comma 1-bis puo' rinunciarvi se in possesso di altra cittadinanza"))</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="pmod_5" type="insertion">
+                        <source href="#"/>
+                        <destination href="#ins_6"/>
+                        <new>
+                            <nakn:text>((Per i minorenni alla data di entrata in vigore della legge di conversione del presente decreto, figli di cittadini per nascita di cui all'articolo 3-bis, comma 1, lettere a), a-bis) e b), della legge 5 febbraio 1992, n. 91, la dichiarazione prevista dall'articolo 4, comma 1-bis, lettera b), della medesima legge puo' essere presentata entro le 23:59, ora di Roma, del 31 maggio 2026.))</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="pmod_6" type="insertion">
+                        <source href="#"/>
+                        <destination href="#ins_7"/>
+                        <new>
+                            <nakn:text>((All'articolo 14, comma 1, della legge 5 febbraio 1992, n. 91, e' aggiunto, in fine, il seguente periodo: "Il primo periodo si applica se, alla data di acquisto o riacquisto della cittadinanza da parte del genitore, il minore risiede legalmente in Italia da almeno due anni continuativi o, se di eta' inferiore ai due anni, dalla nascita"))</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="pmod_7" type="insertion">
+                        <source href="#"/>
+                        <destination href="#ins_8"/>
+                        <new>
+                            <nakn:text>(( (Disposizioni per favorire il recupero delle radici italiane degli oriundi e il conseguente acquisto della cittadinanza italiana).))</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="pmod_8" type="insertion">
+                        <source href="#"/>
+                        <destination href="#ins_9"/>
+                        <new>
+                            <nakn:text>((All'articolo 27 del testo unico delle disposizioni concernenti la disciplina dell'immigrazione e norme sulla condizione dello straniero, di cui al decreto legislativo 25 luglio 1998, n. 286, dopo il comma 1-septies e' inserito il seguente: 
+ "1-octies. Sono consentiti, al di fuori delle quote di cui all'articolo 3, comma 4, con le procedure di cui all'articolo 22, l'ingresso e il soggiorno per lavoro subordinato allo straniero residente all'estero, discendente di cittadino italiano e in possesso della cittadinanza di uno Stato di destinazione di rilevanti flussi di emigrazione italiana, individuato con decreto del Ministro degli affari esteri e della cooperazione internazionale, di concerto con i Ministri dell'interno e del lavoro e delle politiche sociali".))</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="pmod_9" type="insertion">
+                        <source href="#"/>
+                        <destination href="#ins_10"/>
+                        <new>
+                            <nakn:text>((All'articolo 9, comma 1, della legge 5 febbraio 1992, n. 91, sono apportate le seguenti modificazioni: 
+ a) alla lettera a), dopo le parole: "secondo grado" sono inserite le seguenti: "sono o" e le parole: ", o che e' nato nel territorio della Repubblica e, in entrambi i casi, vi risiede legalmente da almeno tre anni" sono sostituite dalle seguenti: "e che risiede legalmente nel territorio della Repubblica da almeno due anni"; 
+ b) dopo la lettera a) e' inserita la seguente: 
+ "a-bis) allo straniero nato nel territorio della Repubblica che vi risiede legalmente da almeno tre anni".))</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="pmod_10" type="insertion">
+                        <source href="#"/>
+                        <destination href="#ins_11"/>
+                        <new>
+                            <nakn:text>(( (Riacquisto della cittadinanza a favore di ex cittadini).))</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="pmod_11" type="insertion">
+                        <source href="#"/>
+                        <destination href="#ins_12"/>
+                        <new>
+                            <nakn:text>((Alla legge 5 febbraio 1992, n. 91, sono apportate le seguenti modificazioni: 
+ a) all'articolo 9-bis, comma 2, dopo la parola: "cittadinanza" sono inserite le seguenti: ", ad eccezione delle dichiarazioni di riacquisto presentate innanzi a un ufficio consolare,"; 
+ b) all'articolo 17, il comma 1 e' sostituito dal seguente: 
+ "1. Fermo restando quanto previsto dall'articolo 3-bis, chi e' nato in Italia o e' stato ivi residente per almeno due anni continuativi e ha perduto la cittadinanza in applicazione dell'articolo 8, numeri 1 e 2, o dell'articolo 12 della legge 13 giugno 1912, n. 555, la riacquista se effettua una dichiarazione in tal senso in data compresa tra il 1° luglio 2025 e il 31 dicembre 2027".))</nakn:text>
+                        </new>
+                    </textualMod>
+                    <textualMod eId="pmod_12" type="insertion">
+                        <source href="#"/>
+                        <destination href="#ins_13"/>
+                        <new>
+                            <nakn:text>((Alla sezione I della tabella dei diritti consolari da riscuotersi dagli uffici diplomatici e consolari, allegata al decreto legislativo 3 febbraio 2011, n. 71, dopo l'articolo 7-bis e' inserito il seguente: 
+ "Art. 7-ter. - Dichiarazione di riacquisto della cittadinanza: euro 250"))</nakn:text>
+                        </new>
+                    </textualMod>
+                </passiveModifications>
+            </analysis>
+            <references source="">
+                <original eId="ro1" href="/akn/it/act/DECRETO-LEGGE/stato/2025-03-28/36/!main" showAs=""/>
+                <passiveRef eId="rp1" href="/akn/it/act/LEGGE/stato/2025-05-23/74/!main" showAs=""/>
+            </references>
+            <proprietary source="">
+                <rdf:RDF>
+                    <rdf:Description rdf:about="na:id/2025/03/28/25G00049/CONSOLIDATED/20250524">
+                        <rdf:type rdf:resource="eli:LegalResource"/>
+                        <eli:title xml:lang="it">Disposizioni urgenti in materia di cittadinanza. (25G00049)  </eli:title>
+                        <eli:uri_schema>http://www.normattiva.it/eli/id/{yyyy}/{mm}/{dd}/{codiceRedazionale}/{tipoVersione}</eli:uri_schema>
+                        <eli:id_local>25G00049</eli:id_local>
+                        <eli:type_document rdf:resource="gu:tables/resource-type#DECRETO-LEGGE"/>
+                        <eli:date_document rdf:datatype="xsd:date">2025-03-28</eli:date_document>
+                        <eli:version rdf:resource="gu:tables/versions#ORIGINAL"/>
+                    </rdf:Description>
+                    <rdf:Description rdf:about="na:id/2025/03/28/25G00049/CONSOLIDATED/20250524/ita">
+                        <rdf:type rdf:resource="eli:LegalExpression"/>
+                        <eli:realizes rdf:resource="na:id/2025/03/28/25G00049/CONSOLIDATED/20250524"/>
+                        <eli:is_embodied_by rdf:resource="na:id/2025/03/28/25G00049/CONSOLIDATED/20250524/ita/akn"/>
+                        <eli:language rdf:resource="http://publications.europa.eu/resource/authority/language/ITA"/>
+                        <eli:publisher_agent rdf:resource="http://www.ipzs.it"/>
+                    </rdf:Description>
+                    <rdf:Description rdf:about="na:id/2025/03/28/25G00049/CONSOLIDATED/20250524/ita/akn">
+                        <rdf:type rdf:resource="eli:format"/>
+                        <eli:format rdf:resource="http://www.iana.org/assignments/media-types/xml"/>
+                    </rdf:Description>
+                </rdf:RDF>
+            </proprietary>
+        </meta>
+        <preface>
+            <p>
+                <docType>DECRETO-LEGGE</docType>
+                <docDate date="2025-03-28">28 marzo 2025</docDate>
+                <docNumber>36</docNumber>
+                <docTitle>Disposizioni urgenti in materia di cittadinanza. (25G00049) 
+</docTitle>
+            </p>
+            <p>
+                <authorialNote eId="atn1" placement="bottom">
+                    <p>Entrata in vigore del provvedimento: 29/03/2025
+
+Decreto-Legge convertito con modificazioni dalla <ref eId="content__ref_1" href="/akn/it/act/legge/stato/2025-05-23/74/!main">L. 23 maggio 2025, n. 74</ref> (in G.U. 23/05/2025, n. 118)</p>
+                </authorialNote>
+            </p>
+        </preface>
+        <preamble>
+            <formula name="formulaInizialePreambolo">
+                <p>IL PRESIDENTE DELLA REPUBBLICA</p>
+            </formula>
+            <citations eId="cits_1">
+                <citation eId="cits_1__cit_1">
+                    <p>Visti gli <ref eId="ref_2" href="/akn/it/act/costituzione/stato/1947-12-27/const/!main#art_77">articoli 77</ref> e <ref eId="ref_3" href="/akn/it/act/costituzione/stato/1947-12-27/const/!main#art_87-com5">87, quinto comma, della Costituzione</ref>;</p>
+                </citation>
+            </citations>
+            <citations eId="cits_2">
+                <citation eId="cits_2__cit_1">
+                    <p>Vista la <ref eId="ref_4" href="/akn/it/act/legge/stato/1988-08-23/400/!main">legge 23 agosto 1988, n. 400</ref>, recante «Disciplina dell'attivita' di Governo e ordinamento della Presidenza del Consiglio dei ministri» e, in particolare, l'articolo 15;</p>
+                </citation>
+            </citations>
+            <citations eId="cits_3">
+                <citation eId="cits_3__cit_1">
+                    <p>Visto il <ref eId="ref_5" href="/akn/it/act/codice.civile/stato/1942-03-16/262/!main">codice civile</ref> approvato con <ref eId="ref_6" href="/akn/it/act/regio.decreto/stato/1865-06-25/2358/!main">regio decreto 25 giugno 1865, n. 2358</ref>, e in particolare gli articoli da 4 a 15;</p>
+                </citation>
+            </citations>
+            <citations eId="cits_4">
+                <citation eId="cits_4__cit_1">
+                    <p>Vista la <ref eId="ref_7" href="/akn/it/act/legge/stato/1912-06-13/555/!main">legge 13 giugno 1912, n. 555</ref>, recante disposizioni «Sulla cittadinanza italiana»;</p>
+                </citation>
+            </citations>
+            <citations eId="cits_5">
+                <citation eId="cits_5__cit_1">
+                    <p>Vista la <ref eId="ref_8" href="/akn/it/act/legge/stato/1983-04-21/123/!main">legge 21 aprile 1983, n. 123</ref>, recante «Disposizioni in materia di cittadinanza»;</p>
+                </citation>
+            </citations>
+            <citations eId="cits_6">
+                <citation eId="cits_6__cit_1">
+                    <p>Vista la <ref eId="ref_9" href="/akn/it/act/legge/stato/1992-02-05/91/!main">legge 5 febbraio 1992, n. 91</ref>, recante «Nuove norme sulla cittadinanza»;</p>
+                </citation>
+            </citations>
+            <citations eId="cits_7">
+                <citation eId="cits_7__cit_1">
+                    <p>Visto il <ref eId="ref_10" href="/akn/it/act/decretoLegislativo/stato/2011-09-01/150/!main">decreto legislativo 1° settembre 2011, n. 150</ref>, recante «Disposizioni complementari al <ref eId="ref_11" href="/akn/it/act/codice.procedura.civile/stato/1940-10-28/1443/!main">codice di procedura civile</ref> in materia di riduzione e semplificazione dei procedimenti civili di cognizione, ai sensi dell'<ref eId="ref_12" href="/akn/it/act/legge/stato/2009-06-18/69/!main#art_54">articolo 54 della legge 18 giugno 2009, n. 69</ref>» e in particolare l'articolo 19-bis;</p>
+                </citation>
+            </citations>
+            <recitals eId="recs_1">
+                <recital eId="recs_1__rec_1">
+                    <p>Considerato che le disposizioni successivamente adottate in materia di cittadinanza a partire dalla riunificazione nazionale sono state finora interpretate nel senso di accordare alle persone nate all'estero una facolta' di chiedere il riconoscimento della cittadinanza senza alcun limite temporale o generazionale ne' oneri di dimostrare la sussistenza o il mantenimento di vincoli effettivi con la Repubblica;</p>
+                </recital>
+            </recitals>
+            <recitals eId="recs_2">
+                <recital eId="recs_2__rec_1">
+                    <p>Considerato che tale assetto normativo determina la crescita continua ed esponenziale della platea di potenziali cittadini italiani che risiedono al di fuori del territorio nazionale e che, anche in ragione del possesso di una o piu' cittadinanze diverse da quella italiana, sono prevalentemente legati ad altri Stati da vincoli profondi di cultura, identita' e fedelta';</p>
+                </recital>
+            </recitals>
+            <recitals eId="recs_3">
+                <recital eId="recs_3__rec_1">
+                    <p>Considerato che la possibile assenza di vincoli effettivi con la Repubblica in capo a un crescente numero di cittadini, che potrebbe raggiungere una consistenza pari o superiore alla popolazione residente nel territorio nazionale, costituisce un fattore di rischio serio ed attuale per la sicurezza nazionale e, in virtu' dell'appartenenza dell'Italia all'Unione europea, degli altri Stati membri della stessa e dello Spazio Schengen;</p>
+                </recital>
+            </recitals>
+            <recitals eId="recs_4">
+                <recital eId="recs_4__rec_1">
+                    <p>Considerato che, in applicazione del principio di proporzionalita', e' opportuno prevedere il mantenimento della cittadinanza italiana e, conseguentemente, europea in capo alle persone nate e residenti all'estero alle quali lo stato di cittadini e' gia' stato validamente riconosciuto;</p>
+                </recital>
+            </recitals>
+            <recitals eId="recs_5">
+                <recital eId="recs_5__rec_1">
+                    <p>Considerato che e' opportuno prevedere l'applicazione della normativa sostanziale previgente alle controversie giurisdizionali e ai procedimenti amministrativi instaurati in data anteriore alla deliberazione del Consiglio dei ministri del presente decreto;</p>
+                </recital>
+            </recitals>
+            <p>Ritenuta pertanto la straordinaria necessita' ed urgenza di introdurre limitazioni nella trasmissione automatica della cittadinanza italiana a persone nate e residenti all'estero, condizionandola a chiari indici della sussistenza di vincoli effettivi con la Repubblica;</p>
+            <p>Ritenuta pertanto la straordinaria necessita' ed urgenza di operare un bilanciamento tra i principi di cui agli <ref eId="ref_13" href="/akn/it/act/costituzione/stato/1947-12-27/const/!main#art_1">articoli 1</ref> e <ref eId="ref_14" href="/akn/it/act/costituzione/stato/1947-12-27/const/!main#art_3">3 della Costituzione</ref>, applicando le suddette limitazioni a tutti i futuri riconoscimenti di cittadinanza italiana ed evitando l'intrinseca irragionevolezza di riconoscimenti della cittadinanza italiana secondo criteri diversi a seconda di un fattore casuale e non indicativo di vincoli effettivi con la Repubblica, quale la nascita dei richiedenti, in luogo dell'effettivo esercizio di diritti o adempimento di doveri connessi con lo stato di cittadino;</p>
+            <p>Ritenuta la straordinaria necessita' e urgenza di introdurre misure per evitare, nelle more dell'approvazione di una riforma organica delle disposizioni in materia di cittadinanza, un eccezionale e incontrollato afflusso di domande di riconoscimento della cittadinanza, tale da impedire l'ordinata funzionalita' degli uffici consolari all'estero, dei comuni e degli uffici giudiziari;</p>
+            <citations eId="cits_8">
+                <citation eId="cits_8__cit_1">
+                    <p>Vista la deliberazione del Consiglio dei ministri, adottata nella riunione del 28 marzo 2025;</p>
+                </citation>
+            </citations>
+            <p>Sulla proposta del Presidente del Consiglio dei ministri e dei Ministri degli affari esteri e della cooperazione internazionale e dell'interno, di concerto con i Ministri della giustizia e dell'economia e delle finanze;</p>
+            <formula name="formulaFinalePreambolo">
+                <p>Emana il seguente decreto-legge:</p>
+            </formula>
+        </preamble>
+        <body>
+            <article eId="art_1">
+                <num>Art. 1.</num>
+                <heading> Disposizioni urgenti in materia di cittadinanza</heading>
+                <paragraph eId="art_1__para_1">
+                    <num>1.</num>
+                    <content>
+                        <p>Alla <ref eId="content__ref_15" href="/akn/it/act/legge/stato/1992-02-05/91/!main">legge 5 febbraio 1992, n. 91</ref>, dopo l'articolo 3 e' inserito il seguente: 
+ «Art. 3-bis. - 1. In deroga agli articoli 1, 2, 3, 14 e 20 della presente legge, all'<ref eId="content__ref_16" href="/akn/it/act/legge/stato/1983-04-21/123/!main#art_5">articolo 5 della legge 21 aprile 1983, n. 123</ref>, agli <ref eId="content__ref_17" href="/akn/it/act/legge/stato/1912-06-13/555/!main#art_1">articoli 1</ref>, <ref eId="content__ref_18" href="/akn/it/act/legge/stato/1912-06-13/555/!main#art_2">2</ref>, <ref eId="content__ref_19" href="/akn/it/act/legge/stato/1912-06-13/555/!main#art_7">7</ref>, <ref eId="content__ref_20" href="/akn/it/act/legge/stato/1912-06-13/555/!main#art_10">10</ref>, <ref eId="content__ref_21" href="/akn/it/act/legge/stato/1912-06-13/555/!main#art_12">12</ref> e <ref eId="content__ref_22" href="/akn/it/act/legge/stato/1912-06-13/555/!main#art_19">19 della legge 13 giugno 1912, n. 555</ref>, nonche' agli <ref eId="content__ref_23" href="/akn/it/act/codice.civile/stato/1942-03-16/262/!main#art_4">articoli 4</ref>, <ref eId="content__ref_24" href="/akn/it/act/codice.civile/stato/1942-03-16/262/!main#art_5">5</ref>, <ref eId="content__ref_25" href="/akn/it/act/codice.civile/stato/1942-03-16/262/!main#art_7">7</ref>, <ref eId="content__ref_26" href="/akn/it/act/codice.civile/stato/1942-03-16/262/!main#art_8">8</ref> e <ref eId="content__ref_27" href="/akn/it/act/codice.civile/stato/1942-03-16/262/!main#art_9">9 del codice civile</ref> approvato con <ref eId="content__ref_28" href="/akn/it/act/regio.decreto/stato/1865-06-25/2358/!main">regio decreto 25 giugno 1865, n. 2358</ref>, e' considerato non avere mai acquistato la cittadinanza italiana chi e' nato all'estero anche prima della data di entrata in vigore del presente articolo ed e' in possesso di altra cittadinanza, salvo che ricorra una delle seguenti condizioni: 
+ a) lo stato di cittadino dell'interessato e' riconosciuto, nel rispetto della normativa applicabile al 27 marzo 2025, a seguito di domanda, corredata della necessaria documentazione, presentata all'ufficio consolare o al sindaco competenti non oltre le 23:59, ora di Roma, della medesima data; 
+ a-bis) <ins eId="ins_1">((lo stato di cittadino dell'interessato e' riconosciuto, nel rispetto della normativa applicabile al 27 marzo 2025, a seguito di domanda, corredata della necessaria documentazione, presentata all'ufficio consolare o al sindaco competenti nel giorno indicato da appuntamento comunicato all'interessato dall'ufficio competente entro le 23:59, ora di Roma, della medesima data del 27 marzo 2025))</ins>; 
+ b) lo stato di cittadino dell'interessato e' accertato giudizialmente, nel rispetto della normativa applicabile al 27 marzo 2025, a seguito di domanda giudiziale presentata non oltre le 23:59, ora di Roma, della medesima data; 
+ c) <ins eId="ins_2">((un ascendente di primo o di secondo grado possiede, o possedeva al momento della morte, esclusivamente la cittadinanza italiana))</ins>; 
+ d) <ins eId="ins_3">((un genitore o adottante e' stato residente in Italia per almeno due anni continuativi successivamente all'acquisto della cittadinanza italiana e prima della data di nascita o di adozione del figlio))</ins>; 
+ e) <ins eId="ins_4">((LETTERA SOPPRESSA DALLA L. 23 MAGGIO 2025, N. 74))</ins>. 
+ 1-bis. <ins eId="ins_5">((All'articolo 4 della legge 5 febbraio 1992, n. 91, sono apportate le seguenti modificazioni: 
+ a) al comma 1, alinea, dopo le parole: "secondo grado" sono inserite le seguenti: "sono o"; 
+ b) dopo il comma 1 sono inseriti i seguenti: 
+ "1-bis. Il minore straniero o apolide, del quale il padre o la madre sono cittadini per nascita, diviene cittadino se i genitori o il tutore dichiarano la volonta' dell'acquisto della cittadinanza e ricorre uno dei seguenti requisiti: 
+ a) successivamente alla dichiarazione, il minore risiede legalmente per almeno due anni continuativi in Italia; 
+ b) la dichiarazione e' presentata entro un anno dalla nascita del minore o dalla data successiva in cui e' stabilita la filiazione, anche adottiva, da cittadino italiano. 
+ 1-ter. Divenuto maggiorenne, chi ha acquistato la cittadinanza ai sensi del comma 1-bis puo' rinunciarvi se in possesso di altra cittadinanza"))</ins>. 
+ 1-ter. <ins eId="ins_6">((Per i minorenni alla data di entrata in vigore della legge di conversione del presente decreto, figli di cittadini per nascita di cui all'articolo 3-bis, comma 1, lettere a), a-bis) e b), della legge 5 febbraio 1992, n. 91, la dichiarazione prevista dall'articolo 4, comma 1-bis, lettera b), della medesima legge puo' essere presentata entro le 23:59, ora di Roma, del 31 maggio 2026.))</ins> 
+ 1-quater. <ins eId="ins_7">((All'articolo 14, comma 1, della legge 5 febbraio 1992, n. 91, e' aggiunto, in fine, il seguente periodo: "Il primo periodo si applica se, alla data di acquisto o riacquisto della cittadinanza da parte del genitore, il minore risiede legalmente in Italia da almeno due anni continuativi o, se di eta' inferiore ai due anni, dalla nascita"))</ins>. 
+ 2. All'<ref eId="content__ref_29" href="/akn/it/act/decretoLegislativo/stato/2011-09-01/150/!main#art_19bis">articolo 19-bis del decreto legislativo 1° settembre 2011, n. 150</ref>, sono apportate le seguenti modificazioni: 
+ a) la rubrica e' sostituita dalla seguente: «Controversie in materia di accertamento dello stato di apolidia e di cittadinanza italiana»; 
+ b) dopo il comma 2 sono aggiunti i seguenti: «2-bis. Salvi i casi espressamente previsti dalla legge, nelle controversie in materia di accertamento della cittadinanza italiana non sono ammessi il giuramento e la prova testimoniale. 
+ 2-ter. Nelle controversie in materia di accertamento della cittadinanza italiana chi chiede l'accertamento della cittadinanza e' tenuto ad allegare e provare l'insussistenza delle cause di mancato acquisto o di perdita della cittadinanza previste dalla legge.». 
+</p>
+                    </content>
+                </paragraph>
+            </article>
+            <article eId="art_1-bis">
+                <num>Art. 1-bis.</num>
+                <heading>
+                    <ins eId="ins_8">(( (Disposizioni per favorire il recupero delle radici italiane degli oriundi e il conseguente acquisto della cittadinanza italiana).))</ins>
+                </heading>
+                <paragraph eId="art_1-bis__para_1">
+                    <num>1.</num>
+                    <content>
+                        <p>
+                            <ins eId="ins_9">((All'articolo 27 del testo unico delle disposizioni concernenti la disciplina dell'immigrazione e norme sulla condizione dello straniero, di cui al decreto legislativo 25 luglio 1998, n. 286, dopo il comma 1-septies e' inserito il seguente: 
+ "1-octies. Sono consentiti, al di fuori delle quote di cui all'articolo 3, comma 4, con le procedure di cui all'articolo 22, l'ingresso e il soggiorno per lavoro subordinato allo straniero residente all'estero, discendente di cittadino italiano e in possesso della cittadinanza di uno Stato di destinazione di rilevanti flussi di emigrazione italiana, individuato con decreto del Ministro degli affari esteri e della cooperazione internazionale, di concerto con i Ministri dell'interno e del lavoro e delle politiche sociali".))</ins>
+                        </p>
+                    </content>
+                </paragraph>
+                <paragraph eId="art_1-bis__para_2">
+                    <num>2.</num>
+                    <content>
+                        <p>
+                            <ins eId="ins_10">((All'articolo 9, comma 1, della legge 5 febbraio 1992, n. 91, sono apportate le seguenti modificazioni: 
+ a) alla lettera a), dopo le parole: "secondo grado" sono inserite le seguenti: "sono o" e le parole: ", o che e' nato nel territorio della Repubblica e, in entrambi i casi, vi risiede legalmente da almeno tre anni" sono sostituite dalle seguenti: "e che risiede legalmente nel territorio della Repubblica da almeno due anni"; 
+b) dopo la lettera a) e' inserita la seguente: 
+ "a-bis) allo straniero nato nel territorio della Repubblica che vi risiede legalmente da almeno tre anni".))</ins>
+                        </p>
+                    </content>
+                </paragraph>
+            </article>
+            <article eId="art_1-ter">
+                <num>Art. 1-ter.</num>
+                <heading>
+                    <ins eId="ins_11">(( (Riacquisto della cittadinanza a favore di ex cittadini).))</ins>
+                </heading>
+                <paragraph eId="art_1-ter__para_1">
+                    <num>1.</num>
+                    <content>
+                        <p>
+                            <ins eId="ins_12">((Alla legge 5 febbraio 1992, n. 91, sono apportate le seguenti modificazioni: 
+ a) all'articolo 9-bis, comma 2, dopo la parola: "cittadinanza" sono inserite le seguenti: ", ad eccezione delle dichiarazioni di riacquisto presentate innanzi a un ufficio consolare,"; 
+b) all'articolo 17, il comma 1 e' sostituito dal seguente: 
+ "1. Fermo restando quanto previsto dall'articolo 3-bis, chi e' nato in Italia o e' stato ivi residente per almeno due anni continuativi e ha perduto la cittadinanza in applicazione dell'articolo 8, numeri 1 e 2, o dell'articolo 12 della legge 13 giugno 1912, n. 555, la riacquista se effettua una dichiarazione in tal senso in data compresa tra il 1° luglio 2025 e il 31 dicembre 2027".))</ins>
+                        </p>
+                    </content>
+                </paragraph>
+                <paragraph eId="art_1-ter__para_2">
+                    <num>2.</num>
+                    <content>
+                        <p>
+                            <ins eId="ins_13">((Alla sezione I della tabella dei diritti consolari da riscuotersi dagli uffici diplomatici e consolari, allegata al decreto legislativo 3 febbraio 2011, n. 71, dopo l'articolo 7-bis e' inserito il seguente: 
+ "Art. 7-ter. - Dichiarazione di riacquisto della cittadinanza: euro 250"))</ins>. 
+</p>
+                    </content>
+                </paragraph>
+            </article>
+            <article eId="art_2">
+                <num>Art. 2.</num>
+                <heading> Entrata in vigore</heading>
+                <paragraph eId="art_2__para_1">
+                    <num>1.</num>
+                    <content>
+                        <p>Il presente decreto entra in vigore il giorno successivo a quello della sua pubblicazione nella Gazzetta Ufficiale della Repubblica italiana e sara' presentato alle Camere per la conversione in legge. 
+ </p>
+                    </content>
+                </paragraph>
+            </article>
+        </body>
+        <conclusions>
+            <formula name="formulaFinaleConclusioni">
+                <p>Il presente decreto, munito del sigillo dello Stato, sara' inserito nella Raccolta ufficiale degli atti normativi della Repubblica italiana. E' fatto obbligo a chiunque spetti di osservarlo e di farlo osservare. </p>
+            </formula>
+            <p> Dato a Roma, addi' 28 marzo 2025 </p>
+            <p>MATTARELLA Meloni, Presidente del Consiglio dei ministri Tajani, Ministro degli affari esteri e della cooperazione internazionale Piantedosi, Ministro dell'interno Nordio, Ministro della giustizia Giorgetti, Ministro dell'economia e delle finanze Visto, il Guardasigilli: Nordio</p>
+        </conclusions>
+    </act>
+</akomaNtoso>
