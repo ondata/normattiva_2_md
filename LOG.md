@@ -4,6 +4,34 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2025-11-04
 
+### 🚀 Release v1.9.4: Critical Bug Fix - Missing Time Import
+
+**Emergency fix**: Resolved critical runtime error in --with-references mode
+
+#### 🐛 Critical Bug Fixed
+- **Issue**: `name 'time' is not defined` error when using `--with-references`
+- **Root Cause**: Missing `import time` statement in convert_akomantoso.py
+- **Impact**: Rate limiting feature completely broken in v1.9.3
+- **Fix**: Added missing import time to enable time.sleep(1) functionality
+
+#### 🔧 Technical Details
+- **Code change**: Added `import time` to imports section
+- **Functionality**: Rate limiting now works correctly with 1-second delays between downloads
+- **Backward compatibility**: No breaking changes, only fixes broken feature
+
+#### ✅ Testing & Validation
+- **All tests pass**: 27/27 unit tests successful
+- **Rate limiting verified**: 1-second delays now properly applied in batch downloads
+- **No regressions**: Existing functionality unaffected
+
+#### 📦 Release Details
+- **Version**: 1.9.4 (hotfix release)
+- **PyPI**: https://pypi.org/project/akoma2md/1.9.4/
+- **GitHub**: Tag v1.9.4 with automated binary builds
+- **Urgency**: Critical fix for broken core feature
+
+## 2025-11-04
+
 ### 🚀 Release v1.9.3: Rate Limiting for Respectful Usage
 
 **New feature**: Added 1-second delay between HTTP requests in --with-references mode to respect server usage limits
