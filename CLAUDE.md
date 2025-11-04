@@ -16,3 +16,4 @@ Use `@/openspec/AGENTS.md` to learn:
 Keep this managed block so 'openspec update' can refresh the instructions.
 
 <!-- OPENSPEC:END -->
+- quando rilasci release pubblica anche su pypi twine cli, che è già installato

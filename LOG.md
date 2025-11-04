@@ -4,6 +4,43 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2025-11-04
 
+### 🚀 Release v1.9.0: Cross-References Inline nei Documenti Markdown
+
+**Nuova funzionalità**: Collegamenti cliccabili automatici nei documenti Markdown quando si usa `--with-references`
+
+#### ✨ Funzionalità Implementata
+- **Cross-references inline**: I riferimenti `<ref>` nei documenti diventano link Markdown cliccabili
+- **Mapping URI Akoma**: Conversione automatica da URI Akoma Ntoso a percorsi relativi dei file scaricati
+- **Integrazione `--with-references`**: I collegamenti vengono aggiunti automaticamente durante la riconversione della legge principale
+- **Supporto pattern URI**: Gestione di diversi tipi di URI (legge, decreto-legge, decreto legislativo, costituzione)
+
+#### 🔧 Implementazione Tecnica
+- **Modifica `clean_text_content()`**: Aggiunto parametro `cross_references` per abilitare link generation
+- **Propagazione parametro**: Aggiornata tutta la call hierarchy per passare il mapping dei riferimenti
+- **Funzione mapping**: `build_cross_references_mapping()` costruisce mapping URI→file path
+- **Riconversione automatica**: Dopo download leggi citate, riconversione legge principale con link attivi
+
+#### 📚 Esempi Utilizzo
+```bash
+# Crea struttura con collegamenti cliccabili
+akoma2md --with-references "url-legge" output.md
+
+# Risultato: main.md con riferimenti come [articolo 14](refs/400_19880823.md)
+```
+
+#### 🧪 Testing e Qualità
+- **Test unitari**: Tutti test esistenti passati (27/27)
+- **Test cross-references**: Verificata generazione link funzionante
+- **Backward compatibility**: Nessun impatto quando non si usa `--with-references`
+- **OpenSpec completato**: Proposal archiviata come implementata
+
+#### 📦 Distribuzione
+- **Versione**: 1.9.0 pronta per PyPI e GitHub Releases
+- **Compatibilità**: Mantenuta retrocompatibilità completa
+- **Documentazione**: README aggiornato con esempi cross-references
+
+## 2025-11-04
+
 ### 🚀 Release v1.8.0: Download Automatico Leggi Citare
 
 - **Nuova funzionalità `--with-references`**: Scarica automaticamente tutte le leggi citate in una struttura di cartelle organizzata

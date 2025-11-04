@@ -120,9 +120,10 @@ The system SHALL provide a `--with-references` parameter that downloads and conv
 - **AND** continue processing even if individual downloads fail
 - **AND** report summary of successful/failed downloads
 
-#### Scenario: Cross-Reference Linking
-- **WHEN** generating markdown files
-- **THEN** cited law references SHALL be converted to relative links
-- **AND** the main law SHALL include navigation to cited laws
-- **AND** cited laws SHALL include back-references to the main law
+#### Scenario: Inline Cross-Reference Linking
+- **WHEN** generating the main markdown file in --with-references mode
+- **THEN** law references in the main document SHALL be converted to clickable markdown links
+- **AND** each link SHALL point to the corresponding downloaded markdown file in refs/
+- **AND** link format SHALL be [reference text](refs/filename.md)
+- **AND** only successfully downloaded references SHALL be converted to links
 

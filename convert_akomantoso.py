@@ -17,7 +17,7 @@ ALLOWED_DOMAINS = ['www.normattiva.it', 'normattiva.it']
 MAX_FILE_SIZE_MB = 50
 MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
 DEFAULT_TIMEOUT = 30
-VERSION = '1.8.0'
+VERSION = '1.9.0'
 
 def load_env_file():
     """
@@ -262,10 +262,14 @@ def format_heading_with_separator(heading_text):
 
     return heading_text
 
-def clean_text_content(element):
+def clean_text_content(element, cross_references=None):
     """
     Extracts text from an element, handling inline formatting and removing specific tags.
     Also cleans up excessive whitespace and indentation.
+
+    Args:
+        element: XML element to process
+        cross_references: dict mapping Akoma URIs to local markdown file paths (optional)
     """
     text_parts = []
     if element is None:
@@ -278,15 +282,24 @@ def clean_text_content(element):
     for child in element:
         # Handle inline formatting
         if child.tag.endswith('strong'):
-            text_parts.append(f"**{clean_text_content(child)}**")
+            text_parts.append(f"**{clean_text_content(child, cross_references)}**")
         elif child.tag.endswith('emphasis'): # Akoma Ntoso often uses 'emphasis' for italics
-            text_parts.append(f"*{clean_text_content(child)}*")
+            text_parts.append(f"*{clean_text_content(child, cross_references)}*")
         elif child.tag.endswith('ref'):
-            # Extract text content of <ref> tags instead of ignoring them
-            text_parts.append(clean_text_content(child))
+            # Extract text content of <ref> tags
+            ref_text = clean_text_content(child, cross_references)
+
+            # If cross_references is provided, try to create a markdown link
+            if cross_references:
+                href = child.get('href')
+                if href and href in cross_references:
+                    # Create markdown link: [text](relative/path.md)
+                    ref_text = f"[{ref_text}]({cross_references[href]})"
+
+            text_parts.append(ref_text)
         elif child.tag.endswith(('ins', 'del')):
             # For modifications, add double parentheses only if not already present
-            inner_text = clean_text_content(child)
+            inner_text = clean_text_content(child, cross_references)
             # Check if the text already has double parentheses
             if inner_text.strip().startswith('((') and inner_text.strip().endswith('))'):
                 text_parts.append(inner_text)
@@ -294,14 +307,14 @@ def clean_text_content(element):
                 text_parts.append(f"(({inner_text}))")
         elif child.tag.endswith('footnote'):
             # Handle footnotes - extract footnote content and create markdown footnote reference
-            footnote_content = clean_text_content(child)
+            footnote_content = clean_text_content(child, cross_references)
             if footnote_content:
                 # Generate a simple footnote reference (simplified - in practice would need global counter)
                 footnote_ref = f"[^{footnote_content[:10].replace(' ', '')}]"  # Simple hash-like ref
                 text_parts.append(footnote_ref)
 
         else:
-            text_parts.append(clean_text_content(child)) # Recursively get text from other children
+            text_parts.append(clean_text_content(child, cross_references)) # Recursively get text from other children
 
         # Process tail text
         if child.tail:
@@ -567,7 +580,7 @@ def download_akoma_ntoso(params, output_path, session=None, quiet=False):
         print(f"❌ Errore durante il download: {e}", file=sys.stderr)
         return False
 
-def convert_akomantoso_to_markdown_improved(xml_file_path, markdown_file_path=None, metadata=None, article_ref=None):
+def convert_akomantoso_to_markdown_improved(xml_file_path, markdown_file_path=None, metadata=None, article_ref=None, cross_references=None):
     try:
         # Check file size before parsing (XML bomb protection)
         file_size = os.path.getsize(xml_file_path)
@@ -591,7 +604,7 @@ def convert_akomantoso_to_markdown_improved(xml_file_path, markdown_file_path=No
         if metadata is None:
             metadata = extract_metadata_from_xml(root)
 
-        markdown_fragments = generate_markdown_fragments(root, AKN_NAMESPACE, metadata)
+        markdown_fragments = generate_markdown_fragments(root, AKN_NAMESPACE, metadata, cross_references)
     except ET.ParseError as e:
         print(f"Errore durante il parsing del file XML: {e}", file=sys.stderr)
         return False
@@ -628,7 +641,7 @@ def convert_akomantoso_to_markdown_improved(xml_file_path, markdown_file_path=No
         return False
 
 
-def generate_markdown_fragments(root, ns, metadata=None):
+def generate_markdown_fragments(root, ns, metadata=None, cross_references=None):
     """Build the markdown fragments for a parsed Akoma Ntoso document."""
 
     fragments = []
@@ -637,8 +650,8 @@ def generate_markdown_fragments(root, ns, metadata=None):
     doc_title_fragments = extract_document_title(root, ns)
 
     # Generate body content
-    preamble_fragments = extract_preamble_fragments(root, ns)
-    body_elements_fragments = extract_body_fragments(root, ns)
+    preamble_fragments = extract_preamble_fragments(root, ns, cross_references)
+    body_elements_fragments = extract_body_fragments(root, ns, cross_references)
 
     body_fragments = []
     body_fragments.extend(preamble_fragments)
@@ -662,10 +675,10 @@ def generate_markdown_fragments(root, ns, metadata=None):
     return fragments
 
 
-def generate_markdown_text(root, ns=AKN_NAMESPACE, metadata=None):
+def generate_markdown_text(root, ns=AKN_NAMESPACE, metadata=None, cross_references=None):
     """Return the Markdown rendering for the provided Akoma Ntoso root."""
 
-    return ''.join(generate_markdown_fragments(root, ns, metadata))
+    return ''.join(generate_markdown_fragments(root, ns, metadata, cross_references))
 
 
 def extract_document_title(root, ns):
@@ -677,7 +690,7 @@ def extract_document_title(root, ns):
     return []
 
 
-def extract_preamble_fragments(root, ns):
+def extract_preamble_fragments(root, ns, cross_references=None):
     """Collect Markdown fragments representing the document preamble."""
 
     fragments = []
@@ -687,18 +700,18 @@ def extract_preamble_fragments(root, ns):
 
     for element in preamble:
         if element.tag.endswith('formula') or element.tag.endswith('p'):
-            text = clean_text_content(element)
+            text = clean_text_content(element, cross_references)
             if text:
                 fragments.append(f"{text}\n\n")
         elif element.tag.endswith('citations'):
             for citation in element.findall('./akn:citation', ns):
-                text = clean_text_content(citation)
+                text = clean_text_content(citation, cross_references)
                 if text:
                     fragments.append(f"{text}\n\n")
     return fragments
 
 
-def extract_body_fragments(root, ns):
+def extract_body_fragments(root, ns, cross_references=None):
     """Traverse body nodes and delegate conversion to specialised handlers."""
 
     fragments = []
@@ -707,35 +720,35 @@ def extract_body_fragments(root, ns):
         return fragments
 
     for element in body:
-        fragments.extend(process_body_element(element, ns))
+        fragments.extend(process_body_element(element, ns, cross_references))
     return fragments
 
 
-def process_body_element(element, ns):
+def process_body_element(element, ns, cross_references=None):
     """Process a direct child of `<body>` producing Markdown fragments."""
 
     if element.tag.endswith('title'):
-        return process_title(element, ns)
+        return process_title(element, ns, cross_references)
     if element.tag.endswith('part'):
-        return process_part(element, ns)
+        return process_part(element, ns, cross_references)
     if element.tag.endswith('chapter'):
-        return process_chapter(element, ns)
+        return process_chapter(element, ns, cross_references)
     if element.tag.endswith('article'):
         article_fragments = []
-        process_article(element, article_fragments, ns, level=2)
+        process_article(element, article_fragments, ns, level=2, cross_references=cross_references)
         return article_fragments
     if element.tag.endswith('attachment'):
-        return process_attachment(element, ns)
+        return process_attachment(element, ns, cross_references)
     return []
 
 
-def process_chapter(chapter_element, ns):
+def process_chapter(chapter_element, ns, cross_references=None):
     """
     Convert a chapter element to Markdown fragments with proper hierarchy.
-    
+
     Handles XML structure where both Capo and Sezione are marked as <chapter>,
     with hierarchy information encoded in the heading text.
-    
+
     Hierarchy:
     - Capo only: H2
     - Capo + Sezione: H2 (Capo), H3 (Sezione), H4 (Articles)
@@ -744,28 +757,28 @@ def process_chapter(chapter_element, ns):
     chapter_fragments = []
     article_level = 3  # Default level
     heading_element = chapter_element.find('./akn:heading', ns)
-    
+
     if heading_element is not None and heading_element.text:
-        clean_heading = clean_text_content(heading_element)
+        clean_heading = clean_text_content(heading_element, cross_references)
         parsed = parse_chapter_heading(clean_heading)
-        
+
         # Determine heading levels based on parsed structure
         if parsed['type'] == 'both':
             # Capo + Sezione: Capo is H2, Sezione is H3
             chapter_fragments.append(f"## {parsed['capo']}\n\n")
             chapter_fragments.append(f"### {parsed['sezione']}\n\n")
             article_level = 4  # Articles under sezione are H4
-        
+
         elif parsed['type'] == 'capo':
             # Only Capo: H2
             chapter_fragments.append(f"## {parsed['capo']}\n\n")
             article_level = 3  # Articles directly under capo are H3
-        
+
         elif parsed['type'] == 'sezione':
             # Only Sezione: H3 (assumes it's under a previous Capo)
             chapter_fragments.append(f"### {parsed['sezione']}\n\n")
             article_level = 4  # Articles under sezione are H4
-        
+
         else:
             # Unknown/fallback
             chapter_fragments.append(f"## {parsed['capo']}\n\n")
@@ -774,28 +787,28 @@ def process_chapter(chapter_element, ns):
     # Process child elements
     for child in chapter_element:
         if child.tag.endswith('section'):
-            chapter_fragments.extend(process_section(child, ns))
+            chapter_fragments.extend(process_section(child, ns, cross_references))
         elif child.tag.endswith('article'):
-            process_article(child, chapter_fragments, ns, level=article_level)
-    
+            process_article(child, chapter_fragments, ns, level=article_level, cross_references=cross_references)
+
     return chapter_fragments
 
 
-def process_section(section_element, ns):
+def process_section(section_element, ns, cross_references=None):
     """Convert a section element and its articles to Markdown fragments."""
 
     section_fragments = []
     heading_element = section_element.find('./akn:heading', ns)
     if heading_element is not None and heading_element.text:
-        clean_heading = clean_text_content(heading_element)
+        clean_heading = clean_text_content(heading_element, cross_references)
         section_fragments.append(f"#### {clean_heading}\n\n")
 
     for article in section_element.findall('./akn:article', ns):
-        process_article(article, section_fragments, ns, level=4)
+        process_article(article, section_fragments, ns, level=4, cross_references=cross_references)
     return section_fragments
 
 
-def process_title(title_element, ns):
+def process_title(title_element, ns, cross_references=None):
     """
     Convert a title element to Markdown H2 heading.
     Titles are top-level structural elements.
@@ -803,20 +816,20 @@ def process_title(title_element, ns):
     title_fragments = []
     heading_element = title_element.find('./akn:heading', ns)
     if heading_element is not None and heading_element.text:
-        clean_heading = clean_text_content(heading_element)
+        clean_heading = clean_text_content(heading_element, cross_references)
         title_fragments.append(f"## {clean_heading}\n\n")
 
     # Process any nested content (chapters, articles, etc.)
     for child in title_element:
         if child.tag.endswith('chapter'):
-            title_fragments.extend(process_chapter(child, ns))
+            title_fragments.extend(process_chapter(child, ns, cross_references))
         elif child.tag.endswith('article'):
-            process_article(child, title_fragments, ns, level=3)
+            process_article(child, title_fragments, ns, level=3, cross_references=cross_references)
 
     return title_fragments
 
 
-def process_part(part_element, ns):
+def process_part(part_element, ns, cross_references=None):
     """
     Convert a part element to Markdown fragments.
     Parts are major structural divisions, rendered as H3.
@@ -824,20 +837,20 @@ def process_part(part_element, ns):
     part_fragments = []
     heading_element = part_element.find('./akn:heading', ns)
     if heading_element is not None and heading_element.text:
-        clean_heading = clean_text_content(heading_element)
+        clean_heading = clean_text_content(heading_element, cross_references)
         part_fragments.append(f"### {clean_heading}\n\n")
 
     # Process nested content (chapters, articles, etc.)
     for child in part_element:
         if child.tag.endswith('chapter'):
-            part_fragments.extend(process_chapter(child, ns))
+            part_fragments.extend(process_chapter(child, ns, cross_references))
         elif child.tag.endswith('article'):
-            process_article(child, part_fragments, ns, level=3)
+            process_article(child, part_fragments, ns, level=3, cross_references=cross_references)
 
     return part_fragments
 
 
-def process_attachment(attachment_element, ns):
+def process_attachment(attachment_element, ns, cross_references=None):
     """
     Convert an attachment element to Markdown fragments.
     Attachments are rendered as a separate section.
@@ -845,7 +858,7 @@ def process_attachment(attachment_element, ns):
     attachment_fragments = []
     heading_element = attachment_element.find('./akn:heading', ns)
     if heading_element is not None and heading_element.text:
-        clean_heading = clean_text_content(heading_element)
+        clean_heading = clean_text_content(heading_element, cross_references)
         attachment_fragments.append(f"### Allegato: {clean_heading}\n\n")
     else:
         attachment_fragments.append("### Allegato\n\n")
@@ -853,14 +866,14 @@ def process_attachment(attachment_element, ns):
     # Process attachment content (similar to body processing)
     for child in attachment_element:
         if child.tag.endswith('chapter'):
-            attachment_fragments.extend(process_chapter(child, ns))
+            attachment_fragments.extend(process_chapter(child, ns, cross_references))
         elif child.tag.endswith('article'):
-            process_article(child, attachment_fragments, ns, level=3)
+            process_article(child, attachment_fragments, ns, level=3, cross_references=cross_references)
 
     return attachment_fragments
 
 
-def process_table(table_element, ns):
+def process_table(table_element, ns, cross_references=None):
     """
     Convert an Akoma Ntoso table element to basic Markdown table format.
     This is a simplified implementation that extracts text content.
@@ -880,7 +893,7 @@ def process_table(table_element, ns):
             continue
 
         for cell in cells:
-            cell_text = clean_text_content(cell)
+            cell_text = clean_text_content(cell, cross_references)
             # Escape pipe characters in cell content
             cell_text = cell_text.replace('|', '\\|')
             row_cells.append(cell_text)
@@ -904,14 +917,14 @@ def process_table(table_element, ns):
     return markdown_table
 
 
-def process_article(article_element, markdown_content_list, ns, level=2):
+def process_article(article_element, markdown_content_list, ns, level=2, cross_references=None):
     article_num_element = article_element.find('./akn:num', ns)
     article_heading_element = article_element.find('./akn:heading', ns)
 
     if article_num_element is not None:
         article_num = article_num_element.text.strip()
         if article_heading_element is not None and article_heading_element.text:
-            clean_article_heading = clean_text_content(article_heading_element)
+            clean_article_heading = clean_text_content(article_heading_element, cross_references)
             # Improved formatting: "Art. X - Title" format
             heading_prefix = "#" * level
             markdown_content_list.append(f"{heading_prefix} {article_num} - {clean_article_heading}\n\n")
@@ -931,7 +944,7 @@ def process_article(article_element, markdown_content_list, ns, level=2):
                 # Handle intro element in lists (like in Article 1)
                 intro_element = para_list_element.find('./akn:intro', ns)
                 if intro_element is not None:
-                    intro_text = clean_text_content(intro_element)
+                    intro_text = clean_text_content(intro_element, cross_references)
                     if intro_text:
                         # Remove double dots from paragraph numbering
                         para_num = para_num_element.text.strip().rstrip('.')
@@ -943,7 +956,7 @@ def process_article(article_element, markdown_content_list, ns, level=2):
                     list_num_element = list_item.find('./akn:num', ns)
                     list_content_element = list_item.find('./akn:content', ns)
 
-                    list_item_text = clean_text_content(list_content_element) if list_content_element is not None else ""
+                    list_item_text = clean_text_content(list_content_element, cross_references) if list_content_element is not None else ""
 
                     if list_num_element is not None:
                         markdown_content_list.append(f"- {list_num_element.text.strip()} {list_item_text}\n")
@@ -952,7 +965,7 @@ def process_article(article_element, markdown_content_list, ns, level=2):
                 markdown_content_list.append("\n") # Add a newline after a list
             else:
                 # Handle regular paragraph content
-                paragraph_text = clean_text_content(para_content_element) if para_content_element is not None else ""
+                paragraph_text = clean_text_content(para_content_element, cross_references) if para_content_element is not None else ""
 
                 # Remove the "------------" lines from the paragraph content
                 lines = paragraph_text.split('\n')
@@ -978,7 +991,7 @@ def process_article(article_element, markdown_content_list, ns, level=2):
             # Handle intro element in lists (like in Article 1)
             intro_element = child_of_article.find('./akn:intro', ns)
             if intro_element is not None:
-                intro_text = clean_text_content(intro_element)
+                intro_text = clean_text_content(intro_element, cross_references)
                 if intro_text:
                     markdown_content_list.append(f"{intro_text}\n\n")
 
@@ -986,7 +999,7 @@ def process_article(article_element, markdown_content_list, ns, level=2):
                 list_num_element = list_item.find('./akn:num', ns)
                 list_content_element = list_item.find('./akn:content', ns)
 
-                list_item_text = clean_text_content(list_content_element) if list_content_element is not None else ""
+                list_item_text = clean_text_content(list_content_element, cross_references) if list_content_element is not None else ""
 
                 if list_num_element is not None:
                     markdown_content_list.append(f"- {list_num_element.text.strip()} {list_item_text}\n")
@@ -996,14 +1009,14 @@ def process_article(article_element, markdown_content_list, ns, level=2):
 
         elif child_of_article.tag.endswith('table'):
             # Handle tables - convert to basic markdown table format
-            table_markdown = process_table(child_of_article, ns)
+            table_markdown = process_table(child_of_article, ns, cross_references)
             if table_markdown:
                 markdown_content_list.append(table_markdown)
                 markdown_content_list.append("\n")
 
         elif child_of_article.tag.endswith('quotedStructure'):
             # Handle quoted structures - wrap in markdown blockquote
-            quoted_content = clean_text_content(child_of_article)
+            quoted_content = clean_text_content(child_of_article, cross_references)
             if quoted_content:
                 # Split into lines and add > prefix to each line
                 lines = quoted_content.split('\n')
@@ -1147,6 +1160,8 @@ def convert_with_references(url, quiet=False, keep_xml=False, force_complete=Fal
             'url_xml': f"https://www.normattiva.it/do/atto/caricaAKN?dataGU={params['dataGU']}&codiceRedaz={params['codiceRedaz']}&dataVigenza={params['dataVigenza']}"
         }
 
+        # Per ora, convertiamo la legge principale senza cross-references
+        # Li aggiungeremo dopo aver scaricato tutte le leggi
         if not convert_akomantoso_to_markdown_improved(xml_temp_path, main_md_path, metadata):
             print("❌ Errore durante la conversione della legge principale", file=sys.stderr)
             return False
@@ -1209,6 +1224,16 @@ def convert_with_references(url, quiet=False, keep_xml=False, force_complete=Fal
                 if not quiet:
                     print(f"❌ Errore elaborazione {cited_url}: {e}", file=sys.stderr)
 
+        # Costruisci mapping cross-references
+        cross_references = build_cross_references_mapping(folder_path, cited_urls, successful_downloads)
+
+        # Se abbiamo cross-references, riconverti la legge principale con i link
+        if cross_references:
+            if not quiet:
+                print(f"🔗 Aggiunta collegamenti incrociati alla legge principale...", file=sys.stderr)
+            if not convert_akomantoso_to_markdown_improved(xml_temp_path, main_md_path, metadata, cross_references=cross_references):
+                print("⚠️  Avviso: riconversione con collegamenti fallita, mantengo versione senza link", file=sys.stderr)
+
         # Crea file indice
         create_index_file(folder_path, params, cited_urls, successful_downloads, failed_downloads)
 
@@ -1221,6 +1246,8 @@ def convert_with_references(url, quiet=False, keep_xml=False, force_complete=Fal
 
         if not quiet:
             print(f"\n✅ Completato! {successful_downloads} leggi citate scaricate, {failed_downloads} fallite", file=sys.stderr)
+            if cross_references:
+                print(f"🔗 Collegamenti incrociati aggiunti: {len(cross_references)} riferimenti", file=sys.stderr)
             print(f"📂 Struttura creata in: {folder_path}", file=sys.stderr)
 
         return True
@@ -1301,6 +1328,90 @@ def akoma_uri_to_normattiva_url(akoma_uri):
 
     return None
 
+
+def extract_akoma_uris_from_xml(xml_file_path):
+    """
+    Estrae tutti gli URI Akoma Ntoso da un file XML.
+
+    Args:
+        xml_file_path: percorso al file XML
+
+    Returns:
+        set: insieme di URI Akoma Ntoso trovati nel documento
+    """
+    akoma_uris = set()
+
+    try:
+        tree = ET.parse(xml_file_path)
+        root = tree.getroot()
+
+        # Cerca tutti gli elementi con attributo href che inizia con /akn/
+        for element in root.findall('.//*[@href]'):
+            href = element.get('href')
+            if href and href.startswith('/akn/'):
+                akoma_uris.add(href)
+
+    except ET.ParseError:
+        pass
+    except Exception:
+        pass
+
+    return akoma_uris
+
+def build_cross_references_mapping(folder_path, cited_urls, successful_downloads):
+    """
+    Costruisce un mapping da URI Akoma a percorsi relativi dei file markdown.
+
+    Args:
+        folder_path: percorso della cartella principale
+        cited_urls: lista di URL normattiva.it delle leggi citate
+        successful_downloads: numero di download riusciti
+
+    Returns:
+        dict: mapping da URI Akoma a percorso relativo del file markdown
+    """
+    cross_references = {}
+    refs_path = os.path.join(folder_path, "refs")
+
+    if successful_downloads > 0 and os.path.exists(refs_path):
+        for filename in os.listdir(refs_path):
+            if filename.endswith('.md'):
+                # Estrai parametri dal nome file (es. "400_19880823.md")
+                # Formato: codiceRedaz_dataGU.md
+                parts = filename[:-3].split('_')  # Rimuovi .md e splitta
+                if len(parts) == 2:
+                    codice_redaz = parts[0]
+                    data_gu = parts[1]
+
+                    # Costruisci possibili URI Akoma basati sui parametri
+                    try:
+                        year = data_gu[:4]
+                        month = data_gu[4:6]
+                        day = data_gu[6:8]
+                        date_iso = f"{year}-{month}-{day}"
+
+                        relative_path = f"refs/{filename}"
+
+                        # URI principali per diversi tipi di atto
+                        uris_to_try = [
+                            f"/akn/it/act/legge/stato/{date_iso}/{codice_redaz}/!main",
+                            f"/akn/it/act/legge/stato/{date_iso}/{codice_redaz}",
+                            f"/akn/it/act/decreto-legge/stato/{date_iso}/{codice_redaz}/!main",
+                            f"/akn/it/act/decreto-legge/stato/{date_iso}/{codice_redaz}",
+                            f"/akn/it/act/decretoLegislativo/stato/{date_iso}/{codice_redaz}/!main",
+                            f"/akn/it/act/decretoLegislativo/stato/{date_iso}/{codice_redaz}",
+                            f"/akn/it/act/costituzione/stato/{date_iso}/const/!main",
+                            f"/akn/it/act/costituzione/stato/{date_iso}/const",
+                        ]
+
+                        # Aggiungi tutti i possibili URI al mapping
+                        for uri in uris_to_try:
+                            cross_references[uri] = relative_path
+
+                    except:
+                        pass
+
+    return cross_references
 
 def create_index_file(folder_path, main_params, cited_urls, successful, failed):
     """
