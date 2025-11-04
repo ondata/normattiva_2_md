@@ -5,6 +5,7 @@ import argparse
 import os
 import requests
 import tempfile
+import time
 from datetime import datetime
 from urllib.parse import urlparse
 
