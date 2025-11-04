@@ -17,7 +17,7 @@ ALLOWED_DOMAINS = ['www.normattiva.it', 'normattiva.it']
 MAX_FILE_SIZE_MB = 50
 MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
 DEFAULT_TIMEOUT = 30
-VERSION = '1.7.1'
+VERSION = '1.7.4'
 
 def load_env_file():
     """
@@ -596,7 +596,14 @@ def convert_akomantoso_to_markdown_improved(xml_file_path, markdown_file_path=No
         print(f"Errore durante il parsing del file XML: {e}", file=sys.stderr)
         return False
     except FileNotFoundError:
-        print(f"Errore: Il file XML '{xml_file_path}' non trovato.", file=sys.stderr)
+        print(f"❌ Errore: Il file '{xml_file_path}' non trovato.\n", file=sys.stderr)
+        print("Per usare akoma2md, puoi:", file=sys.stderr)
+        print("  1. Fornire un URL di normattiva.it:", file=sys.stderr)
+        print("     akoma2md 'https://www.normattiva.it/uri-res/N2Ls?urn:...' output.md", file=sys.stderr)
+        print("  2. Fornire il percorso di un file XML locale:", file=sys.stderr)
+        print("     akoma2md percorso/al/file.xml output.md", file=sys.stderr)
+        print("  3. Cercare una legge per nome con -s:", file=sys.stderr)
+        print("     akoma2md -s 'legge stanca' output.md", file=sys.stderr)
         return False
     except Exception as e:
         print(f"Si è verificato un errore inatteso: {e}", file=sys.stderr)

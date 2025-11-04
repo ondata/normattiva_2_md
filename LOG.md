@@ -4,6 +4,14 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2025-11-04
 
+### 🚀 Release v1.7.4: Miglioramento Messaggi Errore
+
+- Messaggi errore più informativi quando input invalido
+- Guida utente con 3 modalità d'uso: URL normattiva.it, file XML locale, ricerca con `-s`
+- Fix UX per errori comuni tipo `akoma2md "legge stanca"`
+
+## 2025-11-04
+
 ### 🚀 Release v1.7.3: Fix BrokenPipeError
 
 - Gestito `BrokenPipeError` quando stdout viene chiuso prematuramente
