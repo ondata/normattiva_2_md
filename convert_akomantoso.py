@@ -336,8 +336,8 @@ def clean_text_content(element, cross_references=None):
                 # Se href è un URI Akoma, convertilo in URL normattiva.it
                 if href.startswith('/akn/'):
                     normattiva_url = akoma_uri_to_normattiva_url(href)
-                    if normattiva_url and normattiva_url in cross_references:
-                        ref_text = f"[{ref_text}]({cross_references[normattiva_url]})"
+                    if normattiva_url:
+                        ref_text = f"[{ref_text}]({normattiva_url})"
                 # Altrimenti, cerca direttamente nel mapping (per compatibilità)
                 elif href in cross_references:
                     ref_text = f"[{ref_text}]({cross_references[href]})"
@@ -634,18 +634,18 @@ def convert_akomantoso_to_markdown_improved(xml_file_path, markdown_file_path=No
             root = tree.getroot()
             cross_references = cross_references or {}
             # Find all <ref> tags with href
-            for ref in root.findall('.//akn:ref[@href]', AKN_NAMESPACE):
-                href = ref.get('href')
-                ref_text = ref.text.strip() if ref.text else href
-                # Convert Akoma URI to Normattiva URL if needed
-                if href and href.startswith('/akn/'):
-                    normattiva_url = akoma_uri_to_normattiva_url(href)
-                elif href and is_normattiva_url(href):
-                    normattiva_url = href
-                else:
-                    normattiva_url = None
-                if normattiva_url:
-                    cross_references[normattiva_url] = normattiva_url
+            for ref in root.iter():
+                if ref.tag.endswith('ref') and ref.get('href'):
+                    href = ref.get('href')
+                    # Convert Akoma URI to Normattiva URL if needed
+                    if href and href.startswith('/akn/'):
+                        normattiva_url = akoma_uri_to_normattiva_url(href)
+                    elif href and is_normattiva_url(href):
+                        normattiva_url = href
+                    else:
+                        normattiva_url = None
+                    if normattiva_url:
+                        cross_references[normattiva_url] = normattiva_url
         
         # Check file size before parsing (XML bomb protection)
         file_size = os.path.getsize(xml_file_path)
@@ -1500,12 +1500,20 @@ def akoma_uri_to_normattiva_url(akoma_uri):
     Converte un URI Akoma Ntoso in URL normattiva.it.
 
     Args:
-        akoma_uri: URI Akoma Ntoso (es. /akn/it/act/legge/stato/2003-07-29/229/!main)
+        akoma_uri: URI Akoma Ntoso (es. /akn/it/act/legge/stato/2003-07-29/229/!main#art_1)
 
     Returns:
         str or None: URL normattiva.it corrispondente o None se conversione fallisce
     """
     try:
+        # Gestisci riferimenti ad articoli specifici (#art_X)
+        article_ref = None
+        if '#art_' in akoma_uri:
+            akoma_uri, article_part = akoma_uri.split('#art_', 1)
+            # Estrai il numero dell'articolo (può contenere lettere come 1-bis, 16-ter, etc.)
+            article_num = article_part.split('-')[0]  # Prendi solo la parte prima di eventuali trattini
+            article_ref = f"~art{article_num}"
+
         # Esempio: /akn/it/act/legge/stato/2003-07-29/229/!main
         # Diventa: https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2003-07-29;229
         parts = akoma_uri.strip('/').split('/')
@@ -1522,14 +1530,25 @@ def akoma_uri_to_normattiva_url(akoma_uri):
                 urn = f"urn:nir:stato:decreto-legge:{data.replace('-', '-')};{numero}"
             elif tipo == 'decretoLegislativo':
                 urn = f"urn:nir:stato:decreto.legislativo:{data.replace('-', '-')};{numero}"
-            elif tipo == 'decretoDelPresidenteDellaRepubblica':
-                urn = f"urn:nir:stato:decreto.del.presidente.della.repubblica:{data.replace('-', '-')};{numero}"
             elif tipo == 'costituzione':
                 urn = f"urn:nir:stato:costituzione:{data.replace('-', '-')}"
+            elif tipo == 'decretoDelPresidenteDellaRepubblica':
+                urn = f"urn:nir:stato:decreto.del.presidente.della.repubblica:{data.replace('-', '-')};{numero}"
+            elif tipo == 'regioDecreto':
+                urn = f"urn:nir:stato:regio.decreto:{data.replace('-', '-')};{numero}"
+            elif tipo == 'codice.civile':
+                urn = f"urn:nir:stato:codice.civile:{data.replace('-', '-')}"
+            elif tipo == 'codice.procedura.civile':
+                urn = f"urn:nir:stato:codice.procedura.civile:{data.replace('-', '-')}"
             else:
                 return None
 
-            return f"https://www.normattiva.it/uri-res/N2Ls?{urn}"
+            url = f"https://www.normattiva.it/uri-res/N2Ls?{urn}"
+            # Only add article reference for document types that support it
+            # Costituzioni and codes don't support article-specific links
+            if article_ref and tipo not in ('costituzione', 'codice.civile', 'codice.procedura.civile'):
+                url += article_ref
+            return url
     except:
         pass
 
