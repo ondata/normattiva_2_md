@@ -493,6 +493,22 @@ akoma2md --with-references "url-legge" output.md
 
 ## 2025-11-05
 
+### 🚀 Aggiunto Flag --with-urls per Link Markdown Articoli Citati
+
+**Nuova funzionalità**: Flag `--with-urls` per generare link markdown agli articoli citati su normattiva.it
+
+#### ✨ Funzionalità Implementata
+- Nuovo parametro `--with-urls` nella CLI
+- Genera link markdown agli articoli citati, senza scaricare i documenti
+- Documentazione aggiornata: README, help CLI, esempi d'uso
+- Nessun impatto su download batch (`--with-references`)
+
+#### 📚 Esempi Utilizzo
+```bash
+normattiva2md --with-urls input.xml output.md
+normattiva2md --with-urls "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" legge_con_link.md
+```
+
 ### 🚀 Rilascio Versione 1.6.1
 
 **Miglioramenti principali:**

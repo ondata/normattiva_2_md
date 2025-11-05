@@ -250,34 +250,29 @@ def parse_chapter_heading(heading_text):
     has_capo = re.search(r'\bCapo\s+[IVX]+', heading_text, re.IGNORECASE)
     has_sezione = re.search(r'\bSezione\s+[IVX]+', heading_text, re.IGNORECASE)
     
-    result = {'type': None, 'capo': None, 'sezione': None}
-    
+    result = {'type': '', 'capo': '', 'sezione': ''}
     # Caso 1: Contiene sia Capo che Sezione
     if has_capo and has_sezione:
         result['type'] = 'both'
         split_pos = has_sezione.start()
         capo_text = heading_text[:split_pos].strip()
         sezione_text = heading_text[split_pos:].strip()
-        
         result['capo'] = format_heading_with_separator(capo_text)
         result['sezione'] = format_heading_with_separator(sezione_text)
-    
     # Caso 2: Solo Capo
     elif has_capo:
         result['type'] = 'capo'
         result['capo'] = format_heading_with_separator(heading_text)
-    
     # Caso 3: Solo Sezione
     elif has_sezione:
         result['type'] = 'sezione'
         result['sezione'] = format_heading_with_separator(heading_text)
-    
     # Caso 4: Nessuno dei due (fallback)
     else:
         result['type'] = 'unknown'
         result['capo'] = format_heading_with_separator(heading_text)
-    
     return result
+
 
 def format_heading_with_separator(heading_text):
     """
@@ -631,8 +626,27 @@ def download_akoma_ntoso(params, output_path, session=None, quiet=False):
         print(f"❌ Errore durante il download: {e}", file=sys.stderr)
         return False
 
-def convert_akomantoso_to_markdown_improved(xml_file_path, markdown_file_path=None, metadata=None, article_ref=None, cross_references=None):
+def convert_akomantoso_to_markdown_improved(xml_file_path, markdown_file_path=None, metadata=None, article_ref=None, cross_references=None, with_urls=False):
     try:
+        # If with_urls is enabled, build cross-reference mapping from <ref> tags
+        if with_urls:
+            tree = ET.parse(xml_file_path)
+            root = tree.getroot()
+            cross_references = cross_references or {}
+            # Find all <ref> tags with href
+            for ref in root.findall('.//akn:ref[@href]', AKN_NAMESPACE):
+                href = ref.get('href')
+                ref_text = ref.text.strip() if ref.text else href
+                # Convert Akoma URI to Normattiva URL if needed
+                if href and href.startswith('/akn/'):
+                    normattiva_url = akoma_uri_to_normattiva_url(href)
+                elif href and is_normattiva_url(href):
+                    normattiva_url = href
+                else:
+                    normattiva_url = None
+                if normattiva_url:
+                    cross_references[href] = normattiva_url
+        
         # Check file size before parsing (XML bomb protection)
         file_size = os.path.getsize(xml_file_path)
         if file_size > MAX_FILE_SIZE_BYTES:
@@ -1626,9 +1640,13 @@ def main():
     python convert_akomantoso.py "URL" output.md --keep-xml
     python convert_akomantoso.py "URL" --keep-xml > output.md
 
-    # Scaricare anche tutte le leggi citate
-    python convert_akomantoso.py --with-references "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2005-03-07;82" output.md
-           """
+     # Scaricare anche tutte le leggi citate
+     python convert_akomantoso.py --with-references "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2005-03-07;82" output.md
+
+     # Generare link markdown agli articoli citati su normattiva.it
+     python convert_akomantoso.py --with-urls "input.xml" output.md
+     python convert_akomantoso.py --with-urls "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" output.md
+            """
     )
 
     # Version flag
@@ -1654,7 +1672,9 @@ def main():
     parser.add_argument('-c', '--completo', action='store_true',
                           help='Scarica e converti la legge completa anche se l\'URL specifica un singolo articolo')
     parser.add_argument('--with-references', action='store_true',
-                          help='Scarica e converti anche tutte le leggi citate, creando una struttura di cartelle con collegamenti incrociati')
+                           help='Scarica e converti anche tutte le leggi citate, creando una struttura di cartelle con collegamenti incrociati')
+    parser.add_argument('--with-urls', action='store_true',
+                           help='Genera link markdown agli articoli citati su normattiva.it (solo conversione, nessun download)')
     parser.add_argument('--debug-search', action='store_true',
                          help='Mostra JSON completo da Exa API e permetti selezione manuale dei risultati di ricerca')
     parser.add_argument('--auto-select', action='store_true', default=True,

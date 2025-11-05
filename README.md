@@ -169,6 +169,10 @@ normattiva2md -s "decreto dignità" > decreto.md
 
 # Visualizzare l'aiuto
 normattiva2md --help
+
+# Generare link markdown agli articoli citati su normattiva.it
+normattiva2md --with-urls input.xml output.md
+normattiva2md --with-urls "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" legge_con_link.md
 ```
 
 ### Opzioni disponibili
@@ -183,13 +187,15 @@ argomenti posizionali:
   file_output           File Markdown di output
 
 opzioni:
-  -h, --help            Mostra questo messaggio di aiuto
-  -i INPUT, --input INPUT
-                        File XML di input in formato Akoma Ntoso
-  -o OUTPUT, --output OUTPUT
-                        File Markdown di output
-  -s SEARCH, --search SEARCH
-                        Cerca documento per nome naturale (richiede Exa AI API)
+   -h, --help            Mostra questo messaggio di aiuto
+   -i INPUT, --input INPUT
+                         File XML di input in formato Akoma Ntoso
+   -o OUTPUT, --output OUTPUT
+                         File Markdown di output
+   -s SEARCH, --search SEARCH
+                         Cerca documento per nome naturale (richiede Exa AI API)
+   --with-urls           Genera link markdown agli articoli citati su normattiva.it (solo conversione, nessun download)
+
 
 argomenti posizionali:
   input                 File XML locale o URL normattiva.it
