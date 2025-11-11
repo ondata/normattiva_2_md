@@ -50,7 +50,7 @@ akoma2md input.xml output.md       # Vecchio comando (compatibilità)
 
 > **💡 Nota sulla compatibilità**: Entrambi i comandi `normattiva2md` e `akoma2md` funzionano identicamente. Il nuovo nome `normattiva2md` è raccomandato per chiarezza, ma il vecchio comando rimane disponibile per compatibilità durante la transizione.
 
-### Configurazione Exa AI API (Opzionale - per ricerca in linguaggio naturale)
+### Configurazione Exa AI API (opzionale - per ricerca in linguaggio naturale)
 
 Per utilizzare la funzionalità di ricerca in linguaggio naturale (`--search`), è necessario configurare una [API key di Exa AI](https://exa.ai).
 
@@ -68,7 +68,7 @@ cat .env
 
 Il programma caricherà automaticamente l'API key dal file `.env` all'avvio.
 
-#### Metodo 2: Variabile d'ambiente
+#### Metodo 2: variabile d'ambiente
 
 In alternativa, puoi esportare la variabile manualmente:
 
