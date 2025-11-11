@@ -36,3 +36,8 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 - **Dependencies**: Keep minimal; only add to setup.py if essential
 - **Regex/XPath**: Comment non-obvious patterns inline
 - **CLI args**: Use argparse, support both positional and named flags
+
+## Version Bump Checklist
+- Update the declared version string in `pyproject.toml` and `setup.py` so packaging metadata stays aligned.
+- Mirror the same version in `convert_akomantoso.py` (the CLI reads it for `--version` and User-Agent). If the `build/lib/convert_akomantoso.py` artifact is committed, keep it in sync during the same change.
+- After editing, run `normattiva2md --version` (from the local install) or `python convert_akomantoso.py --version` to verify the new number appears, then commit all touched files together.

@@ -687,10 +687,10 @@ Comando testato: `python3 convert_akomantoso.py --search "legge di bilancio 2024
 
 ### 🚀 Release v1.5.0: Ricerca Naturale con Gemini CLI
 
-**Nuova funzionalità principale**: Ricerca intelligente di documenti legali per nome naturale
+**Nuova funzionalità principale**: Ricerca intelligente di documenti legali in linguaggio naturale
 
 #### ✨ Nuove Funzionalità
-- Aggiunto flag `--search/-s` per ricerca per nome naturale
+- Aggiunto flag `--search/-s` per ricerca in linguaggio naturale
 - Integrazione con Gemini CLI per ricerca intelligente su normattiva.it
 - Conversione automatica da nome a URL a documento Markdown
 - Mantenimento compatibilità con metodi esistenti

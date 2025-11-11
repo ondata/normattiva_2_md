@@ -18,7 +18,7 @@ ALLOWED_DOMAINS = ['www.normattiva.it', 'normattiva.it']
 MAX_FILE_SIZE_MB = 50
 MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
 DEFAULT_TIMEOUT = 30
-VERSION = '2.0.7'
+VERSION = '2.0.10'
 
 def load_env_file():
     """
@@ -1653,7 +1653,7 @@ def main():
     python convert_akomantoso.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto-legge:2018-07-12;87~art3" --completo output.md
     python convert_akomantoso.py -c "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53~art16bis" output.md
 
-    # Ricerca per nome naturale (richiede Exa API key)
+    # Ricerca in linguaggio naturale (richiede Exa API key)
     python convert_akomantoso.py -s "legge stanca" output.md
     python convert_akomantoso.py --search "decreto dignità" > output.md
 
@@ -1685,7 +1685,7 @@ def main():
     parser.add_argument('-o', '--output', dest='output_named',
                         help='File Markdown di output (default: stdout)')
     parser.add_argument('-s', '--search', dest='search_query',
-                         help='Cerca documento legale per nome naturale (es. "legge stanca")')
+                         help='Cerca documento legale in linguaggio naturale (es. "legge stanca")')
     parser.add_argument('--keep-xml', action='store_true',
                          help='Mantieni file XML temporaneo dopo conversione da URL')
     parser.add_argument('-q', '--quiet', action='store_true',

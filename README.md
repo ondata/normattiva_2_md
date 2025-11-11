@@ -28,7 +28,7 @@ Convertire le norme legali da XML Akoma Ntoso a Markdown offre vantaggi signific
 - ✅ **CLI flessibile** con argomenti posizionali e nominati
 - ✅ **Gestione errori robusta** con messaggi informativi
 - ✅ **Nessuna dipendenza esterna** per conversione XML→Markdown (solo librerie standard Python)
-- ✅ **Ricerca per nome naturale** richiede [Exa AI API](https://exa.ai) per l'integrazione AI
+- ✅ **Ricerca in linguaggio naturale** richiede [Exa AI API](https://exa.ai) per l'integrazione AI
 
 ## 📦 Installazione
 
@@ -50,9 +50,9 @@ akoma2md input.xml output.md       # Vecchio comando (compatibilità)
 
 > **💡 Nota sulla compatibilità**: Entrambi i comandi `normattiva2md` e `akoma2md` funzionano identicamente. Il nuovo nome `normattiva2md` è raccomandato per chiarezza, ma il vecchio comando rimane disponibile per compatibilità durante la transizione.
 
-### Configurazione Exa AI API (Opzionale - per ricerca per nome)
+### Configurazione Exa AI API (Opzionale - per ricerca in linguaggio naturale)
 
-Per utilizzare la funzionalità di ricerca per nome naturale (`--search`), è necessario configurare una [API key di Exa AI](https://exa.ai).
+Per utilizzare la funzionalità di ricerca in linguaggio naturale (`--search`), è necessario configurare una [API key di Exa AI](https://exa.ai).
 
 #### Metodo 1: File .env (Raccomandato)
 
@@ -136,16 +136,16 @@ normattiva2md -i input.xml -o output.md
 normattiva2md --input input.xml --output output.md
 ```
 
-### Metodo 3: Ricerca per nome naturale (con Exa AI)
+### Metodo 3: Ricerca in linguaggio naturale (con Exa AI)
 
 **⚠️ Richiede API key Exa AI configurata**
 
-Prima di utilizzare questa funzionalità, assicurati di aver configurato l'[API key di Exa AI](#configurazione-exa-ai-api-opzionale---per-ricerca-per-nome).
+Prima di utilizzare questa funzionalità, assicurati di aver configurato l'[API key di Exa AI](#configurazione-exa-ai-api-opzionale---per-ricerca-in-linguaggio-naturale).
 
 **Importante**: Per la ricerca in linguaggio naturale devi **sempre usare il flag `-s` o `--search`**:
 
 ```bash
-# Ricerca per nome (usa SEMPRE -s/--search)
+# Ricerca in linguaggio naturale (usa SEMPRE -s/--search)
 normattiva2md -s "legge stanca" output.md
 normattiva2md --search "decreto dignità" > decreto.md
 
@@ -163,7 +163,7 @@ normattiva2md decreto_82_2005.xml codice_amministrazione_digitale.md
 # Con percorsi assoluti
 normattiva2md /percorso/documento.xml /percorso/output.md
 
-# Ricerca per nome naturale (richiede Exa AI API - usa SEMPRE -s)
+# Ricerca in linguaggio naturale (richiede Exa AI API - usa SEMPRE -s)
 normattiva2md -s "legge stanca" legge_stanca.md
 normattiva2md -s "decreto dignità" > decreto.md
 
@@ -193,7 +193,7 @@ opzioni:
    -o OUTPUT, --output OUTPUT
                          File Markdown di output
    -s SEARCH, --search SEARCH
-                         Cerca documento per nome naturale (richiede Exa AI API)
+                         Cerca documento in linguaggio naturale (richiede Exa AI API)
    --with-urls           Genera link markdown agli articoli citati su normattiva.it (solo conversione, nessun download)
 
 
@@ -283,7 +283,7 @@ dataVigenza: 20251101
 
 - Python 3.7+
 - Nessuna dipendenza esterna per conversione XML→Markdown (solo librerie standard Python)
-- [Exa AI API](https://exa.ai) per funzionalità ricerca per nome naturale
+- [Exa AI API](https://exa.ai) per funzionalità di ricerca in linguaggio naturale
 
 ### Configurazione dell'ambiente di sviluppo
 
