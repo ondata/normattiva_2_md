@@ -29,6 +29,7 @@ Convertire le norme legali da XML Akoma Ntoso a Markdown offre vantaggi signific
 - ✅ **Gestione errori robusta** con messaggi informativi
 - ✅ **Nessuna dipendenza esterna** per conversione XML→Markdown (solo librerie standard Python)
 - ✅ **Ricerca in linguaggio naturale** richiede [Exa AI API](https://exa.ai) per l'integrazione AI
+- ✅ **Modalità debug interattiva** (v2.0.16+) con download guidato e nomi file intelligenti
 
 ## 📦 Installazione
 
@@ -150,14 +151,71 @@ Prima di utilizzare questa funzionalità, assicurati di aver configurato l'[API 
 **Importante**: Per la ricerca in linguaggio naturale devi **sempre usare il flag `-s` o `--search`**:
 
 ```bash
-# Ricerca in linguaggio naturale (usa SEMPRE -s/--search)
+# Ricerca automatica (seleziona automaticamente il miglior risultato)
 normattiva2md -s "legge stanca" output.md
 normattiva2md --search "decreto dignità" --exa-api-key "your-key" > decreto.md
 
 # Output su stdout
 normattiva2md -s "codice della strada"
 normattiva2md -s "legge stanca" --exa-api-key "your-key" > legge_stanca.md
+
+# Modalità debug interattiva (--debug-search)
+# Ti permette di vedere tutti i risultati e scegliere manualmente
+normattiva2md -s "legge stanca" --debug-search
 ```
+
+#### 🔍 Modalità Debug Interattiva
+
+La modalità `--debug-search` ti mostra tutti i risultati trovati e ti permette di scegliere manualmente quello desiderato:
+
+```bash
+normattiva2md -s "legge stanca" --debug-search
+```
+
+**Cosa succede:**
+1. Mostra il JSON completo della risposta Exa API (per debugging)
+2. Lista tutti i risultati con titolo, URL e punteggio di preferenza
+3. Ti chiede di selezionare il numero del risultato desiderato
+4. **Nuovo in v2.0.16**: Dopo la selezione, ti chiede se vuoi scaricare il documento
+5. Suggerisce un nome file in formato snake_case basato sul titolo
+6. Puoi accettare (premendo ENTER) o personalizzare il nome
+7. Se il file esiste già, chiede conferma prima di sovrascriverlo
+
+**Esempio di sessione interattiva:**
+
+```bash
+$ normattiva2md -s "legge stanca" --debug-search
+
+🔍 Risultati trovati per: legge stanca
+Seleziona il numero del risultato desiderato (1-5), o 0 per annullare:
+  [1] DECRETO-LEGGE 7 giugno 2024, n. 73...
+      URL: https://www.normattiva.it/...
+      Preferenza: -30
+
+  [2] LEGGE 24 maggio 1970, n. 336...
+      URL: https://www.normattiva.it/uri-res/N2Ls?...
+      Preferenza: 24
+
+  [3] LEGGE 9 gennaio 2004, n. 4...
+      URL: https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2004-01-09;4!vig
+      Preferenza: 24
+
+Scelta: 3
+✅ URL selezionato manualmente: https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2004-01-09;4!vig
+
+📥 Vuoi scaricare questo documento? (s/N): s
+📝 Nome file [legge_9_gennaio_2004_n_4.md]: 
+✅ URL selezionato: https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2004-01-09;4!vig
+Rilevato URL normattiva.it: https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2004-01-09;4!vig
+...
+✅ Conversione completata: legge_9_gennaio_2004_n_4.md
+```
+
+**Opzioni nella modalità interattiva:**
+- **Conferma download**: Rispondi `s`, `si`, `sì`, `y`, o `yes` per confermare
+- **Nome file**: Premi ENTER per accettare il nome suggerito, oppure digita un nome personalizzato
+- **Sovrascrittura**: Se il file esiste già, ti chiede conferma prima di sovrascriverlo
+- **Annulla**: Rispondi `n` o `N` in qualsiasi momento, oppure premi Ctrl+C
 
 ### Esempi pratici
 
@@ -183,31 +241,43 @@ normattiva2md --with-urls "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:
 ### Opzioni disponibili
 
 ```
-utilizzo: normattiva2md [-h] [-i INPUT] [-o OUTPUT] [file_input] [file_output]
+utilizzo: normattiva2md [-h] [-v] [-i INPUT] [-o OUTPUT] [-s SEARCH]
+                       [--keep-xml] [-q] [-c] [--with-references]
+                       [--with-urls] [--debug-search] [--auto-select]
+                       [--exa-api-key EXA_API_KEY]
+                       [file_input] [file_output]
 
 Converte un file XML Akoma Ntoso in formato Markdown
 
 argomenti posizionali:
-  file_input            File XML di input in formato Akoma Ntoso
-  file_output           File Markdown di output
+  file_input            File XML di input in formato Akoma Ntoso o URL normattiva.it
+  file_output           File Markdown di output (default: stdout)
 
 opzioni:
    -h, --help            Mostra questo messaggio di aiuto
+   -v, --version         Mostra la versione del programma
    -i INPUT, --input INPUT
-                         File XML di input in formato Akoma Ntoso
+                         File XML di input in formato Akoma Ntoso o URL normattiva.it
    -o OUTPUT, --output OUTPUT
-                         File Markdown di output
+                         File Markdown di output (default: stdout)
    -s SEARCH, --search SEARCH
                          Cerca documento in linguaggio naturale (richiede Exa AI API)
-   --with-urls           Genera link markdown agli articoli citati su normattiva.it (solo conversione, nessun download)
-
-
-argomenti posizionali:
-  input                 File XML locale o URL normattiva.it
-  output                File Markdown di output (default: stdout)
+   --keep-xml            Mantiene il file XML temporaneo dopo la conversione
+   -q, --quiet           Modalità silenziosa (nessun output su stderr)
+   -c, --completo        Forza download completo anche con URL articolo-specifico
+   --with-references     Scarica anche tutti i riferimenti legislativi citati
+   --with-urls           Genera link markdown agli articoli citati su normattiva.it
+   --debug-search        Modalità debug interattiva per la ricerca (mostra tutti i risultati)
+   --auto-select         Seleziona automaticamente il miglior risultato (default: True)
+   --exa-api-key EXA_API_KEY
+                         API key di Exa AI (alternativa a EXA_API_KEY env var)
 
 nota: per ricerca in linguaggio naturale usare -s/--search
 ```
+
+**Modalità ricerca:**
+- **Automatica** (default): `-s "query"` seleziona automaticamente il miglior risultato
+- **Interattiva**: `-s "query" --debug-search` mostra tutti i risultati e permette selezione manuale con download interattivo
 
 ## 📋 Formato di input supportato
 
