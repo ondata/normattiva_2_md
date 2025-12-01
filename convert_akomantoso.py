@@ -18,7 +18,7 @@ ALLOWED_DOMAINS = ["www.normattiva.it", "normattiva.it"]
 MAX_FILE_SIZE_MB = 50
 MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
 DEFAULT_TIMEOUT = 30
-VERSION = "2.0.15"
+VERSION = "2.0.16"
 
 
 def load_env_file():

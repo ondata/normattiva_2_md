@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "akoma2md"
-version = "2.0.15"
+version = "2.0.16"
 description = "Convertitore da XML Akoma Ntoso a formato Markdown con download automatico delle leggi citate e cross-references inline (CLI: normattiva2md)"
 readme = "README.md"
 requires-python = ">=3.7"
