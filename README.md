@@ -68,9 +68,7 @@ cat .env
 
 Il programma caricherà automaticamente l'API key dal file `.env` all'avvio.
 
-#### Metodo 2: variabile d'ambiente
-
-In alternativa, puoi esportare la variabile manualmente:
+### Metodo 2: Variabile d'ambiente (Linux/macOS)
 
 ```bash
 # Configura la variabile d'ambiente con la tua API key
@@ -78,6 +76,13 @@ export EXA_API_KEY='your-exa-api-key-here'
 
 # Verifica che sia configurata
 echo $EXA_API_KEY
+```
+
+### Metodo 3: Parametro CLI (per uso temporaneo)
+
+```bash
+# Passa l'API key direttamente come parametro
+normattiva2md -s "legge stanca" --exa-api-key "your-exa-api-key" output.md
 ```
 
 ### Installazione da sorgenti
@@ -147,11 +152,11 @@ Prima di utilizzare questa funzionalità, assicurati di aver configurato l'[API 
 ```bash
 # Ricerca in linguaggio naturale (usa SEMPRE -s/--search)
 normattiva2md -s "legge stanca" output.md
-normattiva2md --search "decreto dignità" > decreto.md
+normattiva2md --search "decreto dignità" --exa-api-key "your-key" > decreto.md
 
 # Output su stdout
 normattiva2md -s "codice della strada"
-normattiva2md -s "legge stanca" > legge_stanca.md
+normattiva2md -s "legge stanca" --exa-api-key "your-key" > legge_stanca.md
 ```
 
 ### Esempi pratici

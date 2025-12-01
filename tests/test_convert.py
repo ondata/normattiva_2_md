@@ -19,11 +19,15 @@ from convert_akomantoso import (
     is_normattiva_url,
     lookup_normattiva_url,
     extract_params_from_normattiva_url,
-    MAX_FILE_SIZE_BYTES
+    MAX_FILE_SIZE_BYTES,
 )
 
 
-FIXTURE_PATH = Path(__file__).resolve().parents[1] / "test_data" / "20050516_005G0104_VIGENZA_20250130.xml"
+FIXTURE_PATH = (
+    Path(__file__).resolve().parents[1]
+    / "test_data"
+    / "20050516_005G0104_VIGENZA_20250130.xml"
+)
 
 
 class ConvertAkomaNtosoTest(unittest.TestCase):
@@ -56,9 +60,9 @@ class ConvertAkomaNtosoTest(unittest.TestCase):
     def test_footnote_element_handling(self):
         """Test that footnote elements are handled without errors"""
         # Create a simple XML element with footnote
-        footnote_xml = '''<akn:footnote xmlns:akn="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
+        footnote_xml = """<akn:footnote xmlns:akn="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
             <akn:p>Test footnote content</akn:p>
-        </akn:footnote>'''
+        </akn:footnote>"""
         root = ET.fromstring(footnote_xml)
         result = clean_text_content(root)
         # Should not crash and should contain some reference
@@ -68,19 +72,19 @@ class ConvertAkomaNtosoTest(unittest.TestCase):
     def test_quoted_structure_element_handling(self):
         """Test that quotedStructure elements are converted to blockquotes"""
         # Create a simple XML element with quotedStructure as block element
-        quoted_xml = '''<akn:quotedStructure xmlns:akn="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
+        quoted_xml = """<akn:quotedStructure xmlns:akn="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
             <akn:p>This is quoted text</akn:p>
-        </akn:quotedStructure>'''
+        </akn:quotedStructure>"""
         root = ET.fromstring(quoted_xml)
         # Test the clean_text_content function directly on quotedStructure
         result = clean_text_content(root)
         # Should extract the text content
-        self.assertIn('This is quoted text', result)
+        self.assertIn("This is quoted text", result)
 
     def test_table_element_handling(self):
         """Test that table elements are converted to markdown tables"""
         # Create a simple XML table
-        table_xml = '''<akn:table xmlns:akn="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
+        table_xml = """<akn:table xmlns:akn="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
             <akn:tr>
                 <akn:th>Header 1</akn:th>
                 <akn:th>Header 2</akn:th>
@@ -89,73 +93,73 @@ class ConvertAkomaNtosoTest(unittest.TestCase):
                 <akn:td>Data 1</akn:td>
                 <akn:td>Data 2</akn:td>
             </akn:tr>
-        </akn:table>'''
+        </akn:table>"""
         root = ET.fromstring(table_xml)
-        ns = {'akn': 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0'}
+        ns = {"akn": "http://docs.oasis-open.org/legaldocml/ns/akn/3.0"}
         result = process_table(root, ns)
         # Should contain pipe characters for markdown table
-        self.assertIn('|', result)
-        self.assertIn('Header 1', result)
-        self.assertIn('Data 1', result)
+        self.assertIn("|", result)
+        self.assertIn("Header 1", result)
+        self.assertIn("Data 1", result)
 
     def test_title_element_handling(self):
         """Test that title elements are converted to H2 headings"""
         # Create a simple XML title
-        title_xml = '''<akn:title xmlns:akn="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
+        title_xml = """<akn:title xmlns:akn="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
             <akn:heading>TITOLO I</akn:heading>
             <akn:chapter>
                 <akn:heading>Capo I DISPOSIZIONI GENERALI</akn:heading>
             </akn:chapter>
-        </akn:title>'''
+        </akn:title>"""
         root = ET.fromstring(title_xml)
-        ns = {'akn': 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0'}
+        ns = {"akn": "http://docs.oasis-open.org/legaldocml/ns/akn/3.0"}
         result_fragments = process_title(root, ns)
-        result = ''.join(result_fragments)
+        result = "".join(result_fragments)
         # Title should be H2
-        self.assertIn('## TITOLO I', result)
+        self.assertIn("## TITOLO I", result)
         # Nested chapter (Capo) should be H2
-        self.assertIn('## Capo I - DISPOSIZIONI GENERALI', result)
+        self.assertIn("## Capo I - DISPOSIZIONI GENERALI", result)
 
     def test_part_element_handling(self):
         """Test that part elements are converted to H2 headings"""
         # Create a simple XML part
-        part_xml = '''<akn:part xmlns:akn="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
+        part_xml = """<akn:part xmlns:akn="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
             <akn:heading>Parte I - DISPOSIZIONI GENERALI</akn:heading>
-        </akn:part>'''
+        </akn:part>"""
         root = ET.fromstring(part_xml)
-        ns = {'akn': 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0'}
+        ns = {"akn": "http://docs.oasis-open.org/legaldocml/ns/akn/3.0"}
         result_fragments = process_part(root, ns)
-        result = ''.join(result_fragments)
+        result = "".join(result_fragments)
         # Should contain H1 heading (before global downgrade)
-        self.assertIn('# Parte I - DISPOSIZIONI GENERALI', result)
+        self.assertIn("# Parte I - DISPOSIZIONI GENERALI", result)
 
     def test_attachment_element_handling(self):
         """Test that attachment elements are converted to separate sections"""
         # Create a simple XML attachment
-        attachment_xml = '''<akn:attachment xmlns:akn="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
+        attachment_xml = """<akn:attachment xmlns:akn="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
             <akn:heading>Allegato A</akn:heading>
             <akn:article>
                 <akn:num>Art. 1</akn:num>
                 <akn:heading>Test Article</akn:heading>
             </akn:article>
-        </akn:attachment>'''
+        </akn:attachment>"""
         root = ET.fromstring(attachment_xml)
-        ns = {'akn': 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0'}
+        ns = {"akn": "http://docs.oasis-open.org/legaldocml/ns/akn/3.0"}
         result_fragments = process_attachment(root, ns)
-        result = ''.join(result_fragments)
+        result = "".join(result_fragments)
         # Should contain attachment section (H1 before global downgrade)
-        self.assertIn('# Allegato: Allegato A', result)
+        self.assertIn("# Allegato: Allegato A", result)
         # Should contain nested article
-        self.assertIn('## Art. 1 - Test Article', result)
+        self.assertIn("## Art. 1 - Test Article", result)
 
     def test_generate_front_matter_complete(self):
         """Test front matter generation with complete metadata"""
         metadata = {
-            'url': 'https://example.com',
-            'url_xml': 'https://example.com/xml',
-            'dataGU': '20231201',
-            'codiceRedaz': '123ABC',
-            'dataVigenza': '20231231'
+            "url": "https://example.com",
+            "url_xml": "https://example.com/xml",
+            "dataGU": "20231201",
+            "codiceRedaz": "123ABC",
+            "dataVigenza": "20231231",
         }
         result = generate_front_matter(metadata)
         expected = """---
@@ -171,10 +175,7 @@ dataVigenza: 20231231
 
     def test_generate_front_matter_partial(self):
         """Test front matter generation with partial metadata"""
-        metadata = {
-            'url': 'https://example.com',
-            'dataGU': '20231201'
-        }
+        metadata = {"url": "https://example.com", "dataGU": "20231201"}
         result = generate_front_matter(metadata)
         expected = """---
 url: https://example.com
@@ -197,16 +198,16 @@ dataGU: 20231201
         metadata = extract_metadata_from_xml(root)
 
         # Check that expected fields are present
-        self.assertIn('codiceRedaz', metadata)
-        self.assertIn('dataGU', metadata)
-        self.assertIn('dataVigenza', metadata)
-        self.assertIn('url', metadata)
-        self.assertIn('url_xml', metadata)
+        self.assertIn("codiceRedaz", metadata)
+        self.assertIn("dataGU", metadata)
+        self.assertIn("dataVigenza", metadata)
+        self.assertIn("url", metadata)
+        self.assertIn("url_xml", metadata)
 
         # Check specific values
-        self.assertEqual(metadata['codiceRedaz'], '005G0104')
-        self.assertEqual(metadata['dataGU'], '20050307')
-        self.assertEqual(metadata['dataVigenza'], '20250130')
+        self.assertEqual(metadata["codiceRedaz"], "005G0104")
+        self.assertEqual(metadata["dataGU"], "20050307")
+        self.assertEqual(metadata["dataVigenza"], "20250130")
 
     def test_output_includes_front_matter(self):
         """Test that the complete output includes front matter"""
@@ -216,9 +217,9 @@ dataGU: 20231201
         markdown_with_frontmatter = generate_markdown_text(root, metadata=metadata)
 
         # Should start with front matter
-        self.assertTrue(markdown_with_frontmatter.startswith('---'))
-        self.assertIn('url:', markdown_with_frontmatter)
-        self.assertIn('codiceRedaz: 005G0104', markdown_with_frontmatter)
+        self.assertTrue(markdown_with_frontmatter.startswith("---"))
+        self.assertIn("url:", markdown_with_frontmatter)
+        self.assertIn("codiceRedaz: 005G0104", markdown_with_frontmatter)
 
 
 class SecurityTests(unittest.TestCase):
@@ -228,7 +229,7 @@ class SecurityTests(unittest.TestCase):
         """Test that valid normattiva.it HTTPS URLs are accepted"""
         valid_urls = [
             "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53",
-            "https://normattiva.it/do/atto/caricaAKN?test=123"
+            "https://normattiva.it/do/atto/caricaAKN?test=123",
         ]
         for url in valid_urls:
             with self.subTest(url=url):
@@ -246,7 +247,7 @@ class SecurityTests(unittest.TestCase):
         malicious_urls = [
             "https://evil.com/malware",
             "https://www.google.com/search",
-            "https://normattiva.it.evil.com/fake"
+            "https://normattiva.it.evil.com/fake",
         ]
         for url in malicious_urls:
             with self.subTest(url=url):
@@ -269,7 +270,7 @@ class SecurityTests(unittest.TestCase):
             "output.md",
             "./output.md",
             "subdir/output.md",
-            "/tmp/safe_output.md"
+            "/tmp/safe_output.md",
         ]
         for path in safe_paths:
             with self.subTest(path=path):
@@ -284,7 +285,7 @@ class SecurityTests(unittest.TestCase):
             "../../../etc/passwd",
             "/etc/passwd",
             "/sys/kernel/debug",
-            "output/../../../etc/passwd"
+            "output/../../../etc/passwd",
         ]
         for path in malicious_paths:
             with self.subTest(path=path):
@@ -321,15 +322,19 @@ class URLLookupTest(unittest.TestCase):
             "results": [
                 {
                     "url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2018-12-30;205",
-                    "title": "Legge di Bilancio 2019"
+                    "title": "Legge di Bilancio 2019",
                 }
             ]
         }
 
-        with mock.patch('os.getenv', return_value='fake-api-key'), \
-             mock.patch('requests.post', return_value=mock_response):
+        with mock.patch("os.getenv", return_value="fake-api-key"), mock.patch(
+            "requests.post", return_value=mock_response
+        ):
             result = lookup_normattiva_url("legge stanca")
-            self.assertEqual(result, "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2018-12-30;205")
+            self.assertEqual(
+                result,
+                "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2018-12-30;205",
+            )
 
     def test_lookup_normattiva_url_no_url_found(self):
         """Test when Exa API doesn't return valid results"""
@@ -339,8 +344,9 @@ class URLLookupTest(unittest.TestCase):
         mock_response.status_code = 200
         mock_response.json.return_value = {"results": []}
 
-        with mock.patch('os.getenv', return_value='fake-api-key'), \
-             mock.patch('requests.post', return_value=mock_response):
+        with mock.patch("os.getenv", return_value="fake-api-key"), mock.patch(
+            "requests.post", return_value=mock_response
+        ):
             result = lookup_normattiva_url("legge inesistente")
             self.assertIsNone(result)
 
@@ -352,8 +358,9 @@ class URLLookupTest(unittest.TestCase):
         mock_response.status_code = 401
         mock_response.text = "Invalid API key"
 
-        with mock.patch('os.getenv', return_value='fake-api-key'), \
-             mock.patch('requests.post', return_value=mock_response):
+        with mock.patch("os.getenv", return_value="fake-api-key"), mock.patch(
+            "requests.post", return_value=mock_response
+        ):
             result = lookup_normattiva_url("test query")
             self.assertIsNone(result)
 
@@ -361,9 +368,59 @@ class URLLookupTest(unittest.TestCase):
         """Test when Exa API key is not configured"""
         import unittest.mock as mock
 
-        with mock.patch('os.getenv', return_value=None):
+        with mock.patch("os.getenv", return_value=None):
             result = lookup_normattiva_url("test query")
             self.assertIsNone(result)
+
+    def test_lookup_normattiva_url_cli_api_key(self):
+        """Test when Exa API key is provided via CLI parameter"""
+        import unittest.mock as mock
+
+        mock_response = mock.MagicMock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
+            "results": [
+                {
+                    "url": "https://normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2000-01-01;123"
+                }
+            ]
+        }
+
+        with mock.patch("os.getenv", return_value=None), mock.patch(
+            "requests.post", return_value=mock_response
+        ):
+            result = lookup_normattiva_url("test query", exa_api_key="cli-api-key")
+            self.assertEqual(
+                result,
+                "https://normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2000-01-01;123",
+            )
+
+    def test_lookup_normattiva_url_cli_precedence(self):
+        """Test that CLI API key takes precedence over environment variable"""
+        import unittest.mock as mock
+
+        mock_response = mock.MagicMock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
+            "results": [
+                {
+                    "url": "https://normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2000-01-01;123"
+                }
+            ]
+        }
+
+        with mock.patch("os.getenv", return_value="env-api-key"), mock.patch(
+            "requests.post", return_value=mock_response
+        ) as mock_post:
+            result = lookup_normattiva_url("test query", exa_api_key="cli-api-key")
+            self.assertEqual(
+                result,
+                "https://normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2000-01-01;123",
+            )
+            # Verify CLI key was used in the request
+            mock_post.assert_called_once()
+            call_args = mock_post.call_args
+            self.assertEqual(call_args[1]["headers"]["x-api-key"], "cli-api-key")
 
     def test_lookup_normattiva_url_invalid_results(self):
         """Test when Exa API returns results but no valid normattiva URLs"""
@@ -374,12 +431,13 @@ class URLLookupTest(unittest.TestCase):
         mock_response.json.return_value = {
             "results": [
                 {"url": "https://example.com/page1"},
-                {"url": "https://google.com/search"}
+                {"url": "https://google.com/search"},
             ]
         }
 
-        with mock.patch('os.getenv', return_value='fake-api-key'), \
-             mock.patch('requests.post', return_value=mock_response):
+        with mock.patch("os.getenv", return_value="fake-api-key"), mock.patch(
+            "requests.post", return_value=mock_response
+        ):
             result = lookup_normattiva_url("test query")
             self.assertIsNone(result)
 
