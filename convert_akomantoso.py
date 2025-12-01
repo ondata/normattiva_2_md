@@ -1437,7 +1437,10 @@ def lookup_normattiva_url(
             )
             return None
 
-        # La logica di conversione automatica è ora integrata nel sistema di punteggio sopra
+        # Ordina per punteggio di preferenza decrescente prima di mostrare
+        valid_results.sort(
+            key=lambda x: (x["preference_score"], x["score"]), reverse=True
+        )
 
         # Se auto_select è False, mostra i risultati e chiedi all'utente di scegliere
         if not auto_select:
@@ -2117,37 +2120,39 @@ def main():
             try:
                 download_choice = input("\n📥 Vuoi scaricare questo documento? (s/N): ").strip().lower()
                 if download_choice not in ['s', 'si', 'sì', 'y', 'yes']:
-                    print("❌ Download annullato dall'utente", file=sys.stderr)
-                    sys.exit(0)
-                
-                # Genera nome file snake_case
-                suggested_filename = generate_snake_case_filename(selected_title)
-                filename_input = input(f"📝 Nome file [{suggested_filename}]: ").strip()
-                
-                # Valida input: ignora risposte di conferma troppo corte
-                if filename_input and filename_input.lower() not in ['s', 'si', 'sì', 'y', 'yes', 'n', 'no']:
-                    output_file = filename_input
-                    if not output_file.endswith('.md'):
-                        output_file += '.md'
-                elif filename_input and len(filename_input) <= 2:
-                    # Input troppo corto probabilmente è un errore, usa il suggerito
-                    print(f"⚠️  Nome troppo corto, uso il nome suggerito: {suggested_filename}", file=sys.stderr)
-                    output_file = suggested_filename
+                    print("📄 Mostro il documento su stdout...", file=sys.stderr)
+                    input_source = selected_url
+                    output_file = None  # Output su stdout
                 else:
-                    output_file = suggested_filename
-                
-                # Verifica se il file esiste già
-                if os.path.exists(output_file):
-                    overwrite = input(f"⚠️  Il file '{output_file}' esiste già. Sovrascrivere? (s/N): ").strip().lower()
-                    if overwrite not in ['s', 'si', 'sì', 'y', 'yes']:
-                        print("❌ Download annullato dall'utente", file=sys.stderr)
-                        sys.exit(0)
+                    # Genera nome file snake_case
+                    suggested_filename = generate_snake_case_filename(selected_title)
+                    filename_input = input(f"📝 Nome file [{suggested_filename}]: ").strip()
+                    
+                    # Valida input: ignora risposte di conferma troppo corte
+                    if filename_input and filename_input.lower() not in ['s', 'si', 'sì', 'y', 'yes', 'n', 'no']:
+                        output_file = filename_input
+                        if not output_file.endswith('.md'):
+                            output_file += '.md'
+                    elif filename_input and len(filename_input) <= 2:
+                        # Input troppo corto probabilmente è un errore, usa il suggerito
+                        print(f"⚠️  Nome troppo corto, uso il nome suggerito: {suggested_filename}", file=sys.stderr)
+                        output_file = suggested_filename
+                    else:
+                        output_file = suggested_filename
+                    
+                    # Verifica se il file esiste già
+                    if os.path.exists(output_file):
+                        overwrite = input(f"⚠️  Il file '{output_file}' esiste già. Sovrascrivere? (s/N): ").strip().lower()
+                        if overwrite not in ['s', 'si', 'sì', 'y', 'yes']:
+                            print("❌ Download annullato dall'utente", file=sys.stderr)
+                            sys.exit(0)
                 
                 input_source = selected_url
-                print(f"✅ URL selezionato: {input_source}", file=sys.stderr)
+                if output_file:
+                    print(f"✅ URL selezionato: {input_source}", file=sys.stderr)
                 
             except (EOFError, KeyboardInterrupt):
-                print("\n❌ Download annullato dall'utente", file=sys.stderr)
+                print("\n❌ Operazione annullata dall'utente", file=sys.stderr)
                 sys.exit(0)
         else:
             # Selezione automatica - usa il comportamento precedente
