@@ -2123,10 +2123,16 @@ def main():
                 # Genera nome file snake_case
                 suggested_filename = generate_snake_case_filename(selected_title)
                 filename_input = input(f"📝 Nome file [{suggested_filename}]: ").strip()
-                if filename_input:
+                
+                # Valida input: ignora risposte di conferma troppo corte
+                if filename_input and filename_input.lower() not in ['s', 'si', 'sì', 'y', 'yes', 'n', 'no']:
                     output_file = filename_input
                     if not output_file.endswith('.md'):
                         output_file += '.md'
+                elif filename_input and len(filename_input) <= 2:
+                    # Input troppo corto probabilmente è un errore, usa il suggerito
+                    print(f"⚠️  Nome troppo corto, uso il nome suggerito: {suggested_filename}", file=sys.stderr)
+                    output_file = suggested_filename
                 else:
                     output_file = suggested_filename
                 
