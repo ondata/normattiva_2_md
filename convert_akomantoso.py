@@ -18,7 +18,7 @@ ALLOWED_DOMAINS = ['www.normattiva.it', 'normattiva.it']
 MAX_FILE_SIZE_MB = 50
 MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
 DEFAULT_TIMEOUT = 30
-VERSION = '2.0.13'
+VERSION = '2.0.14'
 
 def load_env_file():
     """
@@ -1661,23 +1661,23 @@ def main():
     {cmd_display} "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53~art16bis" output.md
 
     # Forza conversione completa anche con URL articolo-specifico
-    {cmd_display} "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto-legge:2018-07-12;87~art3" --completo output.md
-    {cmd_display} -c "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53~art16bis" output.md
+    {cmd_display} --completo "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto-legge:2018-07-12;87~art3" -o output.md
+    {cmd_display} -c "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53~art16bis" -o output.md
 
     # Ricerca in linguaggio naturale (richiede Exa API key)
-    {cmd_display} -s "legge stanca" output.md
+    {cmd_display} -s "legge stanca accessibilità" -o output.md
     {cmd_display} --search "decreto dignità" > output.md
 
     # Mantenere XML scaricato da URL
-    {cmd_display} "URL" output.md --keep-xml
+    {cmd_display} "URL" --keep-xml -o output.md
     {cmd_display} "URL" --keep-xml > output.md
 
-     # Scaricare anche tutte le leggi citate
-     {cmd_display} --with-references "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2005-03-07;82" output.md
+    # Scaricare anche tutte le leggi citate (output in directory)
+    {cmd_display} --with-references "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2005-03-07;82" legge_82_2005/
 
-     # Generare link markdown agli articoli citati su normattiva.it
-     {cmd_display} --with-urls "input.xml" output.md
-     {cmd_display} --with-urls "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" output.md
+    # Generare link markdown agli articoli citati su normattiva.it
+    {cmd_display} --with-urls "input.xml" -o output.md
+    {cmd_display} --with-urls "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" -o output.md
             """
     )
 
