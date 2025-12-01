@@ -18,7 +18,7 @@ ALLOWED_DOMAINS = ['www.normattiva.it', 'normattiva.it']
 MAX_FILE_SIZE_MB = 50
 MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
 DEFAULT_TIMEOUT = 30
-VERSION = '2.0.12'
+VERSION = '2.0.13'
 
 def load_env_file():
     """
@@ -1183,6 +1183,14 @@ def lookup_normattiva_url(search_query, debug_json=False, auto_select=True):
                 preference_score = 0
                 title = result.get('title', '').lower()
 
+                # Penalizza URL caricaDettaglioAtto (restituiscono HTML, non XML)
+                if '/caricaDettaglioAtto?' in url:
+                    preference_score -= 50
+                
+                # Bonus forte per URL uri-res/N2Ls (funzionano sempre)
+                if '/uri-res/N2Ls?' in url:
+                    preference_score += 15
+                
                 # Bonus per il primo risultato (probabilmente il più rilevante)
                 if i == 0:
                     preference_score += 3
