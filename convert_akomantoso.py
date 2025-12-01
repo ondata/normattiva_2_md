@@ -1233,6 +1233,31 @@ def process_article(
                 markdown_content_list.append("\n")
 
 
+def generate_snake_case_filename(title):
+    """
+    Generate a snake_case filename from a document title.
+    
+    Args:
+        title (str): Document title
+        
+    Returns:
+        str: Snake case filename with .md extension
+    """
+    import re
+    
+    # Remove special characters and convert to lowercase
+    cleaned = re.sub(r'[^\w\s-]', '', title.lower())
+    # Replace spaces and hyphens with underscores
+    snake = re.sub(r'[-\s]+', '_', cleaned)
+    # Remove leading/trailing underscores
+    snake = snake.strip('_')
+    # Truncate to reasonable length (max 100 chars before .md)
+    if len(snake) > 100:
+        snake = snake[:100].rstrip('_')
+    
+    return f"{snake}.md"
+
+
 def lookup_normattiva_url(
     search_query, debug_json=False, auto_select=True, exa_api_key=None
 ):
@@ -1440,7 +1465,7 @@ def lookup_normattiva_url(
                         f"✅ URL selezionato manualmente: {selected['url']}",
                         file=sys.stderr,
                     )
-                    return selected["url"]
+                    return {"url": selected["url"], "title": selected["title"]}
                 else:
                     print(f"❌ Scelta non valida: {choice}", file=sys.stderr)
                     return None
@@ -2070,20 +2095,59 @@ def main():
         # Determina se usare selezione automatica o manuale
         auto_select = args.auto_select and not args.debug_search
 
-        input_source = lookup_normattiva_url(
+        lookup_result = lookup_normattiva_url(
             search_query,
             debug_json=args.debug_search,
             auto_select=auto_select,
             exa_api_key=args.exa_api_key,
         )
-        if not input_source:
+        if not lookup_result:
             print(
                 "❌ Impossibile trovare URL per la ricerca specificata", file=sys.stderr
             )
             sys.exit(1)
 
-        if not args.quiet and not args.debug_search:
-            print(f"✅ URL trovato: {input_source}", file=sys.stderr)
+        # Gestisci risultato (può essere str o dict)
+        if isinstance(lookup_result, dict):
+            # Selezione manuale in debug mode - chiedi se scaricare
+            selected_url = lookup_result["url"]
+            selected_title = lookup_result["title"]
+            
+            # Chiedi se vuole scaricare
+            try:
+                download_choice = input("\n📥 Vuoi scaricare questo documento? (s/N): ").strip().lower()
+                if download_choice not in ['s', 'si', 'sì', 'y', 'yes']:
+                    print("❌ Download annullato dall'utente", file=sys.stderr)
+                    sys.exit(0)
+                
+                # Genera nome file snake_case
+                suggested_filename = generate_snake_case_filename(selected_title)
+                filename_input = input(f"📝 Nome file [{suggested_filename}]: ").strip()
+                if filename_input:
+                    output_file = filename_input
+                    if not output_file.endswith('.md'):
+                        output_file += '.md'
+                else:
+                    output_file = suggested_filename
+                
+                # Verifica se il file esiste già
+                if os.path.exists(output_file):
+                    overwrite = input(f"⚠️  Il file '{output_file}' esiste già. Sovrascrivere? (s/N): ").strip().lower()
+                    if overwrite not in ['s', 'si', 'sì', 'y', 'yes']:
+                        print("❌ Download annullato dall'utente", file=sys.stderr)
+                        sys.exit(0)
+                
+                input_source = selected_url
+                print(f"✅ URL selezionato: {input_source}", file=sys.stderr)
+                
+            except (EOFError, KeyboardInterrupt):
+                print("\n❌ Download annullato dall'utente", file=sys.stderr)
+                sys.exit(0)
+        else:
+            # Selezione automatica - usa il comportamento precedente
+            input_source = lookup_result
+            if not args.quiet and not args.debug_search:
+                print(f"✅ URL trovato: {input_source}", file=sys.stderr)
 
     # Auto-detect: URL o file locale?
     if is_normattiva_url(input_source):
