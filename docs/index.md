@@ -8,10 +8,10 @@ title: Home
     <div class="container mx-auto px-4">
         <div class="max-w-4xl mx-auto text-center">
             <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-                Converti le leggi italiane in Markdown AI-ready
+                Converti le leggi italiane in testo semplice e strutturato per le intelligenze artificiali
             </h1>
             <p class="text-xl md:text-2xl text-blue-100 mb-8 leading-relaxed">
-                Trasforma i contenuti di normattiva.it in testo semplice e strutturato per le intelligenze artificiali
+                Trasforma i contenuti di normattiva.it in formato Markdown AI-ready
             </p>
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
                 <a href="#installation" class="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-blue-50 transition shadow-lg hover:shadow-xl transform hover:-translate-y-1">

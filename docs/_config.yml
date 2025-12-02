@@ -1,5 +1,5 @@
 title: normattiva2md
-description: Converti le leggi italiane in Markdown AI-ready
+description: Converti le leggi italiane in testo semplice e strutturato per le intelligenze artificiali
 baseurl: "/normattiva_2_md"
 url: "https://aborruso.github.io"
 markdown: kramdown
