@@ -75,7 +75,7 @@ normattiva2md "https://normattiva.it/..." output.md</code></pre>
                     Ricerca in linguaggio naturale con Exa AI. Trova leggi per contenuto, non solo per riferimento normativo.
                 </p>
                 <div class="text-sm text-gray-500">
-                    <code class="bg-gray-100 px-2 py-1 rounded">-s "legge accessibilità"</code>
+                    <code class="bg-gray-100 px-2 py-1 rounded">-s "legge Stanca accessibilità"</code>
                 </div>
             </div>
 
