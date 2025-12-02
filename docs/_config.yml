@@ -1,0 +1,18 @@
+title: normattiva2md
+description: Converti le leggi italiane in Markdown AI-ready
+baseurl: "/normattiva_2_md"
+url: "https://aborruso.github.io"
+markdown: kramdown
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+  - README.md
+  - LOG.md
+  - "*.xml"
+  - NORMATTIVA_API.md
+  - PRD.md
+  - URL_NORMATTIVA.md
+  - COMPATIBILITY_ROADMAP.md
+  - EUROLEX
+  - EURLEX_CONVERSION_ANALYSIS.md
