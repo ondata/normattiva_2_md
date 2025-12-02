@@ -271,7 +271,7 @@ dataVigenza: 20250130
 </section>
 
 <!-- Installation -->
-<section id="installation" class="py-20 bg-gradient-to-br from-gray-50 to-gray-100">
+<section id="installation" class="py-20 bg-white">
     <div class="container mx-auto px-4">
         <div class="text-center mb-12">
             <h2 class="text-4xl font-bold text-gray-900 mb-4">Inizia in 60 secondi</h2>
@@ -449,7 +449,7 @@ normattiva2md "URL" output.md --with-references</code></pre>
 </section>
 
 <!-- Riconoscimento Normattiva -->
-<section class="py-16 bg-white border-t border-gray-200">
+<section class="py-16 bg-gray-50">
     <div class="container mx-auto px-4">
         <div class="max-w-3xl mx-auto text-center">
             <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-6">
