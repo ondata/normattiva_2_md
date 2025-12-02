@@ -62,3 +62,4 @@ node_modules/
 
 # Virtual environments (already have venv/, but add .venv/)
 .venv/
+plans/
