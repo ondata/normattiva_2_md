@@ -11,7 +11,7 @@ title: Home
                 Converti le leggi italiane in Markdown AI-ready
             </h1>
             <p class="text-xl md:text-2xl text-blue-100 mb-8 leading-relaxed">
-                Trasforma documenti Akoma Ntoso da normattiva.it in formato ottimizzato per Large Language Models
+                Trasforma i testi delle leggi italiane in formato leggibile e pronto per l'uso con intelligenze artificiali
             </p>
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
                 <a href="#installation" class="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-blue-50 transition shadow-lg hover:shadow-xl transform hover:-translate-y-1">
@@ -444,6 +444,32 @@ normattiva2md "URL" output.md --with-references</code></pre>
                     </a>
                 </div>
             </div>
+        </div>
+    </div>
+</section>
+
+<!-- Riconoscimento Normattiva -->
+<section class="py-16 bg-white border-t border-gray-200">
+    <div class="container mx-auto px-4">
+        <div class="max-w-3xl mx-auto text-center">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-100 rounded-full mb-6">
+                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Possibile grazie a Normattiva</h2>
+            <p class="text-lg text-gray-600 mb-6 leading-relaxed">
+                Questo progetto si basa sul servizio gratuito e affidabile di <strong>Normattiva</strong>, che rende disponibili le norme italiane in formato XML strutturato (Akoma Ntoso). Senza questo lavoro di eccellenza e innovazione tecnologica nella pubblica amministrazione, normattiva2md non sarebbe stato possibile.
+            </p>
+            <p class="text-gray-600 mb-6">
+                Normattiva impiega tecnologie informatiche innovative per l'erogazione di un servizio completo di informazione sulle leggi italiane, garantendo accessibilità e trasparenza normativa per tutti i cittadini.
+            </p>
+            <a href="https://www.normattiva.it/" target="_blank" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold transition">
+                <span>Visita Normattiva.it</span>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                </svg>
+            </a>
         </div>
     </div>
 </section>
