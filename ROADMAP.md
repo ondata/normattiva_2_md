@@ -51,13 +51,28 @@ akoma2md input.xml output.md
 
 ---
 
-## ✅ COMPLETED - v2.0.3 to v2.0.7 (2025-11-04)
+## ✅ COMPLETED - v2.0.3 to v2.0.22 (2025-11-04 to 2025-12-03)
 
 ### Search & UX Enhancements
 
 **Status**: ✅ Completed
 
 #### Versioni Rilasciate
+- **v2.0.22** (2025-12-03): Security documentation updates for v2.0.x
+- **v2.0.21** (2025-12-01): Exa API key CLI parameter support
+- **v2.0.20** (2025-12-01): CLI rename to normattiva2md completed
+- **v2.0.19** (2025-11-05): Complete flag for article URLs
+- **v2.0.18** (2025-11-05): With-urls parameter for article links
+- **v2.0.17** (2025-11-04): Rate limiting for cross-references
+- **v2.0.16** (2025-11-04): Inline cross-references
+- **v2.0.15** (2025-11-04): Cross-reference download
+- **v2.0.14** (2025-11-04): Article-specific URL support
+- **v2.0.13** (2025-11-03): Switch from Gemini to Exa
+- **v2.0.12** (2025-11-03): Atto intero URL support
+- **v2.0.11** (2025-11-02): Natural language URL lookup
+- **v2.0.10** (2025-11-01): Adjust heading hierarchy and add frontmatter
+- **v2.0.9** (2025-11-01): Version flag support
+- **v2.0.8** (2025-11-04): Improved error messages
 - **v2.0.7** (2025-11-04): Permanent link field in frontmatter
 - **v2.0.6** (2025-11-04): Cleaner search output & improved UX
 - **v2.0.5** (2025-11-04): Enhanced Exa search scoring & URL conversion
@@ -72,6 +87,20 @@ akoma2md input.xml output.md
 - ✅ Riconoscimento articoli esteso: "articolo 7", "art 7", "art. 7", numeri complessi (16bis, 16ter)
 - ✅ Bonus/penalità intelligenti per selezione risultati Exa
 - ✅ Metadata PyPI aggiornati e corretti
+- ✅ Rate limiting per cross-references per evitare overload
+- ✅ Cross-references inline nei documenti Markdown
+- ✅ Download automatico leggi citate con `--with-references`
+- ✅ Supporto URL articolo-specifici (~art3, ~art16bis, etc.)
+- ✅ Flag `--completo` per override download legge completa
+- ✅ Ricerca AI con Exa API (sostituzione Gemini)
+- ✅ Supporto URL atto intero
+- ✅ Ricerca naturale documenti legali
+- ✅ Aggiustamento gerarchia heading e frontmatter
+- ✅ Flag `--version` per controllo versione
+- ✅ Miglioramento messaggi errore e UX CLI
+- ✅ Parametro CLI per API key Exa
+- ✅ Rinomina CLI completata: `akoma2md` → `normattiva2md`
+- ✅ Documentazione sicurezza aggiornata per v2.0.x
 
 #### Example Output
 ```yaml
@@ -785,4 +814,4 @@ akoma2md/
 ---
 
 **Ultimo aggiornamento**: 2025-12-03
-**Versione corrente**: v2.0.18
+**Versione corrente**: v2.0.22

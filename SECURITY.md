@@ -4,12 +4,12 @@
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.4.2+  | :white_check_mark: |
-| < 1.4.2 | :x:                |
+| 2.0.0+  | :white_check_mark: |
+| < 2.0.0 | :x:                |
 
 ## Security Features
 
-Starting from version 1.4.2, Akoma2MD implements the following security measures:
+Starting from version 2.0.0, normattiva2md implements the following security measures:
 
 ### URL Validation
 
@@ -32,7 +32,7 @@ Starting from version 1.4.2, Akoma2MD implements the following security measures
 ### Network Security
 
 - **SSL Certificate Verification**: All HTTPS connections verify SSL certificates (`verify=True`)
-- **Proper User-Agent**: Tool identifies itself as `Akoma2MD/version` instead of impersonating browsers
+- **Proper User-Agent**: Tool identifies itself as `normattiva2md/version` instead of impersonating browsers
 - **Timeout Protection**: All network requests have a 30-second timeout
 - **Session Cleanup**: HTTP sessions are properly managed and cleared
 
@@ -53,7 +53,7 @@ Any other domain will be rejected with an error message.
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability in Akoma2MD, please report it responsibly:
+If you discover a security vulnerability in normattiva2md, please report it responsibly:
 
 1. **Do NOT** open a public GitHub issue
 2. Send an email to the maintainers with:
@@ -68,7 +68,7 @@ If you discover a security vulnerability in Akoma2MD, please report it responsib
 
 ## Security Best Practices for Users
 
-When using Akoma2MD:
+When using normattiva2md:
 
 1. **Always use HTTPS URLs**: Never use HTTP links to normattiva.it
 2. **Verify Sources**: Only process XML files from trusted sources
@@ -79,7 +79,7 @@ When using Akoma2MD:
 
 ## Changelog
 
-### Version 1.4.2 (2025-01-11)
+### Version 2.0.0 (2025-12-03)
 
 **Security Fixes:**
 - Added URL domain validation and HTTPS enforcement
@@ -92,7 +92,7 @@ When using Akoma2MD:
 
 ## Dependencies
 
-Akoma2MD has minimal dependencies to reduce attack surface:
+normattiva2md has minimal dependencies to reduce attack surface:
 
 - `requests>=2.25.0` - HTTP library with security features
 - Python 3.7+ standard library
