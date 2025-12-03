@@ -4,6 +4,7 @@ import xml.etree.ElementTree as ET
 from .constants import AKN_NAMESPACE
 from .normattiva_api import is_normattiva_url
 
+
 def parse_article_reference(url):
     """
     Estrae il riferimento all'articolo dall'URL se presente
@@ -31,6 +32,7 @@ def parse_article_reference(url):
         return f"art_{article_num}"
 
     return None
+
 
 def akoma_uri_to_normattiva_url(akoma_uri):
     """
@@ -102,6 +104,7 @@ def akoma_uri_to_normattiva_url(akoma_uri):
 
     return None
 
+
 def extract_akoma_uris_from_xml(xml_file_path):
     """
     Estrae tutti gli URI Akoma Ntoso da un file XML.
@@ -131,17 +134,19 @@ def extract_akoma_uris_from_xml(xml_file_path):
 
     return akoma_uris
 
+
 def extract_cited_laws(xml_file_path):
     """
     Estrae tutti gli URL delle leggi citate da un file XML Akoma Ntoso.
+    Raggruppa per legge base, ignorando riferimenti a articoli specifici.
 
     Args:
         xml_file_path: percorso al file XML
 
     Returns:
-        set: insieme di URL unici delle leggi citate
+        set: insieme di URL unici delle leggi citate (senza riferimenti ad articoli)
     """
-    cited_urls = set()
+    cited_laws = set()
 
     try:
         tree = ET.parse(xml_file_path)
@@ -154,11 +159,14 @@ def extract_cited_laws(xml_file_path):
                 # Converti URI Akoma Ntoso in URL normattiva.it
                 url = akoma_uri_to_normattiva_url(href)
                 if url and is_normattiva_url(url):
-                    cited_urls.add(url)
+                    # Rimuovi riferimenti ad articoli specifici (~artX) per raggruppare per legge
+                    # Questo evita di scaricare la stessa legge più volte per articoli diversi
+                    law_url = url.split("~")[0] if "~" in url else url
+                    cited_laws.add(law_url)
 
     except ET.ParseError as e:
         print(f"Errore parsing XML per riferimenti: {e}", file=sys.stderr)
     except Exception as e:
         print(f"Errore estrazione riferimenti: {e}", file=sys.stderr)
 
-    return cited_urls
+    return cited_laws

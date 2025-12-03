@@ -6,6 +6,7 @@ from .normattiva_api import extract_params_from_normattiva_url, download_akoma_n
 from .akoma_utils import extract_cited_laws
 from .markdown_converter import convert_akomantoso_to_markdown_improved
 
+
 def build_cross_references_mapping_from_urls(url_to_file_mapping):
     """
     Costruisce un mapping da URL normattiva.it a percorsi relativi dei file markdown.
@@ -17,6 +18,7 @@ def build_cross_references_mapping_from_urls(url_to_file_mapping):
         dict: mapping da URL normattiva.it a percorso relativo del file markdown
     """
     return url_to_file_mapping
+
 
 def create_index_file(folder_path, main_params, cited_urls, successful, failed):
     """
@@ -41,6 +43,7 @@ def create_index_file(folder_path, main_params, cited_urls, successful, failed):
             f.write("\n")
 
         f.write(f"[Legge principale](./main.md)\n")
+
 
 def convert_with_references(
     url, output_dir=None, quiet=False, keep_xml=False, force_complete=False
@@ -101,7 +104,7 @@ def convert_with_references(
 
         cited_urls = extract_cited_laws(xml_temp_path)
         if not quiet:
-            print(f"📋 Trovati {len(cited_urls)} riferimenti unici", file=sys.stderr)
+            print(f"📋 Trovate {len(cited_urls)} leggi uniche citate", file=sys.stderr)
 
         # Scarica e converte legge principale
         main_md_path = os.path.join(folder_path, "main.md")
