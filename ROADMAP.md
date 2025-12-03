@@ -51,6 +51,37 @@ akoma2md input.xml output.md
 
 ---
 
+## ✅ COMPLETED - v2.0.3 to v2.0.7 (2025-11-04)
+
+### Search & UX Enhancements
+
+**Status**: ✅ Completed
+
+#### Versioni Rilasciate
+- **v2.0.7** (2025-11-04): Permanent link field in frontmatter
+- **v2.0.6** (2025-11-04): Cleaner search output & improved UX
+- **v2.0.5** (2025-11-04): Enhanced Exa search scoring & URL conversion
+- **v2.0.4** (2025-11-04): Enhanced article recognition in search
+- **v2.0.3** (2025-11-04): README update on PyPI (metadata only)
+
+#### Funzionalità Implementate
+- ✅ Campo `url_permanente` nel frontmatter YAML con URN canonico e vigenza
+- ✅ Output ricerca più pulito: verbose mode solo con `--debug-search`
+- ✅ Scoring Exa migliorato: priorità leggi complete vs articoli specifici
+- ✅ Conversione automatica URL articolo→legge completa quando appropriato
+- ✅ Riconoscimento articoli esteso: "articolo 7", "art 7", "art. 7", numeri complessi (16bis, 16ter)
+- ✅ Bonus/penalità intelligenti per selezione risultati Exa
+- ✅ Metadata PyPI aggiornati e corretti
+
+#### Example Output
+```yaml
+---
+url_permanente: https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2005-03-07;82!vig=2025-01-30
+---
+```
+
+---
+
 ## 🟡 NEXT RELEASE - v2.1.0 (Prossima Release)
 
 ### 1. Refactoring `main()` function
@@ -753,5 +784,5 @@ akoma2md/
 
 ---
 
-**Ultimo aggiornamento**: 2025-11-04
-**Versione corrente**: v2.0.2
+**Ultimo aggiornamento**: 2025-12-03
+**Versione corrente**: v2.0.18
