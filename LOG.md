@@ -2,6 +2,29 @@
 
 Questo file documenta gli avanzamenti significativi e le decisioni chiave del progetto `normattiva_2_md`.
 
+## 2025-12-03
+
+### 🚀 Release v2.0.22: Export provvedimenti attuativi
+
+**New feature**: Export legislative implementation measures (provvedimenti attuativi) to CSV
+
+#### Changes
+- New module `provvedimenti_api.py`: fetch and parse from programmagoverno.gov.it
+- CLI: added `--provvedimenti` parameter (requires normattiva.it URL)
+- CSV export: 7 columns (dettagli, governo, fonte_provvedimento, oggetto, provvedimento_previsto, adozione, link_al_provvedimento)
+- Automatic pagination handling
+- UTF-8 encoding
+- File naming: `{anno}_{numero}_provvedimenti.csv`
+
+#### Usage
+```bash
+normattiva2md --provvedimenti "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2024;207" legge.md
+# Generates: legge.md + 2024_207_provvedimenti.csv
+```
+
+#### Credits
+Feature request by Damiano Sabuzi Giuliani (issue #10)
+
 ## 2025-12-02
 
 ### 🔧 Fix GitHub Pages: Workflow Jekyll 4.3 via Actions

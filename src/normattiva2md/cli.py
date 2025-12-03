@@ -15,6 +15,11 @@ from .exa_api import lookup_normattiva_url
 from .akoma_utils import parse_article_reference
 from .markdown_converter import convert_akomantoso_to_markdown_improved
 from .multi_document import convert_with_references
+from .provvedimenti_api import (
+    extract_law_params_from_url,
+    fetch_all_provvedimenti,
+    write_provvedimenti_csv
+)
 
 def main():
     """
@@ -67,6 +72,9 @@ def main():
     # Generare link markdown agli articoli citati su normattiva.it
     {cmd_display} --with-urls "input.xml" -o output.md
     {cmd_display} --with-urls "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" -o output.md
+
+    # Esportare provvedimenti attuativi in CSV
+    {cmd_display} --provvedimenti "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2024;207" -o output.md
             """,
     )
 
@@ -141,6 +149,11 @@ def main():
     parser.add_argument(
         "-q", "--quiet", action="store_true", help="Disabilita output non essenziali"
     )
+    parser.add_argument(
+        "--provvedimenti",
+        action="store_true",
+        help="Cerca e esporta provvedimenti attuativi da programmagoverno.gov.it in formato CSV",
+    )
     args = parser.parse_args()
 
     # Combinazione argomenti posizionali e named
@@ -155,6 +168,15 @@ def main():
     # Esegui load_env_file all'inizio
     # Sebbene load_env_file sia in utils.py, la sua chiamata deve essere qui per inizializzare le variabili d'ambiente prima dell'uso.
     load_env_file()
+
+    # Validate --provvedimenti parameter
+    if args.provvedimenti:
+        if not input_source or not is_normattiva_url(input_source):
+            print(
+                "❌ Error: --provvedimenti requires a normattiva.it URL as input",
+                file=sys.stderr,
+            )
+            sys.exit(1)
 
     # Validate --with-references parameter
     if args.with_references:
@@ -279,104 +301,105 @@ def main():
             success = convert_with_references(
                 input_source, output_file, args.quiet, args.keep_xml, args.completo
             )
-            if success:
-                sys.exit(0)
-            else:
+            if not success:
+                sys.exit(1)
+            # Don't exit on success - allow provvedimenti processing if specified
+            # Skip normal conversion when using --with-references
+        else:
+            # Normal conversion (not --with-references mode)
+
+            # Check for article reference in URL
+            article_ref = parse_article_reference(input_source)
+            if article_ref and not quiet_mode:
+                print(f"Rilevato riferimento articolo: {article_ref}", file=sys.stderr)
+
+            # Determine if we should filter to article or convert complete document
+            force_complete = args.completo
+            if force_complete and article_ref and not quiet_mode:
+                print(
+                    f"Forzando conversione completa della legge (--completo)",
+                    file=sys.stderr,
+                )
+                article_ref = None  # Override article filtering
+
+            # Estrai parametri dalla pagina
+            params, session = extract_params_from_normattiva_url(
+                input_source, quiet=quiet_mode
+            )
+            if not params:
+                print("❌ Impossibile estrarre parametri dall'URL", file=sys.stderr)
                 sys.exit(1)
 
-        # Check for article reference in URL
-        article_ref = parse_article_reference(input_source)
-        if article_ref and not quiet_mode:
-            print(f"Rilevato riferimento articolo: {article_ref}", file=sys.stderr)
-
-        # Determine if we should filter to article or convert complete document
-        force_complete = args.completo
-        if force_complete and article_ref and not quiet_mode:
-            print(
-                f"Forzando conversione completa della legge (--completo)",
-                file=sys.stderr,
-            )
-            article_ref = None  # Override article filtering
-
-        # Estrai parametri dalla pagina
-        params, session = extract_params_from_normattiva_url(
-            input_source, quiet=quiet_mode
-        )
-        if not params:
-            print("❌ Impossibile estrarre parametri dall'URL", file=sys.stderr)
-            sys.exit(1)
-
-        if not quiet_mode:
-            print(f"\nParametri estratti:", file=sys.stderr)
-            print(f"  dataGU: {params['dataGU']}", file=sys.stderr)
-            print(f"  codiceRedaz: {params['codiceRedaz']}", file=sys.stderr)
-            print(f"  dataVigenza: {params['dataVigenza']}\n", file=sys.stderr)
-
-        # Crea file XML temporaneo con tempfile module (più sicuro)
-        temp_fd, xml_temp_path = tempfile.mkstemp(
-            suffix=f"_{params['codiceRedaz']}.xml", prefix="akoma2md_"
-        )
-        os.close(temp_fd)  # Close file descriptor, we'll write with requests
-
-        # Scarica XML
-        if not download_akoma_ntoso(params, xml_temp_path, session, quiet=quiet_mode):
-            print("❌ Errore durante il download del file XML", file=sys.stderr)
-            sys.exit(1)
-
-        # Converti a Markdown
-        if not quiet_mode:
-            print(f"\nConversione in Markdown...", file=sys.stderr)
-
-        # Prepare metadata dict for front matter
-        metadata = {
-            "dataGU": params["dataGU"],
-            "codiceRedaz": params["codiceRedaz"],
-            "dataVigenza": params["dataVigenza"],
-            "url": input_source,  # The original URL
-            "url_xml": f"https://www.normattiva.it/do/atto/caricaAKN?dataGU={params['dataGU']}&codiceRedaz={params['codiceRedaz']}&dataVigenza={params['dataVigenza']}",
-        }
-
-        # Add article reference to metadata if present (or if overridden by --completo)
-        if article_ref:
-            metadata["article"] = article_ref
-        elif force_complete and parse_article_reference(input_source):
-            # Note that complete conversion was forced
-            metadata["article"] = parse_article_reference(
-                input_source
-            )  # Include original article ref for reference
-
-        success = convert_akomantoso_to_markdown_improved(
-            xml_temp_path, output_file, metadata, article_ref, with_urls=args.with_urls
-        )
-
-        if success:
             if not quiet_mode:
-                if output_file:
-                    print(f"✅ Conversione completata: {output_file}", file=sys.stderr)
-                else:
-                    print(
-                        f"✅ Conversione completata (output a stdout)", file=sys.stderr
-                    )
+                print(f"\nParametri estratti:", file=sys.stderr)
+                print(f"  dataGU: {params['dataGU']}", file=sys.stderr)
+                print(f"  codiceRedaz: {params['codiceRedaz']}", file=sys.stderr)
+                print(f"  dataVigenza: {params['dataVigenza']}\n", file=sys.stderr)
 
-            # Rimuovi XML temporaneo se non richiesto diversamente
-            if not args.keep_xml:
-                try:
-                    os.remove(xml_temp_path)
-                    if not quiet_mode:
-                        print(f"File XML temporaneo rimosso", file=sys.stderr)
-                except OSError as e:
-                    print(
-                        f"Attenzione: impossibile rimuovere file temporaneo: {e}",
-                        file=sys.stderr,
-                    )
-            else:
+            # Crea file XML temporaneo con tempfile module (più sicuro)
+            temp_fd, xml_temp_path = tempfile.mkstemp(
+                suffix=f"_{params['codiceRedaz']}.xml", prefix="akoma2md_"
+            )
+            os.close(temp_fd)  # Close file descriptor, we'll write with requests
+
+            # Scarica XML
+            if not download_akoma_ntoso(params, xml_temp_path, session, quiet=quiet_mode):
+                print("❌ Errore durante il download del file XML", file=sys.stderr)
+                sys.exit(1)
+
+            # Converti a Markdown
+            if not quiet_mode:
+                print(f"\nConversione in Markdown...", file=sys.stderr)
+
+            # Prepare metadata dict for front matter
+            metadata = {
+                "dataGU": params["dataGU"],
+                "codiceRedaz": params["codiceRedaz"],
+                "dataVigenza": params["dataVigenza"],
+                "url": input_source,  # The original URL
+                "url_xml": f"https://www.normattiva.it/do/atto/caricaAKN?dataGU={params['dataGU']}&codiceRedaz={params['codiceRedaz']}&dataVigenza={params['dataVigenza']}",
+            }
+
+            # Add article reference to metadata if present (or if overridden by --completo)
+            if article_ref:
+                metadata["article"] = article_ref
+            elif force_complete and parse_article_reference(input_source):
+                # Note that complete conversion was forced
+                metadata["article"] = parse_article_reference(
+                    input_source
+                )  # Include original article ref for reference
+
+            success = convert_akomantoso_to_markdown_improved(
+                xml_temp_path, output_file, metadata, article_ref, with_urls=args.with_urls
+            )
+
+            if success:
                 if not quiet_mode:
-                    print(f"File XML mantenuto: {xml_temp_path}", file=sys.stderr)
+                    if output_file:
+                        print(f"✅ Conversione completata: {output_file}", file=sys.stderr)
+                    else:
+                        print(f"✅ Conversione completata (output a stdout)", file=sys.stderr)
 
-            sys.exit(0)
-        else:
-            print("❌ Errore durante la conversione", file=sys.stderr)
-            sys.exit(1)
+                # Rimuovi XML temporaneo se non richiesto diversamente
+                if not args.keep_xml:
+                    try:
+                        os.remove(xml_temp_path)
+                        if not quiet_mode:
+                            print(f"File XML temporaneo rimosso", file=sys.stderr)
+                    except OSError as e:
+                        print(
+                            f"Attenzione: impossibile rimuovere file temporaneo: {e}",
+                            file=sys.stderr,
+                        )
+                else:
+                    if not quiet_mode:
+                        print(f"File XML mantenuto: {xml_temp_path}", file=sys.stderr)
+
+                # Don't exit here - allow provvedimenti processing to run if specified
+                # sys.exit(0) removed to allow --provvedimenti to execute
+            else:
+                print("❌ Errore durante la conversione", file=sys.stderr)
+                sys.exit(1)
 
     else:
         # Gestione file XML locale
@@ -399,3 +422,42 @@ def main():
         elif not success:
             print("❌ Errore durante la conversione.", file=sys.stderr)
             sys.exit(1)
+
+    # Handle --provvedimenti if specified
+    if args.provvedimenti:
+        quiet_mode = args.quiet
+        anno, numero = extract_law_params_from_url(input_source)
+
+        if not anno or not numero:
+            print(
+                f"❌ Error: Unable to extract law year and number from URL: {input_source}",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+
+        if not quiet_mode:
+            print(f"\n🔍 Searching for implementation measures for law {numero}/{anno}...", file=sys.stderr)
+
+        provvedimenti_data = fetch_all_provvedimenti(numero, anno, quiet=quiet_mode)
+
+        if provvedimenti_data is None:
+            # Network error on first page
+            print(
+                f"❌ Error: Failed to fetch implementation measures from programmagoverno.gov.it",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+        elif not provvedimenti_data:
+            # No results found
+            print(
+                f"No implementation measures found for law {numero}/{anno}",
+                file=sys.stderr,
+            )
+            # Continue - this is not an error
+        else:
+            # Write CSV
+            csv_written = write_provvedimenti_csv(
+                provvedimenti_data, anno, numero, output_file, quiet=quiet_mode
+            )
+            if not csv_written:
+                sys.exit(1)

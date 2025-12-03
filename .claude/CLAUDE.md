@@ -26,6 +26,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - `setup.py`: Package configuration for PyPI distribution
 
+- `provvedimenti_api.py`: Provvedimenti attuativi export module
+  - Entry point: `write_provvedimenti_csv(url, output_md_path)` orchestrates the full workflow
+  - URL parsing: `extract_law_params_from_url(url)` extracts anno/numero from normattiva.it URLs
+  - Data fetching: `fetch_all_provvedimenti(numero, anno)` handles pagination from programmagoverno.gov.it
+  - HTML parsing: `parse_provvedimenti_html(html_content)` extracts structured data with regex
+  - CSV export: `export_provvedimenti_csv(data, csv_path)` writes UTF-8 CSV with 7 columns
+  - User interaction: `prompt_overwrite(file_path)` asks confirmation before overwriting
+
 ### XML Processing
 
 The converter handles Akoma Ntoso 3.0 namespace: `http://docs.oasis-open.org/legaldocml/ns/akn/3.0`
@@ -63,6 +71,11 @@ akoma2md -i input.xml -o output.md
 # Keep temporary XML from URL
 akoma2md "URL" output.md --keep-xml
 akoma2md "URL" --keep-xml > output.md
+
+# Export provvedimenti attuativi to CSV
+akoma2md --provvedimenti "URL" output.md
+normattiva2md --provvedimenti "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2024;207" legge.md
+# Generates: legge.md + 2024_207_provvedimenti.csv
 ```
 
 ### Alternative: Fetching with specific parameters

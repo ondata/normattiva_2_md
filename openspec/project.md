@@ -1,17 +1,25 @@
 # Project Context
 
+## Project Information
+- **Name**: normattiva2md
+- **Current Version**: 2.0.21
+- **Author**: Andrea Borruso <aborruso@gmail.com>
+- **Repository**: https://github.com/ondata/normattiva_2_md
+- **License**: MIT
+
 ## Purpose
 Normattiva2MD (formerly Akoma2MD) is a command-line tool that converts Akoma Ntoso XML documents (particularly Italian legal documents from normattiva.it) into readable Markdown format. The primary goal is to provide legal documents in a format optimized for Large Language Models (LLMs) and AI applications, enabling better legal analysis, Q&A systems, and automated processing.
 
 ## Tech Stack
 - **Language**: Python 3.7+
-- **Packaging**: pyproject.toml (modern Python packaging)
+- **Packaging**: pyproject.toml (modern Python packaging), setuptools>=45, wheel, setuptools_scm[toml]>=6.2
 - **CLI Framework**: argparse (standard library)
-- **Build Tools**: PyInstaller (standalone executables), setuptools
+- **Build Tools**: PyInstaller (standalone executables), setuptools, Makefile for automation
 - **Testing**: unittest (standard library)
 - **CI/CD**: GitHub Actions
 - **Dependencies**: requests>=2.25.0 (only external dependency)
 - **External APIs**: Exa AI API for natural language document search
+- **Package Distribution**: PyPI (https://pypi.org/project/normattiva2md/)
 
 ## Project Conventions
 
@@ -42,6 +50,12 @@ Normattiva2MD (formerly Akoma2MD) is a command-line tool that converts Akoma Nto
 - **Test data**: Real XML samples from normattiva.it in test_data/ directory
 - **Cross-platform verification**: Test both Python script and PyInstaller executables
 - **Coverage**: Test conversion of various legal document structures
+- **Make commands**:
+  - `make test` - Run all tests (unittest + integration tests)
+  - `make build` - Build standalone executable with PyInstaller
+  - `make install` - Install package locally for development
+  - `make package` - Create distribution packages (sdist + wheel)
+  - `make clean` - Remove temporary files and build artifacts
 
 ### Git Workflow
 - **Change tracking**: LOG.md file with YYYY-MM-DD dated entries for significant changes
@@ -60,11 +74,13 @@ Normattiva2MD (formerly Akoma2MD) is a command-line tool that converts Akoma Nto
 - **Entry-into-force tracking**: Automatic extraction of law effectiveness dates from XML notes
 
 ## Important Constraints
-- **Python compatibility**: Must work on Python 3.7+ (no modern features like type hints)
-- **Zero external dependencies**: Only requests library allowed beyond standard library
-- **Cross-platform**: Linux and Windows executable distribution
+- **Python compatibility**: Must work on Python 3.7+ through 3.12+ (no modern features like type hints)
+- **Minimal external dependencies**: Only requests>=2.25.0 library allowed beyond standard library
+- **Cross-platform**: Linux and Windows executable distribution via PyInstaller
 - **Legal accuracy**: Preserve exact legal text and structure during conversion
 - **Performance**: Handle large legal documents efficiently
+- **Dual CLI naming**: Maintain both `normattiva2md` (preferred) and `akoma2md` (legacy) commands
+- **Version synchronization**: Keep version strings aligned across pyproject.toml, setup.py, and convert_akomantoso.py
 
 ## External Dependencies
 - **normattiva.it**: Italian official legal document repository for URL-based document fetching

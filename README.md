@@ -138,7 +138,29 @@ normattiva2md -i input.xml -o output.md
 normattiva2md --input input.xml --output output.md
 ```
 
-### Metodo 3: Ricerca in linguaggio naturale (con Exa AI)
+### Metodo 3: Esportazione provvedimenti attuativi
+
+Esporta i provvedimenti attuativi previsti da una legge in formato CSV:
+
+```bash
+# Esporta provvedimenti in CSV (richiede URL normattiva.it)
+normattiva2md --provvedimenti "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2024;207" legge.md
+
+# Genera due file:
+# - legge.md: conversione markdown della legge
+# - 2024_207_provvedimenti.csv: provvedimenti attuativi in formato CSV
+
+# Solo conversione markdown (nessun CSV se non ci sono provvedimenti)
+normattiva2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:1973;295" legge.md
+```
+
+**Formato CSV generato:**
+- 7 colonne: `dettagli`, `governo`, `fonte_provvedimento`, `oggetto`, `provvedimento_previsto`, `adozione`, `link_al_provvedimento`
+- Encoding: UTF-8
+- Nome file: `{anno}_{numero}_provvedimenti.csv`
+- Posizione: stessa directory del file markdown
+
+### Metodo 4: Ricerca in linguaggio naturale (con Exa AI)
 
 **⚠️ Richiede API key Exa AI configurata**
 
@@ -232,6 +254,10 @@ normattiva2md --help
 # Generare link markdown agli articoli citati su normattiva.it
 normattiva2md --with-urls input.xml output.md
 normattiva2md --with-urls "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" legge_con_link.md
+
+# Esportare provvedimenti attuativi in CSV
+normattiva2md --provvedimenti "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2024;207" legge.md
+# Genera: legge.md + 2024_207_provvedimenti.csv
 ```
 
 ### Opzioni disponibili
@@ -263,6 +289,7 @@ opzioni:
    -c, --completo        Forza download completo anche con URL articolo-specifico
    --with-references     Scarica anche tutti i riferimenti legislativi citati
    --with-urls           Genera link markdown agli articoli citati su normattiva.it
+   --provvedimenti       Esporta provvedimenti attuativi in CSV (richiede URL normattiva.it)
    --debug-search        Modalità debug interattiva per la ricerca (mostra tutti i risultati)
    --auto-select         Seleziona automaticamente il miglior risultato (default: True)
    --exa-api-key EXA_API_KEY
