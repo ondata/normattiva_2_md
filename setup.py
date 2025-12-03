@@ -8,16 +8,17 @@ import os
 
 # Leggi il contenuto del README se esiste
 def read_readme():
-    readme_path = os.path.join(os.path.dirname(__file__), 'README.md')
+    # Per il pacchetto akoma2md deprecato, usa il README specifico
+    readme_path = os.path.join(os.path.dirname(__file__), 'README_AKOMA2MD.md')
     if os.path.exists(readme_path):
         with open(readme_path, 'r', encoding='utf-8') as f:
             return f.read()
-    return "Convertitore da XML Akoma Ntoso a Markdown"
+    return "⚠️ DEPRECATED: Use normattiva2md instead. | Convertitore da XML Akoma Ntoso a Markdown"
 
 setup(
     name="akoma2md",
-    version="2.0.19",
-    description="Convertitore da XML Akoma Ntoso a formato Markdown con download automatico delle leggi citate e cross-references inline (CLI: normattiva2md)",
+    version="2.0.20",
+    description="⚠️ DEPRECATED - Use 'normattiva2md' instead | Convertitore da XML Akoma Ntoso a Markdown (CLI: normattiva2md)",
     long_description=read_readme(),
     long_description_content_type="text/markdown",
     author="Andrea Borruso",

@@ -1,0 +1,2 @@
+[console_scripts]
+normattiva2md = normattiva2md.cli:main
