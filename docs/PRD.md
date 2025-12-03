@@ -1,12 +1,12 @@
-# Product Requirements Document (PRD) - akoma2md
+# Product Requirements Document (PRD) - normattiva2md
 
 ## 1. Introduzione
 
-Questo documento descrive i requisiti per `akoma2md`, uno strumento a riga di comando progettato per convertire file XML conformi allo standard Akoma Ntoso in documenti Markdown leggibili. La finalità di base è produrre file facilmente condivisibili con modelli linguistici di grandi dimensioni (LLM) e altri sistemi di Intelligenza Artificiale, così da semplificare analisi, verifica e automazione dei contenuti normativi.
+Questo documento descrive i requisiti per `normattiva2md`, uno strumento a riga di comando progettato per convertire file XML conformi allo standard Akoma Ntoso in documenti Markdown leggibili. La finalità di base è produrre file facilmente condivisibili con modelli linguistici di grandi dimensioni (LLM) e altri sistemi di Intelligenza Artificiale, così da semplificare analisi, verifica e automazione dei contenuti normativi.
 
 ## 2. Scopo
 
-L'obiettivo principale di `akoma2md` è fornire un modo semplice ed efficiente per convertire le norme pubblicate su `normattiva.it` (esportabili in formato Akoma Ntoso) in documenti Markdown. Questo formato testuale strutturato è ideale per essere utilizzato come input per Large Language Models (LLM) e sistemi di Intelligenza Artificiale, facilitando la creazione di bot specializzati basati su normative legali. In particolare, il progetto mira a rendere immediato il passaggio da XML complessi a Markdown pronto per essere incollato o caricato come contesto in strumenti LLM, riducendo tempi di preparazione e rischio di errori.
+L'obiettivo principale di `normattiva2md` è fornire un modo semplice ed efficiente per convertire le norme pubblicate su `normattiva.it` (esportabili in formato Akoma Ntoso) in documenti Markdown. Questo formato testuale strutturato è ideale per essere utilizzato come input per Large Language Models (LLM) e sistemi di Intelligenza Artificiale, facilitando la creazione di bot specializzati basati su normative legali. In particolare, il progetto mira a rendere immediato il passaggio da XML complessi a Markdown pronto per essere incollato o caricato come contesto in strumenti LLM, riducendo tempi di preparazione e rischio di errori.
 
 ## 3. Funzionalità
 
@@ -39,9 +39,9 @@ L'obiettivo principale di `akoma2md` è fornire un modo semplice ed efficiente p
 
 ### 3.3. Interfaccia a Riga di Comando (CLI)
 
-*   **Argomenti Posizionali:** Supporto per l'input e l'output come argomenti posizionali (es. `akoma2md input.xml output.md`).
-*   **Argomenti Nominati:** Supporto per argomenti nominati per input e output (es. `akoma2md -i input.xml -o output.md` o `akoma2md --input input.xml --output output.md`).
-*   **Input da URL:** Supporto diretto per URL normattiva.it come input (es. `akoma2md "https://www.normattiva.it/..." output.md`).
+*   **Argomenti Posizionali:** Supporto per l'input e l'output come argomenti posizionali (es. `normattiva2md input.xml output.md`).
+*   **Argomenti Nominati:** Supporto per argomenti nominati per input e output (es. `normattiva2md -i input.xml -o output.md` o `normattiva2md --input input.xml --output output.md`).
+*   **Input da URL:** Supporto diretto per URL normattiva.it come input (es. `normattiva2md "https://www.normattiva.it/..." output.md`).
 *   **Opzioni Avanzate:** Flag per mantenere file XML temporanei scaricati (`--keep-xml`).
 *   **Messaggi di Errore:** Fornire messaggi di errore chiari in caso di file mancanti, errori di parsing XML, problemi di rete o problemi di scrittura del file.
 *   **Messaggi di Successo:** Conferma della corretta conversione con dettagli sui file generati.

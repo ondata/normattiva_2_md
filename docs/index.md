@@ -29,7 +29,7 @@ title: Converti leggi italiane in Markdown AI-ready
             <div class="bg-gray-900 bg-opacity-50 backdrop-blur-sm rounded-lg p-6 max-w-2xl mx-auto">
                 <div class="text-left">
                     <div class="text-sm text-blue-200 mb-2">Quick Install</div>
-                    <pre class="text-left"><code class="language-bash">pip install akoma2md
+                    <pre class="text-left"><code class="language-bash">pip install normattiva2md
 normattiva2md "https://normattiva.it/..." output.md</code></pre>
                 </div>
             </div>
@@ -302,7 +302,7 @@ dataVigenza: 20250130
                     </p>
                     <div class="bg-gray-900 rounded-lg overflow-hidden mb-6">
                         <pre><code class="language-bash"># Installa da PyPI
-pip install akoma2md
+pip install normattiva2md
 
 # Verifica installazione
 normattiva2md --version
@@ -315,11 +315,6 @@ normattiva2md input.xml output.md
 
 # Output a stdout (per piping)
 normattiva2md input.xml > output.md</code></pre>
-                    </div>
-                    <div class="bg-blue-50 border-l-4 border-blue-500 p-4">
-                        <p class="text-sm text-gray-700">
-                            <span class="font-semibold">Nota:</span> Entrambi i comandi <code class="bg-white px-2 py-1 rounded">normattiva2md</code> e <code class="bg-white px-2 py-1 rounded">akoma2md</code> funzionano identicamente.
-                        </p>
                     </div>
                 </div>
             </div>
@@ -335,8 +330,8 @@ normattiva2md input.xml > output.md</code></pre>
                         <pre><code class="language-bash"># Installa uv (se non già installato)
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Installa akoma2md come tool
-uv tool install akoma2md
+# Installa normattiva2md come tool
+uv tool install normattiva2md
 
 # Uso
 normattiva2md "URL" output.md</code></pre>
@@ -430,7 +425,7 @@ normattiva2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legi
                         </svg>
                         Documentazione
                     </a>
-                    <a href="https://pypi.org/project/akoma2md/" target="_blank" class="inline-flex items-center gap-2 bg-gray-200 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-300 transition">
+                    <a href="https://pypi.org/project/normattiva2md/" target="_blank" class="inline-flex items-center gap-2 bg-gray-200 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-300 transition">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                         </svg>

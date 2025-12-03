@@ -1,10 +1,10 @@
 # 🔄 Normattiva2MD - Convertitore Akoma Ntoso in Markdown
 
-[![Versione PyPI](https://img.shields.io/pypi/v/akoma2md.svg)](https://pypi.org/project/akoma2md/)
+[![Versione PyPI](https://img.shields.io/pypi/v/normattiva2md.svg)](https://pypi.org/project/normattiva2md/)
 [![Versione Python](https://img.shields.io/badge/python-3.7+-blue.svg)](https://python.org)
 [![Licenza](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-**Akoma2MD** è uno strumento da riga di comando progettato per convertire documenti XML in formato **Akoma Ntoso** (in particolare le norme pubblicate su `normattiva.it`) in documenti **Markdown** leggibili e ben formattati. L'obiettivo principale è offrire un formato compatto e immediatamente riutilizzabile quando le norme devono essere fornite come contesto a un **Large Language Model (LLM)** o elaborate in pipeline di Intelligenza Artificiale.
+**Normattiva2MD** è uno strumento da riga di comando progettato per convertire documenti XML in formato **Akoma Ntoso** (in particolare le norme pubblicate su `normattiva.it`) in documenti **Markdown** leggibili e ben formattati. L'obiettivo principale è offrire un formato compatto e immediatamente riutilizzabile quando le norme devono essere fornite come contesto a un **Large Language Model (LLM)** o elaborate in pipeline di Intelligenza Artificiale.
 
 ## 🎯 Perché Markdown per le norme?
 
@@ -35,21 +35,18 @@ Convertire le norme legali da XML Akoma Ntoso a Markdown offre vantaggi signific
 
 ### Installazione da PyPI (Raccomandato)
 
-Il pacchetto è pubblicato su [PyPI](https://pypi.org/project/akoma2md/) come `akoma2md`.
+Il pacchetto è pubblicato su [PyPI](https://pypi.org/project/normattiva2md/) come `normattiva2md`.
 
 ```bash
 # Con uv
-uv tool install akoma2md
+uv tool install normattiva2md
 
 # Con pip
-pip install akoma2md
+pip install normattiva2md
 
-# Utilizzo (entrambi i comandi funzionano)
-normattiva2md input.xml output.md  # Nuovo comando raccomandato
-akoma2md input.xml output.md       # Vecchio comando (compatibilità)
+# Utilizzo
+normattiva2md input.xml output.md
 ```
-
-> **💡 Nota sulla compatibilità**: Entrambi i comandi `normattiva2md` e `akoma2md` funzionano identicamente. Il nuovo nome `normattiva2md` è raccomandato per chiarezza, ma il vecchio comando rimane disponibile per compatibilità durante la transizione.
 
 ### Configurazione Exa AI API (opzionale - per ricerca in linguaggio naturale)
 
@@ -92,8 +89,7 @@ normattiva2md -s "legge stanca accessibilità" --exa-api-key "your-exa-api-key" 
 git clone https://github.com/aborruso/normattiva_2_md.git
 cd normattiva_2_md
 pip install -e .
-normattiva2md input.xml output.md  # Nuovo comando raccomandato
-# Oppure: akoma2md input.xml output.md  # Vecchio comando (compatibilità)
+normattiva2md input.xml output.md
 ```
 
 ### Esecuzione diretta (senza installazione)

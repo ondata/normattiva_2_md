@@ -63,9 +63,9 @@ I risultati sono presentati come pagina HTML con:
 - **Nessuna documentazione**: Le API non sono documentate ufficialmente
 - **Fragilità**: Cambiamenti alla struttura HTML romperebbero il parsing
 
-## Soluzione attuale in akoma2md
+## Soluzione attuale in normattiva2md
 
-Il progetto akoma2md usa **Gemini CLI** come intermediario intelligente per:
+Il progetto normattiva2md usa **Gemini CLI** come intermediario intelligente per:
 
 1. Interpretare query in linguaggio naturale
 2. Cercare su normattiva.it
@@ -147,7 +147,7 @@ Se normattiva.it pubblicasse API JSON ufficiali, si potrebbero implementare:
 ## Risorse
 
 - Sito: https://www.normattiva.it
-- Progetto akoma2md: https://github.com/aborruso/normattiva_2_md
+- Progetto normattiva2md: https://github.com/aborruso/normattiva_2_md
 - Gemini CLI: https://github.com/google-gemini/gemini-cli
 
 ## Aggiornamenti
