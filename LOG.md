@@ -1084,3 +1084,33 @@ Comando testato: `python3 convert_akomantoso.py --search "legge di bilancio 2024
 - Rimossi tutti i file `output*.md` dalla root del progetto.
 - Aggiunto il pattern `output*.md` al `.gitignore`.
 - Committate e pushate le modifiche.
+
+## 2025-12-04
+
+### Planning: API Programmabile
+
+Creata pianificazione completa per rendere normattiva2md usabile da notebook e script Python:
+
+**Documentazione creata:**
+- `planning/api-programmabile/` - cartella completa pianificazione
+- 7 documenti tecnici dettagliati (architettura, specs, models, exceptions, plan, examples, index)
+- Piano implementazione 6 fasi (14-21h totali)
+
+**Decisioni architetturali:**
+- Stile misto: funzioni standalone + classe `Converter`
+- Output: oggetto `ConversionResult` con markdown + metadata
+- Errori: strategia ibrida (eccezioni gravi + None per soft errors)
+- Type hints completi (Python 3.7+ compatible)
+- Logging invece di print() per API
+- Struttura preparata per future versioni async
+
+**File pianificati:**
+- `src/normattiva2md/exceptions.py` - sistema eccezioni custom
+- `src/normattiva2md/models.py` - dataclasses ConversionResult, SearchResult
+- `src/normattiva2md/api.py` - API programmabile
+- `examples/notebook_quickstart.ipynb` - Jupyter notebook dimostrativo
+- `docs/notebook_examples.md` - esempi pratici completi
+
+**Compatibilità:** 100% backward compatible - CLI funziona esattamente come prima
+
+**Prossimo step:** Review pianificazione → implementazione Fase 1 (Foundation)
