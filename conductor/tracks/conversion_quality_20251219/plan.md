@@ -18,7 +18,7 @@ Goal: Implement the core logic to validate Markdown output against expected stru
 - [x] Task: Implement `StructureComparer`. [e3a2a64]
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Validation Logic' (Protocol in workflow.md)
 
-## Phase 3: Monitoring & CLI Integration
+## Phase 3: Monitoring & CLI Integration [checkpoint: ebc93c3]
 Goal: Integrate validation into the main CLI and provide actionable feedback.
 
 - [x] Task: Write tests for the `--validate` flag in the CLI. [cd2aeb9]
