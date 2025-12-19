@@ -21,7 +21,7 @@ Goal: Implement the core logic to validate Markdown output against expected stru
 ## Phase 3: Monitoring & CLI Integration
 Goal: Integrate validation into the main CLI and provide actionable feedback.
 
-- [ ] Task: Write tests for the `--validate` flag in the CLI.
-- [ ] Task: Implement the `--validate` flag to trigger validation after conversion.
+- [x] Task: Write tests for the `--validate` flag in the CLI. [cd2aeb9]
+- [x] Task: Implement the `--validate` flag to trigger validation after conversion. [cd2aeb9]
 - [ ] Task: Create a summary report generator for conversion quality metrics.
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Integration' (Protocol in workflow.md)
