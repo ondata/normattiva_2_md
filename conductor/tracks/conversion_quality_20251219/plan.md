@@ -9,7 +9,7 @@ Goal: Establish the baseline for quality measurement and validation.
 - [x] Task: Define the schema for the conversion validation report (JSON/Markdown). [ee1862b]
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Foundation' (Protocol in workflow.md)
 
-## Phase 2: Structural Validation Logic
+## Phase 2: Structural Validation Logic [checkpoint: 9c5f643]
 Goal: Implement the core logic to validate Markdown output against expected structural rules.
 
 - [x] Task: Write tests for the `MarkdownValidator` class (detecting header hierarchy, front matter completeness). [cd58e41]
