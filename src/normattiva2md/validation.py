@@ -1,5 +1,6 @@
 import re
 import datetime
+from .constants import AKN_NAMESPACE
 
 class MarkdownValidator:
     """
@@ -96,3 +97,44 @@ class MarkdownValidator:
             }
 
         return {"check_name": "Header Structure", "status": "PASS", "message": "Header structure is valid"}
+
+
+class StructureComparer:
+    """
+    Compares the structure of the source XML with the generated Markdown.
+    """
+    
+    def compare(self, xml_root, markdown_text):
+        # XML counting
+        # Try finding with namespace
+        articles_xml = xml_root.findall(".//akn:article", AKN_NAMESPACE)
+        if not articles_xml:
+             # Try without namespace (test data or older XML)
+             articles_xml = xml_root.findall(".//article")
+        
+        if not articles_xml:
+             # Try 'art' tag (NIR or test data)
+             articles_xml = xml_root.findall(".//akn:art", AKN_NAMESPACE)
+             if not articles_xml:
+                 articles_xml = xml_root.findall(".//art")
+        
+        xml_count = len(articles_xml)
+
+        # Markdown counting
+        # Count lines starting with "#### Art."
+        md_count = len(re.findall(r"^#### Art.", markdown_text, re.MULTILINE))
+
+        if xml_count == md_count:
+            return {
+                "check_name": "Structure Comparison",
+                "status": "PASS",
+                "message": f"Article count matches: {xml_count}",
+                "details": {"xml_count": xml_count, "md_count": md_count}
+            }
+        else:
+            return {
+                "check_name": "Structure Comparison",
+                "status": "FAIL",
+                "message": f"Article count mismatch: XML={xml_count}, MD={md_count}",
+                "details": {"xml_count": xml_count, "md_count": md_count}
+            }
