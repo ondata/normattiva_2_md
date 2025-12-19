@@ -1,5 +1,6 @@
 import re
 import datetime
+import json
 from .constants import AKN_NAMESPACE
 
 class MarkdownValidator:
@@ -138,3 +139,22 @@ class StructureComparer:
                 "message": f"Article count mismatch: XML={xml_count}, MD={md_count}",
                 "details": {"xml_count": xml_count, "md_count": md_count}
             }
+
+
+class ReportGenerator:
+    """
+    Generates summary reports for conversion quality.
+    """
+    
+    def generate_json(self, v_report, c_report, source_path):
+        """
+        Generate a comprehensive JSON report.
+        """
+        report = {
+            "source": source_path,
+            "timestamp": datetime.datetime.now().isoformat(),
+            "overall_status": "PASS" if v_report["status"] == "PASS" and c_report["status"] == "PASS" else "FAIL",
+            "markdown_validation": v_report,
+            "structure_comparison": c_report
+        }
+        return json.dumps(report, indent=2)

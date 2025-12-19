@@ -1,5 +1,6 @@
 import unittest
-from src.normattiva2md.validation import MarkdownValidator
+import textwrap
+from src.normattiva2md.validation import MarkdownValidator, ReportGenerator
 
 class TestMarkdownValidator(unittest.TestCase):
     def setUp(self):
@@ -7,7 +8,20 @@ class TestMarkdownValidator(unittest.TestCase):
 
     def test_validate_valid_markdown(self):
         # H1 -> H2 -> H4 (skipping H3) should be valid
-        markdown = """---\nurl: https://example.com\ndataGU: 20050307\ncodiceRedaz: '105G0104'\ndataVigenza: 20251101\n---\n\n# Titolo\n\n## Capo I\n\n#### Art. 1\n"""
+        markdown = textwrap.dedent("""
+            ---
+            url: https://example.com
+            dataGU: 20050307
+            codiceRedaz: '105G0104'
+            dataVigenza: 20251101
+            ---
+
+            # Titolo
+
+            ## Capo I
+
+            #### Art. 1
+            """)
         result = self.validator.validate(markdown)
         self.assertEqual(result["status"], "PASS", f"Should pass but got errors: {result.get('errors')}")
 
@@ -19,22 +33,58 @@ class TestMarkdownValidator(unittest.TestCase):
 
     def test_fail_invalid_header_level(self):
         # H5 is not allowed
-        markdown = """--- \nurl: https://example.com\ndataGU: 20050307\ncodiceRedaz: '105G0104'\ndataVigenza: 20251101\n--- \n\n# Titolo\n##### Invalid Level\n"""
+        markdown = textwrap.dedent("""
+            ---
+            url: https://example.com
+            dataGU: 20050307
+            codiceRedaz: '105G0104'
+            dataVigenza: 20251101
+            ---
+
+            # Titolo
+            ##### Invalid Level
+            """)
         result = self.validator.validate(markdown)
         self.assertEqual(result["status"], "FAIL")
         self.assertTrue(any("h5" in e["message"].lower() or "level" in e["message"].lower() for e in result["errors"]))
 
     def test_fail_multiple_h1(self):
-        markdown = """--- \nurl: https://example.com\ndataGU: 20050307\ncodiceRedaz: '105G0104'\ndataVigenza: 20251101\n--- \n\n# Titolo 1\n# Titolo 2\n"""
+        markdown = textwrap.dedent("""
+            ---
+            url: https://example.com
+            dataGU: 20050307
+            codiceRedaz: '105G0104'
+            dataVigenza: 20251101
+            ---
+
+            # Titolo 1
+            # Titolo 2
+            """)
         result = self.validator.validate(markdown)
         self.assertEqual(result["status"], "FAIL")
         self.assertTrue(any("multiple document titles" in e["message"].lower() for e in result["errors"]))
 
     def test_fail_missing_required_metadata(self):
-        markdown = """--- \nurl: https://example.com\n--- \n# Titolo\n"""
+        markdown = textwrap.dedent("""
+            ---
+            url: https://example.com
+            ---
+            # Titolo
+            """)
         result = self.validator.validate(markdown)
         self.assertEqual(result["status"], "FAIL")
         self.assertTrue(any("metadata" in e["message"].lower() or "dataGU" in e["message"] for e in result["errors"]))
+
+class TestReportGenerator(unittest.TestCase):
+    def test_generate_json_report(self):
+        generator = ReportGenerator()
+        v_report = {"status": "PASS", "checks": []}
+        c_report = {"status": "PASS", "message": "OK"}
+        report_json = generator.generate_json(v_report, c_report, "sample.xml")
+        import json
+        report = json.loads(report_json)
+        self.assertEqual(report["overall_status"], "PASS")
+        self.assertEqual(report["source"], "sample.xml")
 
 if __name__ == "__main__":
     unittest.main()
