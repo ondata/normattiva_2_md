@@ -12,8 +12,8 @@ Goal: Establish the baseline for quality measurement and validation.
 ## Phase 2: Structural Validation Logic
 Goal: Implement the core logic to validate Markdown output against expected structural rules.
 
-- [ ] Task: Write tests for the `MarkdownValidator` class (detecting header hierarchy, front matter completeness).
-- [ ] Task: Implement `MarkdownValidator` to pass the tests.
+- [x] Task: Write tests for the `MarkdownValidator` class (detecting header hierarchy, front matter completeness). [cd58e41]
+- [x] Task: Implement `MarkdownValidator` to pass the tests. [cd58e41]
 - [ ] Task: Write tests for `StructureComparer` (comparing XML nodes count vs MD structure).
 - [ ] Task: Implement `StructureComparer`.
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Validation Logic' (Protocol in workflow.md)
