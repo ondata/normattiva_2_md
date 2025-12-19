@@ -2,6 +2,7 @@ import os
 import sys
 import argparse
 import tempfile
+import xml.etree.ElementTree as ET
 
 from .constants import VERSION
 from .utils import sanitize_output_path, generate_snake_case_filename, load_env_file
@@ -20,6 +21,46 @@ from .provvedimenti_api import (
     fetch_all_provvedimenti,
     write_provvedimenti_csv,
 )
+from .validation import MarkdownValidator, StructureComparer
+
+
+def perform_validation(xml_path, md_path, quiet=False):
+    """
+    Esegue la validazione strutturale e il confronto tra XML e Markdown.
+    """
+    if not os.path.exists(md_path):
+        return False
+
+    try:
+        validator = MarkdownValidator()
+        comparer = StructureComparer()
+
+        with open(md_path, "r", encoding="utf-8") as f:
+            md_text = f.read()
+
+        tree = ET.parse(xml_path)
+        root = tree.getroot()
+
+        v_report = validator.validate(md_text)
+        c_report = comparer.compare(root, md_text)
+
+        if not quiet:
+            print("\n🔍 Risultati Validazione:", file=sys.stderr)
+            print(f"  - Struttura Markdown: {v_report['status']}", file=sys.stderr)
+            print(
+                f"  - Confronto XML/MD: {c_report['status']} ({c_report['message']})",
+                file=sys.stderr,
+            )
+
+            if v_report["status"] != "PASS":
+                for err in v_report["errors"]:
+                    print(f"    ❌ {err['message']}", file=sys.stderr)
+
+        return v_report["status"] == "PASS" and c_report["status"] == "PASS"
+    except Exception as e:
+        if not quiet:
+            print(f"❌ Errore durante la validazione: {e}", file=sys.stderr)
+        return False
 
 
 def main():
@@ -125,6 +166,11 @@ def main():
         "--auto-select",
         action="store_true",
         help="Seleziona automaticamente il miglior risultato dalla ricerca naturale (default: False se --debug-search abilitato)",
+    )
+    parser.add_argument(
+        "--validate",
+        action="store_true",
+        help="Esegue la validazione strutturale del Markdown generato",
     )
     parser.add_argument(
         "-c",
@@ -415,6 +461,16 @@ def main():
                             file=sys.stderr,
                         )
 
+                # Validazione strutturale
+                if args.validate:
+                    if output_file:
+                        perform_validation(xml_temp_path, output_file, quiet_mode)
+                    elif not quiet_mode:
+                        print(
+                            "⚠️ Validazione saltata: output a stdout non supportato con --validate",
+                            file=sys.stderr,
+                        )
+
                 # Rimuovi XML temporaneo se non richiesto diversamente
                 if not args.keep_xml:
                     try:
@@ -452,9 +508,20 @@ def main():
                 )
         success = convert_akomantoso_to_markdown_improved(input_source, output_file)
 
-        if success and not quiet_mode:
-            print("✅ Conversione completata con successo!", file=sys.stderr)
-        elif not success:
+        if success:
+            if not quiet_mode:
+                print("✅ Conversione completata con successo!", file=sys.stderr)
+
+            # Validazione strutturale
+            if args.validate:
+                if output_file:
+                    perform_validation(input_source, output_file, quiet_mode)
+                elif not quiet_mode:
+                    print(
+                        "⚠️ Validazione saltata: output a stdout non supportato con --validate",
+                        file=sys.stderr,
+                    )
+        else:
             print("❌ Errore durante la conversione.", file=sys.stderr)
             sys.exit(1)
 
