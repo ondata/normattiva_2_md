@@ -14,8 +14,8 @@ Goal: Implement the core logic to validate Markdown output against expected stru
 
 - [x] Task: Write tests for the `MarkdownValidator` class (detecting header hierarchy, front matter completeness). [cd58e41]
 - [x] Task: Implement `MarkdownValidator` to pass the tests. [cd58e41]
-- [ ] Task: Write tests for `StructureComparer` (comparing XML nodes count vs MD structure).
-- [ ] Task: Implement `StructureComparer`.
+- [x] Task: Write tests for `StructureComparer` (comparing XML nodes count vs MD structure). [e3a2a64]
+- [x] Task: Implement `StructureComparer`. [e3a2a64]
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Validation Logic' (Protocol in workflow.md)
 
 ## Phase 3: Monitoring & CLI Integration
