@@ -2,7 +2,7 @@
 
 This plan outlines the steps to enhance the quality and robustness of the Normattiva to Markdown conversion.
 
-## Phase 1: Foundation & Gold Standard Data
+## Phase 1: Foundation & Gold Standard Data [checkpoint: 06db5e5]
 Goal: Establish the baseline for quality measurement and validation.
 
 - [x] Task: Create a dedicated `test_data/gold_standard/` directory with diverse XML examples. [ca860c7]
