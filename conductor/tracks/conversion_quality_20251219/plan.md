@@ -5,7 +5,7 @@ This plan outlines the steps to enhance the quality and robustness of the Normat
 ## Phase 1: Foundation & Gold Standard Data
 Goal: Establish the baseline for quality measurement and validation.
 
-- [ ] Task: Create a dedicated `test_data/gold_standard/` directory with diverse XML examples.
+- [x] Task: Create a dedicated `test_data/gold_standard/` directory with diverse XML examples. [ca860c7]
 - [ ] Task: Define the schema for the conversion validation report (JSON/Markdown).
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Foundation' (Protocol in workflow.md)
 
