@@ -67,3 +67,4 @@ node_modules/
 plans/
 tasks/todo.md
 tmp/
+tasks/email_riganelli/*
