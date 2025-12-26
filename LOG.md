@@ -2,6 +2,54 @@
 
 Questo file documenta gli avanzamenti significativi e le decisioni chiave del progetto `normattiva_2_md`.
 
+## 2025-12-25
+
+### 📊 Analisi schema dati violenza di genere
+
+**Attività**: Analisi comparativa normativa e integrazione schema dati
+
+#### Documenti prodotti
+- `tasks/email_riganelli/email_schema_dati.qmd`: Schema dati basato su Legge 53/2022 (aggiornato con campi età/genere mancanti)
+- `tasks/email_riganelli/suggerimenti_direttiva_ue.md`: Analisi Direttiva UE 2024/1385 vs Legge IT
+- `tasks/email_riganelli/spunti_ricerca_sapienza.md`: Spunti da ricerca Sapienza + risorse internazionali
+
+#### Correzioni schema dati
+- Aggiunto campo `eta_vittima` e `genere_vittima` alla tabella Vittima (Sistema Interministeriale)
+- Aggiunto campo `relazione_autore_vittima`, `eta_autore`, `genere_autore` alla tabella Denunce
+- Conformità con Art. 5 comma 1 Legge 53/2022
+
+#### Gestione cardinalità (schema LONG)
+- Aggiunta sezione metodologica con esempi pratici (violenza di gruppo, maltrattamenti familiari)
+- **Dataset 1 "Centro Elaborazione Dati"** aggiornato con identificativi anonimi:
+  - `id_evento`: episodio di violenza
+  - `id_vittima_anonimizzato`: persona vittima (hash anonimizzato)
+  - `id_autore_anonimizzato`: autore del reato (hash anonimizzato)
+- Schema LONG permette di gestire N autori → 1 vittima, 1 autore → N vittime, reati multipli
+- Aggiunto campo `data_fatto` per tracciare temporalmente gli eventi
+
+#### Semplificazione Sistema Interministeriale
+- **Dataset 2 "Sistema Interministeriale"** drasticamente semplificato:
+  - Da 8 tabelle (1 principale + 7 correlate) a **1 singola tabella LONG**
+  - Ogni riga = 1 evento procedurale nel percorso della vittima
+  - Campi chiave: `id_vittima_anonimizzato`, `id_evento_procedurale`, `tipo_evento`, `tipo_reato`, `data_evento`
+  - 10 tipi di evento: Denuncia, Misure (prevenzione/precautelari/cautelari/sicurezza), Ordini protezione, Violazioni, Arresti, Archiviazioni, Sentenze
+  - Aggiunto campo `tipo_reato` per collegare eventi procedurali ai reati specifici
+- Aggiunta premessa con esempio concreto di percorso vittima (8 eventi in timeline)
+- Tabella esempio con 8 righe che mostrano il percorso completo dalla denuncia alla sentenza d'appello
+- Nota finale spiega gestione di denunce multiple per reati diversi
+
+#### Spunti da Direttiva UE 2024/1385
+- 11 nuovi campi proposti (abuso sostanze autore, convivenza, disabilità vittima, gravidanza, etc.)
+- Nuova tabella "Violazioni Ordini di Protezione" (Art. 19 UE)
+- Dati aggregati: capacità case rifugio, chiamate 1522 (Art. 44 UE)
+- Scadenza recepimento: 14 giugno 2027
+
+#### Spunti da ricerca Sapienza
+- Classificazione IPF (Intimate Partner Femicide) come campo aggiuntivo
+- Metriche accessibilità geografica CAV (distanza, tempi percorrenza)
+- Allineamento con dati Ministero Interno (già raccolti, non pubblicati in formato strutturato)
+- Best practice internazionali: Spagna, UK, Messico
+
 ## 2025-12-03
 
 ### 🚀 Release v2.0.22: Export provvedimenti attuativi
