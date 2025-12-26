@@ -67,6 +67,9 @@ node_modules/
 plans/
 tasks/todo.md
 tmp/
-tasks/email_riganelli/*
+tasks/proposta_schema_dati/*
+!tasks/proposta_schema_dati/email_schema_dati.qmd
+!tasks/proposta_schema_dati/custom-reference-doc.docx
+!tasks/proposta_schema_dati/_quarto.yml
 
 /.luarc.json
