@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="it" xml:lang="it"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Proposta Schema Dati sulla Violenza di Genere</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="email_schema_dati_files/libs/clipboard/clipboard.min.js"></script>
+<script src="email_schema_dati_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="email_schema_dati_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="email_schema_dati_files/libs/quarto-html/popper.min.js"></script>
+<script src="email_schema_dati_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="email_schema_dati_files/libs/quarto-html/anchor.min.js"></script>
+<link href="email_schema_dati_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="email_schema_dati_files/libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="email_schema_dati_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="email_schema_dati_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="email_schema_dati_files/libs/bootstrap/bootstrap-685d014d3651a7dd3b07714fa482503e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script async="" src="https://hypothes.is/embed.js"></script>
+<script>
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    document.body.classList.add('hypothesis-enabled');
+  });
+</script>
+
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Indice</h2>
+   
+  <ul>
+  <li><a href="#cronologia-aggiornamenti" id="toc-cronologia-aggiornamenti" class="nav-link active" data-scroll-target="#cronologia-aggiornamenti">📝 Cronologia aggiornamenti</a></li>
+  <li><a href="#introduzione" id="toc-introduzione" class="nav-link" data-scroll-target="#introduzione">Introduzione</a></li>
+  <li><a href="#supporto-normativo-aggiuntivo-la-legge-1812025" id="toc-supporto-normativo-aggiuntivo-la-legge-1812025" class="nav-link" data-scroll-target="#supporto-normativo-aggiuntivo-la-legge-1812025">Supporto normativo aggiuntivo: la Legge 181/2025</a></li>
+  <li><a href="#nota-metodologica-gestione-della-cardinalità" id="toc-nota-metodologica-gestione-della-cardinalità" class="nav-link" data-scroll-target="#nota-metodologica-gestione-della-cardinalità">Nota metodologica: gestione della cardinalità</a>
+  <ul class="collapse">
+  <li><a href="#il-problema" id="toc-il-problema" class="nav-link" data-scroll-target="#il-problema">Il problema</a></li>
+  <li><a href="#la-soluzione-proposta" id="toc-la-soluzione-proposta" class="nav-link" data-scroll-target="#la-soluzione-proposta">La soluzione proposta</a></li>
+  <li><a href="#esempio-pratico" id="toc-esempio-pratico" class="nav-link" data-scroll-target="#esempio-pratico">Esempio pratico</a></li>
+  <li><a href="#vantaggi-per-lanalisi" id="toc-vantaggi-per-lanalisi" class="nav-link" data-scroll-target="#vantaggi-per-lanalisi">Vantaggi per l’analisi</a></li>
+  </ul></li>
+  <li><a href="#schema-dati" id="toc-schema-dati" class="nav-link" data-scroll-target="#schema-dati">Schema Dati</a>
+  <ul class="collapse">
+  <li><a href="#dataset-centro-elaborazione-dati---reati-di-violenza-di-genere" id="toc-dataset-centro-elaborazione-dati---reati-di-violenza-di-genere" class="nav-link" data-scroll-target="#dataset-centro-elaborazione-dati---reati-di-violenza-di-genere">Dataset: Centro Elaborazione Dati - Reati di Violenza di Genere</a></li>
+  <li><a href="#dataset-sistema-interministeriale-di-raccolta-dati" id="toc-dataset-sistema-interministeriale-di-raccolta-dati" class="nav-link" data-scroll-target="#dataset-sistema-interministeriale-di-raccolta-dati">Dataset: Sistema Interministeriale di Raccolta Dati</a></li>
+  </ul></li>
+  <li><a href="#nota-contesto-europeo-e-opportunità-per-litalia" id="toc-nota-contesto-europeo-e-opportunità-per-litalia" class="nav-link" data-scroll-target="#nota-contesto-europeo-e-opportunità-per-litalia">Nota: contesto europeo e opportunità per l’Italia</a></li>
+  <li><a href="#valori-controllati" id="toc-valori-controllati" class="nav-link" data-scroll-target="#valori-controllati">Valori Controllati</a>
+  <ul class="collapse">
+  <li><a href="#relazione-autore-vittima" id="toc-relazione-autore-vittima" class="nav-link" data-scroll-target="#relazione-autore-vittima">Relazione Autore-Vittima</a></li>
+  <li><a href="#tipologia-di-violenza" id="toc-tipologia-di-violenza" class="nav-link" data-scroll-target="#tipologia-di-violenza">Tipologia di Violenza</a></li>
+  <li><a href="#lista-dei-reati-monitorati" id="toc-lista-dei-reati-monitorati" class="nav-link" data-scroll-target="#lista-dei-reati-monitorati">Lista dei Reati Monitorati</a></li>
+  <li><a href="#tipologia-di-arma" id="toc-tipologia-di-arma" class="nav-link" data-scroll-target="#tipologia-di-arma">Tipologia di Arma</a></li>
+  <li><a href="#luogo-del-fatto" id="toc-luogo-del-fatto" class="nav-link" data-scroll-target="#luogo-del-fatto">Luogo del Fatto</a></li>
+  <li><a href="#tipo-evento-procedurale" id="toc-tipo-evento-procedurale" class="nav-link" data-scroll-target="#tipo-evento-procedurale">Tipo Evento Procedurale</a></li>
+  </ul></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Altri Formati</h2><ul><li><a href="email_schema_dati.docx"><i class="bi bi-file-word"></i>MS Word</a></li></ul></div></nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Proposta Schema Dati sulla Violenza di Genere</h1>
+<p class="subtitle lead">Basata sulla Legge 53 del 5 maggio 2022</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Quest’analisi è stata realizzata con il supporto del tool <a href="https://ondata.github.io/normattiva_2_md/">normattiva2md</a>, uno strumento che trasforma i testi delle leggi italiane in formato leggibile e pronto per l’uso con intelligenze artificiali.</p>
+</div>
+</div>
+<section id="cronologia-aggiornamenti" class="level2">
+<h2 class="anchored" data-anchor-id="cronologia-aggiornamenti">📝 Cronologia aggiornamenti</h2>
+<p><strong>2025-12-26</strong></p>
+<ul>
+<li>Aggiunto riferimento alla <a href="#supporto-normativo-aggiuntivo-la-legge-1812025">Legge 181/2025 sul femminicidio</a></li>
+<li>Integrato <a href="#nota-contesto-europeo-e-opportunità-per-litalia">contesto normativo europeo</a> (Direttiva UE 2024/1385)</li>
+</ul>
+<hr>
+</section>
+<section id="introduzione" class="level2">
+<h2 class="anchored" data-anchor-id="introduzione">Introduzione</h2>
+<p>Questa pagina definisce una proposta di schema dati da pubblicare sul tema dei femminicidi e della violenza di genere, basata principalmente sulla normativa corrente italiana e in particolare sulla <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53"><strong>Legge 53 del 5 maggio 2022</strong></a> (“Disposizioni in materia di statistiche in tema di violenza di genere”).</p>
+<p>La Legge 53/2022 prevede:</p>
+<ul>
+<li>Un <strong>Centro elaborazione dati</strong> presso il Ministero della Giustizia per rilevare i dati su 27 reati di violenza (<a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art5">art. 5, comma 3</a>)</li>
+<li>Un <strong>Sistema interministeriale</strong> per tracciare denunce, misure di protezione e procedimenti giudiziari (<a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art5">art. 5, commi 4-5</a>)</li>
+<li>Trasmissione periodica dei dati all’ISTAT e al Dipartimento per le Pari Opportunità</li>
+</ul>
+<p>Lo schema proposto traduce i requisiti normativi in una struttura dati concreta e pubblicabile, pronta per l’implementazione.</p>
+<hr>
+</section>
+<section id="supporto-normativo-aggiuntivo-la-legge-1812025" class="level2">
+<h2 class="anchored" data-anchor-id="supporto-normativo-aggiuntivo-la-legge-1812025">Supporto normativo aggiuntivo: la Legge 181/2025</h2>
+<p>A ulteriore supporto della richiesta, la recente <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-12-02;181!vig=2025-12-26"><strong>Legge 181 del 2 dicembre 2025</strong></a> (“Introduzione del delitto di femminicidio e altri interventi normativi per il contrasto alla violenza nei confronti delle donne e per la tutela delle vittime”) introduce elementi importanti che rafforzano l’esigenza di un sistema di raccolta dati strutturato:</p>
+<ul>
+<li><p><strong>Nuovo reato di femminicidio</strong>: L’<a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-12-02;181~art1!vig=2025-12-26">articolo 1, lettera a)</a> introduce il nuovo art. 577-bis CP (Femminicidio). L’<a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-12-02;181~art13!vig=2025-12-26">articolo 13</a> stabilisce che “tutte le volte in cui la legge fa riferimento all’omicidio il richiamo si intende operato anche al femminicidio”, rendendo il femminicidio parte integrante della L. 53/2022.</p></li>
+<li><p><strong>Relazione annuale al Parlamento</strong>: L’<a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-12-02;181~art2!vig=2025-12-26">articolo 2</a> prevede che entro il 30 giugno di ogni anno il Ministro della Giustizia presenti alle Camere una relazione con l’indicazione specifica dei <strong>dati delle condanne e assoluzioni per femminicidio</strong> nonché per omicidio, <strong>disaggregati per sesso della vittima e circostanze aggravanti</strong>. Questo conferma l’esigenza di un sistema di raccolta dati dettagliato, strutturato e pubblicamente accessibile.</p></li>
+<li><p><strong>Nuove aggravanti di genere</strong>: L’<a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-12-02;181~art1!vig=2025-12-26">articolo 1</a> introduce aggravanti specifiche quando il reato è commesso “come atto di odio o discriminazione o prevaricazione… in quanto donna” per diversi reati (maltrattamenti, lesioni personali, stalking, revenge porn, violenza sessuale, interruzione di gravidanza).</p></li>
+<li><p><strong>Nuovi eventi procedurali</strong>: L’<a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-12-02;181~art3!vig=2025-12-26">articolo 3</a> introduce l’obbligo di audizione personale della vittima da parte del PM su richiesta motivata e la possibilità di sequestro conservativo per garantire il risarcimento danni.</p></li>
+</ul>
+<p>Questi elementi sono stati integrati nello schema dati proposto.</p>
+<hr>
+</section>
+<section id="nota-metodologica-gestione-della-cardinalità" class="level2">
+<h2 class="anchored" data-anchor-id="nota-metodologica-gestione-della-cardinalità">Nota metodologica: gestione della cardinalità</h2>
+<p>Prima di presentare lo schema dati, è importante chiarire un aspetto tecnico fondamentale per garantire la <strong>completezza e l’accuratezza</strong> delle informazioni raccolte.</p>
+<section id="il-problema" class="level3">
+<h3 class="anchored" data-anchor-id="il-problema">Il problema</h3>
+<p>Nella realtà dei reati di violenza di genere, <strong>non sempre esiste una corrispondenza uno-a-uno</strong> tra evento, vittima e autore. Alcuni esempi concreti:</p>
+<ul>
+<li><strong>Caso 1 - Violenza sessuale di gruppo</strong> (Art. 609-octies CP). Una donna viene aggredita da 3 uomini. Questo è <strong>1 evento</strong>, <strong>1 vittima</strong>, ma <strong>3 autori</strong>.</li>
+<li><strong>Caso 2 - Maltrattamenti in famiglia</strong> (Art. 572 CP). Un uomo maltratta la moglie e i due figli. Questo è <strong>1 evento</strong>, <strong>1 autore</strong>, ma <strong>3 vittime</strong>.</li>
+<li><strong>Caso 3 - Reati multipli simultanei</strong>. Durante un episodio di violenza domestica, l’autore commette lesioni personali, violenza privata e minaccia. Questo è <strong>1 evento</strong>, <strong>1 vittima</strong>, <strong>1 autore</strong>, ma <strong>3 reati</strong> distinti.</li>
+</ul>
+</section>
+<section id="la-soluzione-proposta" class="level3">
+<h3 class="anchored" data-anchor-id="la-soluzione-proposta">La soluzione proposta</h3>
+<p>Per gestire correttamente questi casi senza perdere informazioni, proponiamo uno <strong>schema con identificativi anonimi</strong> che permettono di collegare tra loro le diverse componenti mantenendo una singola tabella di facile utilizzo:</p>
+<ul>
+<li><strong><code>id_evento</code></strong>: identifica l’episodio di violenza (es. <code>EVT-2024-001234</code>)</li>
+<li><strong><code>id_vittima_anonimizzato</code></strong>: identifica in modo anonimizzato la persona vittima (es. <code>VIT-A3F8B2C1</code>)</li>
+<li><strong><code>id_autore_anonimizzato</code></strong>: identifica in modo anonimizzato l’autore del reato (es. <code>AUT-7D9E4F2A</code>)</li>
+</ul>
+<p>Ogni <strong>riga</strong> del dataset rappresenta una <strong>combinazione</strong> di evento-vittima-autore-reato.</p>
+</section>
+<section id="esempio-pratico" class="level3">
+<h3 class="anchored" data-anchor-id="esempio-pratico">Esempio pratico</h3>
+<p><strong>Scenario</strong>: Violenza sessuale di gruppo con 3 autori e 1 vittima, avvenuta il 15 marzo 2024.</p>
+<p>Il dataset conterrà <strong>3 righe</strong>:</p>
+<table class="table-striped table-hover small table-sm caption-top table">
+<caption>Esempio di struttura dati per violenza sessuale di gruppo con 3 autori</caption>
+<colgroup>
+<col style="width: 11%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 13%">
+<col style="width: 11%">
+<col style="width: 12%">
+<col style="width: 26%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>id_evento</th>
+<th>tipo_reato</th>
+<th>id_vittima</th>
+<th>eta_vittima</th>
+<th>id_autore</th>
+<th>eta_autore</th>
+<th>relazione_autore_vittima</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>EVT-2024-001234</td>
+<td>Violenza sessuale di gruppo</td>
+<td>VIT-A3F8B2C1</td>
+<td>23</td>
+<td>AUT-7D9E4F2A</td>
+<td>28</td>
+<td>Conoscente</td>
+</tr>
+<tr class="even">
+<td>EVT-2024-001234</td>
+<td>Violenza sessuale di gruppo</td>
+<td>VIT-A3F8B2C1</td>
+<td>23</td>
+<td>AUT-3B5C8E1F</td>
+<td>31</td>
+<td>Conoscente</td>
+</tr>
+<tr class="odd">
+<td>EVT-2024-001234</td>
+<td>Violenza sessuale di gruppo</td>
+<td>VIT-A3F8B2C1</td>
+<td>23</td>
+<td>AUT-9F2A6D4C</td>
+<td>26</td>
+<td>Sconosciuto</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Come leggere i dati</strong>:</p>
+<ul>
+<li>Stesso <code>id_evento</code> → <strong>stesso episodio di violenza</strong></li>
+<li>Stesso <code>id_vittima_anonimizzato</code> → <strong>stessa persona vittima</strong> (l’età 23 si ripete)</li>
+<li>Diverso <code>id_autore_anonimizzato</code> → <strong>autori diversi</strong> (3 persone con età diverse)</li>
+</ul>
+</section>
+<section id="vantaggi-per-lanalisi" class="level3">
+<h3 class="anchored" data-anchor-id="vantaggi-per-lanalisi">Vantaggi per l’analisi</h3>
+<p>Questo approccio permette di calcolare correttamente:</p>
+<ul>
+<li><strong>Numero di eventi reali</strong>: <code>COUNT(DISTINCT id_evento)</code> → 1 evento</li>
+<li><strong>Numero di vittime uniche</strong>: <code>COUNT(DISTINCT id_vittima_anonimizzato)</code> → 1 vittima</li>
+<li><strong>Numero di autori unici</strong>: <code>COUNT(DISTINCT id_autore_anonimizzato)</code> → 3 autori</li>
+<li><strong>Numero totale di righe</strong>: 3 (una per ogni combinazione autore-vittima)</li>
+</ul>
+<p>Senza gli identificativi univoci, <strong>sarebbe impossibile distinguere</strong> 3 eventi separati da 1 evento con 3 autori.</p>
+<hr>
+</section>
+</section>
+<section id="schema-dati" class="level2">
+<h2 class="anchored" data-anchor-id="schema-dati">Schema Dati</h2>
+<section id="dataset-centro-elaborazione-dati---reati-di-violenza-di-genere" class="level3">
+<h3 class="anchored" data-anchor-id="dataset-centro-elaborazione-dati---reati-di-violenza-di-genere">Dataset: Centro Elaborazione Dati - Reati di Violenza di Genere</h3>
+<p><strong>Riferimento normativo</strong>: <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art5">Articolo 5</a> della Legge 53/2022</p>
+<p>Questo dataset contiene le informazioni che il Ministero della Giustizia e dell’Interno devono rilevare, con trasmissione periodica all’ISTAT e al Dipartimento per le Pari Opportunità.</p>
+<p><strong>Struttura</strong>: Come spiegato nella <a href="#nota-metodologica-gestione-della-cardinalità">nota metodologica</a>, ogni riga rappresenta una combinazione di evento-vittima-autore-reato. Gli identificativi anonimi permettono di gestire correttamente i casi con multipli autori, vittime o reati.</p>
+<table class="table-striped table-hover small table-sm caption-top table">
+<caption>Schema del dataset Centro Elaborazione Dati - Reati di Violenza di Genere</caption>
+<thead>
+<tr class="header">
+<th>Nome Campo</th>
+<th>Tipo</th>
+<th>Descrizione</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>id_evento</td>
+<td>Alfanumerico</td>
+<td>Identificativo univoco dell’episodio di violenza. Formato: <code>EVT-{anno}-{progressivo}</code> (es. <code>EVT-2024-001234</code>). Stesso ID = stesso evento</td>
+</tr>
+<tr class="even">
+<td>id_vittima_anonimizzato</td>
+<td>Alfanumerico</td>
+<td>Identificativo univoco anonimizzato della vittima. Formato: <code>VIT-{hash}</code> (es. <code>VIT-A3F8B2C1</code>). Garantisce l’anonimato e permette di contare vittime uniche</td>
+</tr>
+<tr class="odd">
+<td>id_autore_anonimizzato</td>
+<td>Alfanumerico</td>
+<td>Identificativo univoco anonimizzato dell’autore. Formato: <code>AUT-{hash}</code> (es. <code>AUT-7D9E4F2A</code>). Garantisce l’anonimato e permette di contare autori unici</td>
+</tr>
+<tr class="even">
+<td>data_fatto</td>
+<td>Data</td>
+<td>Data in cui è avvenuto il fatto (se nota). Formato: <code>AAAA-MM-GG</code></td>
+</tr>
+<tr class="odd">
+<td>tipo_reato</td>
+<td>Enumerativo</td>
+<td>Codice identificativo del reato, secondo la lista dei 27 reati previsti dall’<a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art5">art. 5 comma 3</a> (vedi elenco valori della <a href="#lista-dei-reati-monitorati">tabella</a> più in basso)</td>
+</tr>
+<tr class="even">
+<td>relazione_autore_vittima</td>
+<td>Enumerativo</td>
+<td>Relazione tra autore e vittima, secondo le 15 modalità obbligatorie definite dall’<a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art2">art. 2 comma 2</a> (vedi elenco valori della <a href="#relazione-autore-vittima">tabella</a> più in basso)</td>
+</tr>
+<tr class="odd">
+<td>eta_vittima</td>
+<td>Numerico</td>
+<td>Età della vittima al momento del fatto (se nota)</td>
+</tr>
+<tr class="even">
+<td>genere_vittima</td>
+<td>Enumerativo</td>
+<td>Genere della vittima (se noto): “F”, “M”, “Altro”, “Non specificato”</td>
+</tr>
+<tr class="odd">
+<td>eta_autore</td>
+<td>Numerico</td>
+<td>Età dell’autore del reato al momento del fatto (se nota)</td>
+</tr>
+<tr class="even">
+<td>genere_autore</td>
+<td>Enumerativo</td>
+<td>Genere dell’autore del reato (se noto): “M”, “F”, “Altro”, “Non specificato”</td>
+</tr>
+<tr class="odd">
+<td>luogo_fatto</td>
+<td>Enumerativo</td>
+<td>Informazioni sul luogo dove il fatto è avvenuto (se noto) (vedi elenco valori della <a href="#luogo-del-fatto">tabella</a> più in basso)</td>
+</tr>
+<tr class="even">
+<td>localita_comune</td>
+<td>Alfanumerico</td>
+<td>Codice ISTAT del comune dove è avvenuto il fatto. <strong>Regola di anonimizzazione</strong>: se il numero di casi nel comune è inferiore a 3, lasciare vuoto e riportare solo la provincia</td>
+</tr>
+<tr class="odd">
+<td>localita_provincia</td>
+<td>Alfanumerico</td>
+<td>Codice ISTAT della provincia dove è avvenuto il fatto. Sempre valorizzato quando la località è nota</td>
+</tr>
+<tr class="even">
+<td>tipologia_arma</td>
+<td>Enumerativo</td>
+<td>Tipologia di arma eventualmente utilizzata (se nota) (vedi elenco valori della <a href="#tipologia-di-arma">tabella</a> più in basso)</td>
+</tr>
+<tr class="odd">
+<td>aggravante_genere</td>
+<td>Booleano</td>
+<td>Indica se il reato è stato commesso con le aggravanti di genere previste dalla <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-12-02;181~art1!vig=2025-12-26">L. 181/2025, art. 1</a> (“come atto di odio/discriminazione/prevaricazione… in quanto donna”). Applicabile a: maltrattamenti (art. 572 c.5 CP), lesioni (art. 585 c.4 CP), interruzione gravidanza (art. 593-ter c.6 CP), violenza sessuale (art. 609-ter 5-ter.1 CP), stalking (art. 612-bis c.4 CP), revenge porn (art. 612-ter c.5 CP)</td>
+</tr>
+<tr class="even">
+<td>presenza_figli_durante_fatto</td>
+<td>Booleano</td>
+<td>Indica se la violenza è stata commessa in presenza sul luogo del fatto dei figli degli autori o delle vittime</td>
+</tr>
+<tr class="odd">
+<td>vittima_ha_figli_minori</td>
+<td>Booleano</td>
+<td>Indica se la vittima ha figli minorenni (rilevante per le tutele previste dalla <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2016-07-07;122">L. 122/2016</a> come modificata dalla <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-12-02;181~art4!vig=2025-12-26">L. 181/2025, art. 4</a> - Fondo orfani di crimini domestici)</td>
+</tr>
+<tr class="even">
+<td>atti_persecutori</td>
+<td>Booleano</td>
+<td>Indica se la violenza è stata commessa unitamente ad atti persecutori (stalking)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="dataset-sistema-interministeriale-di-raccolta-dati" class="level3">
+<h3 class="anchored" data-anchor-id="dataset-sistema-interministeriale-di-raccolta-dati">Dataset: Sistema Interministeriale di Raccolta Dati</h3>
+<p><strong>Riferimento normativo</strong>: <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art5">Articolo 5, commi 4 e 5</a> della Legge 53/2022</p>
+<section id="premessa-il-percorso-della-vittima-nel-sistema-giudiziario" class="level4">
+<h4 class="anchored" data-anchor-id="premessa-il-percorso-della-vittima-nel-sistema-giudiziario">Premessa: il percorso della vittima nel sistema giudiziario</h4>
+<p>L’<a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art5">articolo 5 comma 5</a> richiede di tracciare “per ogni donna vittima di violenza” le informazioni su <strong>denunce, misure e procedimenti</strong> in ogni grado del procedimento giudiziario.</p>
+<p>Nella realtà, una singola vittima può attraversare <strong>molteplici fasi</strong> nel tempo:</p>
+<p><strong>Esempio di percorso reale</strong>:</p>
+<p>Una donna vittima di violenza domestica potrebbe avere: 1. <strong>15 marzo 2024</strong>: Prima denuncia per maltrattamenti 2. <strong>15 marzo 2024</strong>: Allontanamento d’urgenza dell’autore (misura precautelare) 3. <strong>20 marzo 2024</strong>: Ammonimento del Questore (misura di prevenzione) 4. <strong>25 marzo 2024</strong>: Divieto di avvicinamento (misura cautelare) 5. <strong>10 aprile 2024</strong>: Violazione del divieto → nuova denuncia 6. <strong>15 aprile 2024</strong>: Arresto dell’autore 7. <strong>15 settembre 2024</strong>: Sentenza di primo grado (condanna) 8. <strong>20 gennaio 2025</strong>: Sentenza di appello (conferma condanna)</p>
+<p>Questo è <strong>1 vittima</strong>, ma <strong>8 eventi procedurali</strong> che devono essere tracciati in sequenza temporale per comprendere l’efficacia delle misure di protezione e l’esito finale del procedimento.</p>
+</section>
+<section id="soluzione-schema-unificato-con-eventi-procedurali" class="level4">
+<h4 class="anchored" data-anchor-id="soluzione-schema-unificato-con-eventi-procedurali">Soluzione: schema unificato con eventi procedurali</h4>
+<p>Per semplicità, proponiamo una <strong>singola tabella</strong> dove ogni riga rappresenta un <strong>evento procedurale</strong> nel percorso della vittima. L’identificativo anonimizzato della vittima permette di collegare tutti gli eventi della stessa persona.</p>
+<table class="table-striped table-hover small table-sm caption-top table">
+<caption>Schema del dataset Sistema Interministeriale di Raccolta Dati</caption>
+<thead>
+<tr class="header">
+<th>Nome Campo</th>
+<th>Tipo</th>
+<th>Descrizione</th>
+<th>Valore esempio</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>id_vittima_anonimizzato</td>
+<td>Alfanumerico</td>
+<td>Identificativo univoco anonimizzato della vittima. Formato: <code>VIT-{hash}</code> (es. <code>VIT-A3F8B2C1</code>). Stesso ID = stessa persona</td>
+<td>“VIT-A3F8B2C1”</td>
+</tr>
+<tr class="even">
+<td>id_evento_procedurale</td>
+<td>Alfanumerico</td>
+<td>Identificativo univoco dell’evento procedurale. Formato: <code>EVP-{anno}-{progressivo}</code> (es. <code>EVP-2024-001234</code>)</td>
+<td>“EVP-2024-001234”</td>
+</tr>
+<tr class="odd">
+<td>tipo_evento</td>
+<td>Enumerativo</td>
+<td>Tipologia di evento procedurale (vedi <a href="#tipo-evento-procedurale">valori controllati</a>)</td>
+<td>“Denuncia”</td>
+</tr>
+<tr class="even">
+<td>tipo_reato</td>
+<td>Enumerativo</td>
+<td>Reato per cui l’evento procedurale è riferito, secondo lista Art. 5 comma 3 (vedi <a href="#lista-dei-reati-monitorati">tabella</a>). Obbligatorio per tipo_evento=“DENUNCIA”, opzionale per altri eventi</td>
+<td>“Maltrattamenti contro familiari e conviventi”</td>
+</tr>
+<tr class="odd">
+<td>data_evento</td>
+<td>Data</td>
+<td>Data in cui è avvenuto l’evento. Formato: <code>AAAA-MM-GG</code></td>
+<td>2024-03-15</td>
+</tr>
+<tr class="even">
+<td>autorita</td>
+<td>Enumerativo</td>
+<td>Autorità competente che ha gestito l’evento</td>
+<td>“Carabinieri”, “Procura”, “Tribunale”, “Questore”</td>
+</tr>
+<tr class="odd">
+<td>dettaglio_evento</td>
+<td>Testuale</td>
+<td>Dettaglio specifico dell’evento (es. tipo di misura, tipo di sentenza, motivazione archiviazione)</td>
+<td>“Divieto di avvicinamento ex art. 282-ter cpp”</td>
+</tr>
+<tr class="even">
+<td>esito</td>
+<td>Enumerativo</td>
+<td>Esito dell’evento (se applicabile): “Applicata”, “Respinta”, “Violata”, “Condanna”, “Assoluzione”, “Archiviazione”</td>
+<td>“Applicata”</td>
+</tr>
+<tr class="odd">
+<td>eta_vittima</td>
+<td>Numerico</td>
+<td>Età della vittima al momento della prima denuncia (se nota)</td>
+<td>32</td>
+</tr>
+<tr class="even">
+<td>genere_vittima</td>
+<td>Enumerativo</td>
+<td>Genere della vittima: “F”, “M”, “Altro”, “Non specificato”</td>
+<td>“F”</td>
+</tr>
+<tr class="odd">
+<td>relazione_autore_vittima</td>
+<td>Enumerativo</td>
+<td>Relazione tra autore e vittima al momento della prima denuncia (vedi <a href="#relazione-autore-vittima">tabella</a>)</td>
+<td>“Ex coniuge/ex convivente”</td>
+</tr>
+<tr class="even">
+<td>eta_autore</td>
+<td>Numerico</td>
+<td>Età dell’autore al momento della prima denuncia (se nota)</td>
+<td>38</td>
+</tr>
+<tr class="odd">
+<td>genere_autore</td>
+<td>Enumerativo</td>
+<td>Genere dell’autore: “M”, “F”, “Altro”, “Non specificato”</td>
+<td>“M”</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="esempio-pratico-lettura-dei-dati" class="level4">
+<h4 class="anchored" data-anchor-id="esempio-pratico-lettura-dei-dati">Esempio pratico: lettura dei dati</h4>
+<p>Riprendendo l’esempio del percorso descritto sopra, il dataset conterrebbe <strong>8 righe</strong> con lo <strong>stesso <code>id_vittima_anonimizzato</code></strong>:</p>
+<table class="table-striped table-hover small table-sm caption-top table">
+<caption>Esempio di percorso procedurale completo di una vittima dal momento della denuncia fino alla sentenza</caption>
+<colgroup>
+<col style="width: 13%">
+<col style="width: 12%">
+<col style="width: 15%">
+<col style="width: 13%">
+<col style="width: 15%">
+<col style="width: 20%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>id_vittima</th>
+<th>id_evento</th>
+<th>tipo_evento</th>
+<th>tipo_reato</th>
+<th>data_evento</th>
+<th>dettaglio_evento</th>
+<th>esito</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>VIT-A3F8B2C1</td>
+<td>EVP-2024-001234</td>
+<td>Denuncia</td>
+<td>Maltrattamenti contro familiari e conviventi</td>
+<td>2024-03-15</td>
+<td>Prima denuncia</td>
+<td>Presentata</td>
+</tr>
+<tr class="even">
+<td>VIT-A3F8B2C1</td>
+<td>EVP-2024-001235</td>
+<td>Misura precautelare</td>
+<td>Maltrattamenti contro familiari e conviventi</td>
+<td>2024-03-15</td>
+<td>Allontanamento d’urgenza ex art. 384-bis cpp</td>
+<td>Applicata</td>
+</tr>
+<tr class="odd">
+<td>VIT-A3F8B2C1</td>
+<td>EVP-2024-001236</td>
+<td>Misura di prevenzione</td>
+<td>Maltrattamenti contro familiari e conviventi</td>
+<td>2024-03-20</td>
+<td>Ammonimento Questore ex art. 8 DL 11/2009</td>
+<td>Applicata</td>
+</tr>
+<tr class="even">
+<td>VIT-A3F8B2C1</td>
+<td>EVP-2024-001237</td>
+<td>Misura cautelare</td>
+<td>Maltrattamenti contro familiari e conviventi</td>
+<td>2024-03-25</td>
+<td>Divieto di avvicinamento ex art. 282-ter cpp</td>
+<td>Applicata</td>
+</tr>
+<tr class="odd">
+<td>VIT-A3F8B2C1</td>
+<td>EVP-2024-001238</td>
+<td>Violazione misura</td>
+<td>Maltrattamenti contro familiari e conviventi</td>
+<td>2024-04-10</td>
+<td>Violazione divieto di avvicinamento</td>
+<td>Accertata</td>
+</tr>
+<tr class="even">
+<td>VIT-A3F8B2C1</td>
+<td>EVP-2024-001239</td>
+<td>Arresto</td>
+<td>Maltrattamenti contro familiari e conviventi</td>
+<td>2024-04-15</td>
+<td>Arresto per violazione misura cautelare</td>
+<td>Eseguito</td>
+</tr>
+<tr class="odd">
+<td>VIT-A3F8B2C1</td>
+<td>EVP-2024-001240</td>
+<td>Sentenza</td>
+<td>Maltrattamenti contro familiari e conviventi</td>
+<td>2024-09-15</td>
+<td>Primo grado - Condanna 3 anni e 6 mesi</td>
+<td>Condanna</td>
+</tr>
+<tr class="even">
+<td>VIT-A3F8B2C1</td>
+<td>EVP-2024-001241</td>
+<td>Sentenza</td>
+<td>Maltrattamenti contro familiari e conviventi</td>
+<td>2025-01-20</td>
+<td>Appello - Conferma condanna</td>
+<td>Condanna</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Come leggere i dati</strong>:</p>
+<ul>
+<li>Stesso <code>id_vittima_anonimizzato</code> → <strong>stessa persona</strong> vittima</li>
+<li>Stesso <code>tipo_reato</code> → <strong>stesso procedimento penale</strong> (in questo caso, maltrattamenti)</li>
+<li>Ogni riga = <strong>un evento</strong> nel percorso giudiziario</li>
+<li>L’ordine cronologico (campo <code>data_evento</code>) permette di ricostruire la <strong>timeline</strong> completa</li>
+<li>È possibile analizzare: tempi tra denuncia e misure, efficacia delle misure per tipo di reato, tasso di violazioni, esiti finali</li>
+</ul>
+<p><strong>Nota</strong>: Se la stessa vittima denuncia reati diversi in momenti diversi (es. prima maltrattamenti, poi violenza sessuale), nel dataset ci saranno due percorsi procedurali distinti identificabili dal campo <code>tipo_reato</code>.</p>
+<hr>
+</section>
+</section>
+</section>
+<section id="nota-contesto-europeo-e-opportunità-per-litalia" class="level2">
+<h2 class="anchored" data-anchor-id="nota-contesto-europeo-e-opportunità-per-litalia">Nota: contesto europeo e opportunità per l’Italia</h2>
+<p>A rafforzamento della richiesta, è utile evidenziare che la raccolta sistematica di dati sulla violenza di genere non è solo una previsione della normativa italiana, ma un <strong>obbligo europeo in arrivo</strong>.</p>
+<p>La <a href="https://eur-lex.europa.eu/legal-content/IT/TXT/?uri=CELEX:32024L1385"><strong>Direttiva UE 2024/1385 del 14 maggio 2024</strong></a> sulla lotta alla violenza contro le donne e alla violenza domestica prevede all’<a href="https://eur-lex.europa.eu/legal-content/IT/TXT/?uri=CELEX:32024L1385#d1e3942-1-1"><strong>articolo 44</strong></a> che gli Stati membri raccolgano e pubblichino statistiche annuali disaggregate su:</p>
+<ul>
+<li>Numero di reati denunciati e condanne (par. 2, lett. a)</li>
+<li>Numero di donne uccise in contesto di violenza di genere (par. 2, lett. b)</li>
+<li>Numero e capacità delle case rifugio (par. 2, lett. c)</li>
+<li>Numero di chiamate alle linee di assistenza (par. 2, lett. d)</li>
+</ul>
+<p>Il <strong>termine di recepimento della direttiva è il 14 giugno 2027</strong> (<a href="https://eur-lex.europa.eu/legal-content/IT/TXT/?uri=CELEX:32024L1385#d1e4167-1-1">articolo 49</a>).</p>
+<p><strong>L’Italia ha già anticipato questo quadro normativo</strong> con la Legge 53/2022, che in alcuni aspetti è <strong>più dettagliata</strong> rispetto ai requisiti minimi europei (27 reati specifici anziché categorie generiche, 15 modalità di relazione autore-vittima, età puntuale anziché fasce).</p>
+<p>Pubblicare ora i dati previsti dalla L. 53/2022 significherebbe:</p>
+<ol type="1">
+<li><strong>Dare piena attuazione</strong> a una norma nazionale già vigente dal 2022</li>
+<li><strong>Anticipare virtuosamente</strong> l’obbligo europeo del 2027</li>
+<li><strong>Dimostrare leadership</strong> dell’Italia su un tema di rilevanza europea</li>
+<li><strong>Fornire evidenze empiriche</strong> per politiche pubbliche più efficaci</li>
+</ol>
+<p>In questo senso, la pubblicazione dei dati non è solo un atto di trasparenza, ma un <strong>investimento strategico</strong> in vista degli obblighi europei imminenti.</p>
+<hr>
+</section>
+<section id="valori-controllati" class="level2">
+<h2 class="anchored" data-anchor-id="valori-controllati">Valori Controllati</h2>
+<section id="relazione-autore-vittima" class="level3">
+<h3 class="anchored" data-anchor-id="relazione-autore-vittima">Relazione Autore-Vittima</h3>
+<p><strong>Riferimento normativo</strong>: <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art2">Articolo 2, comma 2</a> della Legge 53/2022</p>
+<p>Questo è il set minimo di modalità che devono essere previste nelle rilevazioni:</p>
+<table class="table-striped table-hover small table-sm caption-top table">
+<caption>Valori controllati per la relazione autore-vittima (Art. 2, comma 2, L. 53/2022)</caption>
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Codice</th>
+<th>Valore</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Coniuge/convivente</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Fidanzato</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Ex coniuge/ex convivente</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Ex fidanzato</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>Altro parente</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>Collega/datore di lavoro</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>Conoscente/amico</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>Cliente</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>Vicino di casa</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>Compagno di scuola</td>
+</tr>
+<tr class="odd">
+<td>11</td>
+<td>Insegnante o persona che esercita un’attività di cura e/o custodia</td>
+</tr>
+<tr class="even">
+<td>12</td>
+<td>Medico o operatore sanitario</td>
+</tr>
+<tr class="odd">
+<td>13</td>
+<td>Persona sconosciuta alla vittima</td>
+</tr>
+<tr class="even">
+<td>14</td>
+<td>Altro</td>
+</tr>
+<tr class="odd">
+<td>15</td>
+<td>Autore non identificato</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="tipologia-di-violenza" class="level3">
+<h3 class="anchored" data-anchor-id="tipologia-di-violenza">Tipologia di Violenza</h3>
+<p><strong>Riferimento normativo</strong>: <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art2">Articolo 2, comma 1</a> e <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art4">Articolo 4, comma 2, lettera a)</a></p>
+<table class="table-striped table-hover small table-sm caption-top table">
+<caption>Tipologie di violenza previste dalla normativa</caption>
+<thead>
+<tr class="header">
+<th>Codice</th>
+<th>Valore</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>FIS</td>
+<td>Violenza fisica</td>
+</tr>
+<tr class="even">
+<td>SES</td>
+<td>Violenza sessuale</td>
+</tr>
+<tr class="odd">
+<td>PSI</td>
+<td>Violenza psicologica</td>
+</tr>
+<tr class="even">
+<td>ECO</td>
+<td>Violenza economica</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="lista-dei-reati-monitorati" class="level3">
+<h3 class="anchored" data-anchor-id="lista-dei-reati-monitorati">Lista dei Reati Monitorati</h3>
+<p><strong>Riferimento normativo</strong>: <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art5">Articolo 5, comma 3</a> della Legge 53/2022</p>
+<table class="table-striped table-hover small table-sm caption-top table">
+<caption>Lista completa dei 27 reati monitorati (Art. 5, comma 3, L. 53/2022)</caption>
+<colgroup>
+<col style="width: 21%">
+<col style="width: 18%">
+<col style="width: 59%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Codice</th>
+<th>Reato</th>
+<th>Riferimento Normativo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>a</td>
+<td>Omicidio (anche tentato)</td>
+<td>Art. 575 CP, anche aggravato ex artt. 576 e 577 CP</td>
+</tr>
+<tr class="even">
+<td>a-bis</td>
+<td>Femminicidio</td>
+<td>Art. 577-bis CP</td>
+</tr>
+<tr class="odd">
+<td>b</td>
+<td>Percosse</td>
+<td>Art. 581 CP</td>
+</tr>
+<tr class="even">
+<td>c</td>
+<td>Lesioni personali</td>
+<td>Art. 582 CP, anche aggravate ex artt. 583 e 585 CP</td>
+</tr>
+<tr class="odd">
+<td>d</td>
+<td>Violenza sessuale</td>
+<td>Art. 609-bis CP, anche aggravata ex art. 609-ter CP</td>
+</tr>
+<tr class="even">
+<td>d-bis</td>
+<td>Violenza sessuale di gruppo</td>
+<td>Art. 609-octies CP</td>
+</tr>
+<tr class="odd">
+<td>e</td>
+<td>Atti sessuali con minorenne</td>
+<td>Art. 609-quater CP</td>
+</tr>
+<tr class="even">
+<td>e-bis</td>
+<td>Corruzione di minorenne</td>
+<td>Art. 609-quinquies CP</td>
+</tr>
+<tr class="odd">
+<td>f</td>
+<td>Maltrattamenti contro familiari e conviventi</td>
+<td>Art. 572 CP</td>
+</tr>
+<tr class="even">
+<td>g</td>
+<td>Atti persecutori (stalking)</td>
+<td>Art. 612-bis CP</td>
+</tr>
+<tr class="odd">
+<td>h</td>
+<td>Diffusione illecita di immagini o video sessualmente espliciti (revenge porn)</td>
+<td>Art. 612-ter CP</td>
+</tr>
+<tr class="even">
+<td>i</td>
+<td>Violazione dei provvedimenti di allontanamento dalla casa familiare e del divieto di avvicinamento</td>
+<td>Art. 387-bis CP</td>
+</tr>
+<tr class="odd">
+<td>l</td>
+<td>Costrizione o induzione al matrimonio</td>
+<td>Art. 558-bis CP</td>
+</tr>
+<tr class="even">
+<td>m</td>
+<td>Pratiche di mutilazione degli organi genitali femminili</td>
+<td>Art. 583-bis CP</td>
+</tr>
+<tr class="odd">
+<td>n</td>
+<td>Deformazione dell’aspetto della persona mediante lesioni permanenti al viso</td>
+<td>Art. 583-quinquies CP</td>
+</tr>
+<tr class="even">
+<td>o</td>
+<td>Interruzione di gravidanza non consensuale</td>
+<td>Art. 593-ter CP</td>
+</tr>
+<tr class="odd">
+<td>p</td>
+<td>Sequestro di persona</td>
+<td>Art. 605 CP</td>
+</tr>
+<tr class="even">
+<td>q</td>
+<td>Violenza privata</td>
+<td>Art. 610 CP</td>
+</tr>
+<tr class="odd">
+<td>r</td>
+<td>Violazione di domicilio</td>
+<td>Art. 614 CP</td>
+</tr>
+<tr class="even">
+<td>s</td>
+<td>Violazione degli obblighi di assistenza familiare</td>
+<td>Artt. 570 e 570-bis CP</td>
+</tr>
+<tr class="odd">
+<td>t</td>
+<td>Prostituzione minorile</td>
+<td>Art. 600-bis CP</td>
+</tr>
+<tr class="even">
+<td>u</td>
+<td>Abbandono di persona minore o incapace</td>
+<td>Art. 591 CP</td>
+</tr>
+<tr class="odd">
+<td>v</td>
+<td>Danneggiamento</td>
+<td>Art. 635 CP</td>
+</tr>
+<tr class="even">
+<td>z</td>
+<td>Estorsione</td>
+<td>Art. 629 CP</td>
+</tr>
+<tr class="odd">
+<td>aa</td>
+<td>Minaccia</td>
+<td>Art. 612 CP</td>
+</tr>
+<tr class="even">
+<td>bb</td>
+<td>Favoreggiamento e sfruttamento della prostituzione</td>
+<td>Art. 3 Legge 75/1958</td>
+</tr>
+<tr class="odd">
+<td>cc</td>
+<td>Circonvenzione di incapace</td>
+<td>Art. 643 CP</td>
+</tr>
+<tr class="even">
+<td>dd</td>
+<td>Tratta di persone</td>
+<td>Art. 601 CP</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="tipologia-di-arma" class="level3">
+<h3 class="anchored" data-anchor-id="tipologia-di-arma">Tipologia di Arma</h3>
+<p><strong>Nota</strong>: La <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art5">legge 53/2022</a> prevede la rilevazione della “tipologia di arma eventualmente utilizzata” ma non specifica i valori controllati. La tabella seguente è un <strong>esempio</strong> da validare. Si raccomanda di utilizzare <strong>classificazioni già esistenti e consolidate</strong> in uso presso le Forze dell’Ordine (es. tassonomie SDI - Sistema di Indagine, o standard ISTAT) per garantire coerenza e interoperabilità dei dati.</p>
+<p>Esempio di valori controllati per il campo <code>tipologia_arma</code>:</p>
+<table class="table-striped table-hover small table-sm caption-top table">
+<caption>Valori controllati proposti per la tipologia di arma</caption>
+<thead>
+<tr class="header">
+<th>Codice</th>
+<th>Valore</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>FUOCO</td>
+<td>Arma da fuoco</td>
+</tr>
+<tr class="even">
+<td>BIANCA</td>
+<td>Arma bianca (coltello, taglierino, ecc.)</td>
+</tr>
+<tr class="odd">
+<td>CONTUND</td>
+<td>Oggetto contundente</td>
+</tr>
+<tr class="even">
+<td>CHIMICO</td>
+<td>Sostanza chimica (acido, veleno, ecc.)</td>
+</tr>
+<tr class="odd">
+<td>MANI</td>
+<td>Mani nude / corpo</td>
+</tr>
+<tr class="even">
+<td>ALTRO</td>
+<td>Altro tipo di arma/oggetto</td>
+</tr>
+<tr class="odd">
+<td>ND</td>
+<td>Non determinata / Non nota</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="luogo-del-fatto" class="level3">
+<h3 class="anchored" data-anchor-id="luogo-del-fatto">Luogo del Fatto</h3>
+<p><strong>Nota</strong>: La <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art5">legge 53/2022</a> prevede la rilevazione delle “informazioni sul luogo dove il fatto è avvenuto” ma non specifica i valori controllati. La tabella seguente è un <strong>esempio</strong> da validare. Si raccomanda di utilizzare <strong>classificazioni già esistenti e consolidate</strong> in uso presso le Forze dell’Ordine (es. tassonomie SDI - Sistema di Indagine, o standard ISTAT) per garantire coerenza e interoperabilità dei dati.</p>
+<p>Esempio di valori controllati per il campo <code>luogo_fatto</code>:</p>
+<table class="table-striped table-hover small table-sm caption-top table">
+<caption>Valori controllati proposti per il luogo del fatto</caption>
+<thead>
+<tr class="header">
+<th>Codice</th>
+<th>Valore</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ABIT_VITTIMA</td>
+<td>Abitazione della vittima</td>
+</tr>
+<tr class="even">
+<td>ABIT_AUTORE</td>
+<td>Abitazione dell’autore</td>
+</tr>
+<tr class="odd">
+<td>ABIT_COMUNE</td>
+<td>Abitazione comune (convivenza)</td>
+</tr>
+<tr class="even">
+<td>LAVORO</td>
+<td>Luogo di lavoro</td>
+</tr>
+<tr class="odd">
+<td>SCUOLA</td>
+<td>Istituto scolastico</td>
+</tr>
+<tr class="even">
+<td>STRADA</td>
+<td>Strada / luogo pubblico</td>
+</tr>
+<tr class="odd">
+<td>VEICOLO</td>
+<td>Veicolo</td>
+</tr>
+<tr class="even">
+<td>LOCALE</td>
+<td>Locale pubblico (bar, ristorante, ecc.)</td>
+</tr>
+<tr class="odd">
+<td>ONLINE</td>
+<td>Online / digitale</td>
+</tr>
+<tr class="even">
+<td>ALTRO</td>
+<td>Altro luogo</td>
+</tr>
+<tr class="odd">
+<td>ND</td>
+<td>Non determinato / Non noto</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="tipo-evento-procedurale" class="level3">
+<h3 class="anchored" data-anchor-id="tipo-evento-procedurale">Tipo Evento Procedurale</h3>
+<p><strong>Riferimento normativo</strong>: <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art5">Articolo 5, comma 5</a> della Legge 53/2022</p>
+<p>Valori controllati per il campo <code>tipo_evento</code> del dataset Sistema Interministeriale:</p>
+<table class="table-striped table-hover small table-sm caption-top table">
+<caption>Valori controllati per il tipo di evento procedurale</caption>
+<thead>
+<tr class="header">
+<th>Codice</th>
+<th>Valore</th>
+<th>Descrizione</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>DENUNCIA</td>
+<td>Denuncia</td>
+<td>Presentazione di denuncia/querela alle forze dell’ordine o alla Procura</td>
+</tr>
+<tr class="even">
+<td>AUDIZIONE_PM</td>
+<td>Audizione personale PM</td>
+<td>Audizione personale da parte del PM su richiesta motivata della vittima (<a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:1988-10-28;447~art362">art. 362 comma 1-ter cpp</a>, come modificato dalla <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-12-02;181~art3!vig=2025-12-26">L. 181/2025, art. 3, lett. p)</a>)</td>
+</tr>
+<tr class="odd">
+<td>MIS_PREV</td>
+<td>Misura di prevenzione</td>
+<td>Ammonimento del Questore ex art. 8 DL 11/2009</td>
+</tr>
+<tr class="even">
+<td>MIS_PREC</td>
+<td>Misura precautelare</td>
+<td>Allontanamento d’urgenza ex art. 384-bis cpp</td>
+</tr>
+<tr class="odd">
+<td>MIS_CAUT</td>
+<td>Misura cautelare</td>
+<td>Divieto di avvicinamento, obbligo di dimora, arresti domiciliari, custodia cautelare</td>
+</tr>
+<tr class="even">
+<td>SEQ_CONSERV</td>
+<td>Sequestro conservativo</td>
+<td>Sequestro conservativo per garanzia risarcimento danni (<a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:1988-10-28;447~art316">art. 316 comma 1-ter cpp</a>, introdotto dalla <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-12-02;181~art3!vig=2025-12-26">L. 181/2025, art. 3, lett. o)</a>)</td>
+</tr>
+<tr class="odd">
+<td>ORD_PROT</td>
+<td>Ordine di protezione</td>
+<td>Ordine di protezione civile ex artt. 342-ter e 342-bis cc</td>
+</tr>
+<tr class="even">
+<td>MIS_SIC</td>
+<td>Misura di sicurezza</td>
+<td>Libertà vigilata, casa di cura e custodia, etc.</td>
+</tr>
+<tr class="odd">
+<td>VIOLAZIONE</td>
+<td>Violazione misura</td>
+<td>Violazione di misure cautelari, ordini di protezione, etc.</td>
+</tr>
+<tr class="even">
+<td>ARRESTO</td>
+<td>Arresto</td>
+<td>Arresto dell’autore del reato</td>
+</tr>
+<tr class="odd">
+<td>ARCHIVIAZIONE</td>
+<td>Archiviazione</td>
+<td>Provvedimento di archiviazione del procedimento</td>
+</tr>
+<tr class="even">
+<td>SENTENZA</td>
+<td>Sentenza</td>
+<td>Sentenza (primo grado, appello, cassazione)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Nota</strong>: Il campo <code>dettaglio_evento</code> contiene la specificazione puntuale (es. per MIS_CAUT: “Divieto di avvicinamento ex art. 282-ter cpp”).</p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiato!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiato!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
