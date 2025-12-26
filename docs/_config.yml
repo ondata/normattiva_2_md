@@ -1,7 +1,7 @@
 title: normattiva2md
 description: Converti le leggi italiane in testo semplice e strutturato per le intelligenze artificiali. Trasforma i contenuti XML di normattiva.it in formato Markdown AI-ready.
 baseurl: "/normattiva_2_md"
-url: "https://aborruso.github.io"
+url: "https://ondata.github.io"
 markdown: kramdown
 exclude:
   - Gemfile
