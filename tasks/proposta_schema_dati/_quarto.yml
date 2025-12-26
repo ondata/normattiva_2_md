@@ -1,0 +1,4 @@
+project:
+  output-dir: ../../docs/esempi/legge_53_2022
+  post-render:
+    - mv ../../docs/esempi/legge_53_2022/email_schema_dati.html ../../docs/esempi/legge_53_2022/index.html
