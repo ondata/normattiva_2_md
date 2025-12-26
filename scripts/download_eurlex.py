@@ -12,6 +12,7 @@ Examples:
     python scripts/download_eurlex.py 32024L1385
     python scripts/download_eurlex.py 32024L1385 --lang IT --format xhtml
     python scripts/download_eurlex.py 32024L1385 --format fmx4 --output directive.xml
+    python scripts/download_eurlex.py 32024L1385 --lang IT --format xhtml --to-markdown --output directive.md
 """
 
 import sys
@@ -20,6 +21,9 @@ import urllib.request
 import xml.etree.ElementTree as ET
 import zipfile
 import io
+import os
+import subprocess
+import tempfile
 
 
 # Mapping from 2-letter ISO codes to EUR-Lex 3-letter codes
@@ -178,7 +182,79 @@ def extract_formex_zip(zip_content):
         return None
 
 
+def convert_xhtml_to_markdown(xhtml_bytes, output_path, lua_filter, extract_media):
+    """Convert XHTML bytes to Markdown using pandoc and a Lua filter."""
+    if not os.path.isfile(lua_filter):
+        print(f"Error: Lua filter not found: {lua_filter}", file=sys.stderr)
+        return 1
+
+    temp_in = None
+    temp_out = None
+    try:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".xhtml") as f:
+            f.write(xhtml_bytes)
+            temp_in = f.name
+
+        cmd = [
+            "pandoc",
+            "-f",
+            "html",
+            "-t",
+            "gfm",
+            "--wrap=none",
+            "--lua-filter",
+            lua_filter,
+            temp_in,
+        ]
+        if extract_media:
+            cmd.extend(["--extract-media", extract_media])
+
+        if output_path:
+            cmd.extend(["-o", output_path])
+            result = subprocess.run(cmd, check=False)
+            if result.returncode != 0:
+                print("Error: pandoc failed", file=sys.stderr)
+                return result.returncode
+            with open(output_path, "r", encoding="utf-8") as f:
+                cleaned = strip_markdown_comments(f.read())
+            with open(output_path, "w", encoding="utf-8") as f:
+                f.write(cleaned)
+            return 0
+
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".md") as f:
+            temp_out = f.name
+        cmd.extend(["-o", temp_out])
+        result = subprocess.run(cmd, check=False)
+        if result.returncode != 0:
+            print("Error: pandoc failed", file=sys.stderr)
+            return result.returncode
+        with open(temp_out, "r", encoding="utf-8") as f:
+            sys.stdout.write(strip_markdown_comments(f.read()))
+        return 0
+    except FileNotFoundError:
+        print("Error: pandoc not found. Install pandoc to enable --to-markdown.", file=sys.stderr)
+        return 1
+    finally:
+        if temp_in and os.path.exists(temp_in):
+            os.unlink(temp_in)
+        if temp_out and os.path.exists(temp_out):
+            os.unlink(temp_out)
+
+
+def strip_markdown_comments(text):
+    """Remove placeholder HTML comments inserted by pandoc in lists."""
+    lines = []
+    for line in text.splitlines():
+        if line.strip() == "<!-- -->":
+            continue
+        lines.append(line)
+    return "\n".join(lines) + "\n"
+
+
 def main():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    default_filter = os.path.join(script_dir, "eurlex_clean.lua")
+
     parser = argparse.ArgumentParser(
         description='Download documents from EUR-Lex',
         epilog='Example: %(prog)s 32024L1385 --lang EN --format fmx4'
@@ -192,6 +268,14 @@ def main():
                        help='Output file path (default: stdout for text formats, auto-named for binary)')
     parser.add_argument('--list-formats', action='store_true',
                        help='List available formats and exit')
+    parser.add_argument('--to-markdown', action='store_true',
+                        help='Convert XHTML to Markdown using pandoc')
+    parser.add_argument('--markdown-output',
+                        help='Markdown output path (default: stdout)')
+    parser.add_argument('--lua-filter', default=default_filter,
+                        help='Lua filter for pandoc (default: scripts/eurlex_clean.lua)')
+    parser.add_argument('--extract-media',
+                        help='Directory for extracted media (passed to pandoc)')
     
     args = parser.parse_args()
     
@@ -229,6 +313,18 @@ def main():
         if content is None:
             return 1
         content = content.encode('utf-8')
+
+    if args.to_markdown:
+        if args.format != "xhtml":
+            print("Error: --to-markdown requires --format xhtml", file=sys.stderr)
+            return 1
+        md_output = args.markdown_output or args.output
+        return convert_xhtml_to_markdown(
+            content,
+            md_output,
+            args.lua_filter,
+            args.extract_media,
+        )
     
     # Step 5: Write output
     if args.output:
