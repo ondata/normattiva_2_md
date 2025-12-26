@@ -6,6 +6,7 @@
 ## Libraries & Frameworks
 - **Requests:** Used for all network interactions, including downloading XML from Normattiva and querying the Exa AI API.
 - **Standard Library (xml.etree.ElementTree):** Utilized for parsing Akoma Ntoso XML documents, maintaining a minimalist footprint.
+- **Standard Library (json, re):** Used for structural validation and report generation.
 - **Setuptools / Pyproject.toml:** Used for package management, dependency definition, and distribution to PyPI.
 
 ## External APIs & Integrations

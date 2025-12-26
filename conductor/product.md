@@ -17,6 +17,7 @@ Normattiva2MD is a specialized CLI tool designed to convert Italian legal docume
 ## Critical Success Factors
 - **Automated Intelligence:** Success is defined by the tool's ability to automatically download, lookup, and convert laws from a simple URL or a natural language search query (via Exa AI).
 - **Granular Extraction:** The ability to handle cross-references and extract specific articles accurately is paramount for precise legal analysis.
+- **Structural Integrity:** Ensuring high-fidelity conversion through automated validation and structural comparison between XML and Markdown.
 
 ## Design Philosophy
 - **Zero-Config & Battery-Included:** The tool should work immediately with sensible defaults, automatically detecting URL types and handling downloads without manual user intervention.
