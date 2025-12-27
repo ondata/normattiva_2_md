@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Akoma2MD** is a CLI tool that converts XML documents in Akoma Ntoso format (legal documents from normattiva.it) to readable Markdown. The tool is designed to produce LLM-friendly output for building legal AI bots.
+**normattiva2md** is a CLI tool that converts XML documents in Akoma Ntoso format (legal documents from normattiva.it) to readable Markdown. The tool is designed to produce LLM-friendly output for building legal AI bots.
 
 ## Core Architecture
 
@@ -59,33 +59,33 @@ Article filtering:
 ```bash
 # Output to file
 python convert_akomantoso.py input.xml output.md
-akoma2md input.xml output.md
+normattiva2md input.xml output.md
 
 # Output to stdout (default when -o omitted)
 python convert_akomantoso.py input.xml
-akoma2md input.xml > output.md
-akoma2md -i input.xml
+normattiva2md input.xml > output.md
+normattiva2md -i input.xml
 
 # From normattiva.it URL (auto-detected)
 python convert_akomantoso.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" output.md
-akoma2md "URL" > output.md
-akoma2md -i "URL" -o output.md
+normattiva2md "URL" > output.md
+normattiva2md -i "URL" -o output.md
 
 # With named arguments
-akoma2md -i input.xml -o output.md
+normattiva2md -i input.xml -o output.md
 
 # Keep temporary XML from URL
-akoma2md "URL" output.md --keep-xml
-akoma2md "URL" --keep-xml > output.md
+normattiva2md "URL" output.md --keep-xml
+normattiva2md "URL" --keep-xml > output.md
 
 # Filter single article with --art flag
-akoma2md --art 4 input.xml output.md
-akoma2md --art 16bis "URL" output.md
-akoma2md --art 3 --with-urls input.xml > output.md
+normattiva2md --art 4 input.xml output.md
+normattiva2md --art 16bis "URL" output.md
+normattiva2md --art 3 --with-urls input.xml > output.md
 # --art overrides URL ~artN: --art 2 "URL~art5" → extracts art. 2
 
 # Export provvedimenti attuativi to CSV
-akoma2md --provvedimenti "URL" output.md
+normattiva2md --provvedimenti "URL" output.md
 normattiva2md --provvedimenti "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2024;207" legge.md
 # Generates: legge.md + 2024_207_provvedimenti.csv
 ```
@@ -108,7 +108,7 @@ python convert_akomantoso.py test_data/20050516_005G0104_VIGENZA_20250130.xml te
 
 ```bash
 pip install pyinstaller
-pyinstaller --onefile --name akoma2md convert_akomantoso.py
+pyinstaller --onefile --name normattiva2md convert_akomantoso.py
 ```
 
 ### Package installation
