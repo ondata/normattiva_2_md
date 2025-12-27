@@ -17,7 +17,7 @@ def read_readme():
 
 setup(
     name="akoma2md",
-    version="2.0.22",
+    version="2.0.24",
     description="⚠️ DEPRECATED - Use 'normattiva2md' instead | Convertitore da XML Akoma Ntoso a Markdown (CLI: normattiva2md)",
     long_description=read_readme(),
     long_description_content_type="text/markdown",
