@@ -299,9 +299,13 @@ def main():
                 else:
                     # Genera nome file snake_case
                     suggested_filename = generate_snake_case_filename(selected_title)
-                    filename_input = input(
-                        f"📝 Nome file [{suggested_filename}]: "
-                    ).strip()
+                    try:
+                        filename_input = input(
+                            f"📝 Nome file (INVIO per confermare, o scrivi nome desiderato) [{suggested_filename}]: "
+                        ).strip()
+                    except KeyboardInterrupt:
+                        print("\r❌ Operazione annullata dall'utente", file=sys.stderr)
+                        sys.exit(0)
 
                     # Valida input: ignora risposte di conferma troppo corte
                     if filename_input and filename_input.lower() not in [
@@ -328,13 +332,17 @@ def main():
 
                     # Verifica se il file esiste già
                     if os.path.exists(output_file):
-                        overwrite = (
-                            input(
-                                f"⚠️  Il file '{output_file}' esiste già. Sovrascrivere? (s/N): "
+                        try:
+                            overwrite = (
+                                input(
+                                    f"⚠️  Il file '{output_file}' esiste già. Sovrascrivere? (s/N): "
+                                )
+                                .strip()
+                                .lower()
                             )
-                            .strip()
-                            .lower()
-                        )
+                        except KeyboardInterrupt:
+                            print("\r❌ Operazione annullata dall'utente", file=sys.stderr)
+                            sys.exit(0)
                         if overwrite not in ["s", "si", "sì", "y", "yes"]:
                             print("❌ Download annullato dall'utente", file=sys.stderr)
                             sys.exit(0)
@@ -344,7 +352,7 @@ def main():
                     print(f"✅ URL selezionato: {input_source}", file=sys.stderr)
 
             except (EOFError, KeyboardInterrupt):
-                print("❌ Operazione annullata dall'utente", file=sys.stderr)
+                print("\r❌ Operazione annullata dall'utente", file=sys.stderr)
                 sys.exit(0)
         else:
             # Selezione automatica - usa il comportamento precedente

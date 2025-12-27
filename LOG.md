@@ -2,6 +2,17 @@
 
 Questo file documenta gli avanzamenti significativi e le decisioni chiave del progetto `normattiva_2_md`.
 
+## 2025-12-27
+
+### Fix ricerca naturale Exa e UX interattiva
+
+**v2.0.23**
+
+- Filtro risultati Exa: esclusi URL `/esporta/` non supportati e titoli con "errore"
+- Gestione CTRL+C pulita in tutti gli input interattivi (ricerca, nome file, sovrascrittura)
+- Prompt nome file migliorato: "(INVIO per confermare, o scrivi nome desiderato)"
+- Fix carriage return `\r` per nascondere `^C` visibile
+
 ## 2025-12-25
 
 ### 📊 Analisi schema dati violenza di genere

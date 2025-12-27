@@ -3,7 +3,7 @@ import re
 import sys
 import json
 import requests
-from .normattiva_api import is_normattiva_url # Per la validazione URL
+from .normattiva_api import is_normattiva_url, is_normattiva_export_url # Per la validazione URL
 
 def lookup_normattiva_url(
     search_query, debug_json=False, auto_select=True, exa_api_key=None
@@ -105,10 +105,14 @@ def lookup_normattiva_url(
 
         for i, result in enumerate(results):
             url = result.get("url")
-            if url and is_normattiva_url(url):
+            if url and is_normattiva_url(url) and not is_normattiva_export_url(url):
                 # Calcola un punteggio di preferenza
                 preference_score = 0
                 title = result.get("title", "").lower()
+
+                # Skippa risultati con "errore" nel titolo (pagine di errore di normattiva.it)
+                if "errore" in title:
+                    continue
 
                 # Penalizza URL caricaDettaglioAtto (restituiscono HTML, non XML)
                 if "/caricaDettaglioAtto?" in url:
@@ -216,8 +220,8 @@ def lookup_normattiva_url(
                 else:
                     print(f"❌ Scelta non valida: {choice}", file=sys.stderr)
                     return None
-            except (ValueError, EOFError):
-                print("❌ Input non valido, ricerca annullata", file=sys.stderr)
+            except (ValueError, EOFError, KeyboardInterrupt):
+                print("\r❌ Ricerca annullata dall'utente", file=sys.stderr)
                 return None
 
         # Selezione automatica
