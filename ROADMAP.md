@@ -8,41 +8,9 @@ Pianificazione release future e miglioramenti programmati.
 
 ## 🟡 NEXT RELEASE - v2.1.0 (Prossima Release)
 
-### 1. Refactoring `main()` function
+### 1. Fix HTML Parsing Fragility
 
-**Problema**: Funzione troppo lunga (143 linee) con responsabilità multiple
-
-**Soluzione**:
-```python
-def parse_args():
-    """Parse command line arguments"""
-    # 30 linee
-
-def process_url(url, output_file, keep_xml, quiet):
-    """Handle URL-based conversion"""
-    # 40 linee
-
-def process_file(file_path, output_file, quiet):
-    """Handle local file conversion"""
-    # 20 linee
-
-def main():
-    """Main entry point - orchestration only"""
-    # 30 linee
-```
-
-**Benefici**:
-- Miglior testabilità
-- Codice più manutenibile
-- Ogni funzione < 50 linee
-
-**File**: `convert_akomantoso.py:807-950`
-
----
-
-### 2. Fix HTML Parsing Fragility
-
-**Problema**: Uso regex per parsing HTML (linee 300-328)
+**Problema**: Uso regex per parsing HTML nella funzione `extract_params_from_normattiva_url()`
 
 **Attuale**:
 ```python
@@ -67,13 +35,13 @@ def extract_params_from_normattiva_url(url, session=None, quiet=False):
 - Più leggibile
 - Best practice parsing HTML
 
-**File**: `convert_akomantoso.py:300-328`
+**File**: `src/normattiva2md/normattiva_api.py:147-170`
 
 ---
 
-### 3. Network Error Recovery
+### 2. Network Error Recovery
 
-**Problema**: Nessun retry su errori di rete
+**Problema**: Nessun retry su errori di rete nelle funzioni `extract_params_from_normattiva_url()` e `download_akoma_ntoso()`
 
 **Soluzione**:
 ```python
@@ -98,13 +66,13 @@ def create_session_with_retry():
 - Gestione errori temporanei
 - Migliore UX
 
-**File**: `convert_akomantoso.py:267-383`
+**File**: `src/normattiva2md/normattiva_api.py:124, 201`
 
 ---
 
-### 4. Complete Footnote Implementation
+### 3. Complete Footnote Implementation
 
-**Problema**: Implementazione semplificata senza global counter (linee 230-236)
+**Problema**: Implementazione semplificata senza global counter nella funzione `clean_text_content()`
 
 **Attuale**:
 ```python
@@ -136,11 +104,11 @@ class MarkdownGenerator:
 - Definizioni a fine documento
 - Formato Markdown standard
 
-**File**: `convert_akomantoso.py:230-236`
+**File**: `src/normattiva2md/markdown_converter.py:159-165`
 
 ---
 
-### 5. Integration Tests
+### 4. Integration Tests
 
 **Problema**: Mancano test end-to-end e scenari errore
 
@@ -165,9 +133,9 @@ class IntegrationTests(unittest.TestCase):
 
 ---
 
-### 6. Precompile Regex Patterns
+### 5. Precompile Regex Patterns
 
-**Problema**: Pattern compilati ad ogni chiamata (performance)
+**Problema**: Pattern regex compilati ad ogni chiamata (performance)
 
 **Soluzione**:
 ```python
@@ -190,13 +158,13 @@ def parse_chapter_heading(heading_text):
 - Codice più pulito
 - Best practice Python
 
-**File**: `convert_akomantoso.py` (multiple locations)
+**File**: Multipli moduli in `src/normattiva2md/` (normattiva_api.py, markdown_converter.py, xml_parser.py, akoma_utils.py, utils.py)
 
 ---
 
-## 🟢 MEDIUM PRIORITY - v1.6.0
+## 🟢 MEDIUM PRIORITY - v2.2.0
 
-### 7. Type Hints
+### 6. Type Hints
 
 **Obiettivo**: Aggiungere type hints a tutte le funzioni
 
@@ -231,7 +199,7 @@ disallow_untyped_defs = true
 
 ---
 
-### 8. API Documentation con Sphinx
+### 7. API Documentation con Sphinx
 
 **Setup**:
 ```bash
@@ -257,7 +225,7 @@ html_theme = 'sphinx_rtd_theme'
 
 ---
 
-### 9. CI/CD Pipeline Completo
+### 8. CI/CD Pipeline Completo
 
 **GitHub Actions workflow**:
 ```yaml
@@ -293,19 +261,20 @@ jobs:
 
 ---
 
-### 10. Version Management
+### 9. Version Management
 
 **Single source of truth**:
 ```python
-# akoma2md/__version__.py
-__version__ = "1.5.0"
+# src/normattiva2md/__version__.py
+__version__ = "2.0.24"
 
-# setup.py
-from akoma2md.__version__ import __version__
+# setup.py (deprecated - use pyproject.toml)
+from normattiva2md.__version__ import __version__
 setup(version=__version__)
 
-# pyproject.toml
-version = {attr = "akoma2md.__version__.__version__"}
+# pyproject.toml (recommended)
+[project]
+version = "2.0.24"
 ```
 
 **Automated changelog**:
@@ -320,7 +289,7 @@ conventional-changelog -p angular -i CHANGELOG.md -s
 
 ---
 
-### 11. Optional Dependencies
+### 10. Optional Dependencies
 
 **pyproject.toml**:
 ```toml
@@ -341,15 +310,15 @@ html = [
     "lxml>=4.9.0"
 ]
 all = [
-    "akoma2md[dev,test,html]"
+    "normattiva2md[dev,test,html]"
 ]
 ```
 
 **Installazione**:
 ```bash
-pip install akoma2md[dev]    # per sviluppo
-pip install akoma2md[html]   # per HTML parsing robusto
-pip install akoma2md[all]    # tutto
+pip install normattiva2md[dev]    # per sviluppo
+pip install normattiva2md[html]   # per HTML parsing robusto
+pip install normattiva2md[all]    # tutto
 ```
 
 ---
@@ -605,30 +574,6 @@ akoma2md --validate input.xml --verbose
 
 ---
 
-### 16. Modularizzazione Codebase
-
-**Nuova struttura**:
-```
-akoma2md/
-├── __init__.py          # Package init
-├── __version__.py       # Version
-├── cli.py              # CLI logic (~150 linee)
-├── converter.py        # Conversione core (~400 linee)
-├── parser.py           # XML parsing (~300 linee)
-├── network.py          # HTTP/URL handling (~150 linee)
-├── metadata.py         # Metadata extraction (~100 linee)
-├── security.py         # Validation/security (~100 linee)
-└── utils.py            # Utilities (~50 linee)
-```
-
-**Benefici**:
-- Codice più organizzato
-- Import selettivi
-- Testing più facile
-- Riuso componenti
-
----
-
 ## 📊 Metriche di Successo
 
 ### v2.1.0 Target (Current Sprint)
@@ -644,7 +589,7 @@ akoma2md/
 - [ ] CI/CD con multiple Python versions
 
 ### v3.0.0 Target
-- [ ] Architettura modulare completa
+- [x] Architettura modulare completa (✅ completato in v2.0.23)
 - [ ] Plugin system
 - [ ] Multiple output formats (MD, HTML, PDF)
 - [ ] Batch mode production-ready
@@ -665,8 +610,7 @@ akoma2md/
 1. **[Bug] Complete footnote implementation with global counter** - v2.1.0
 
 ### Refactor
-1. **[Refactor] Split main() into smaller functions** - v2.1.0
-2. **[Refactor] Modularize codebase into package** - v3.0.0
+(Nessun refactoring maggiore pianificato - refactoring principale completato in v2.0.23)
 
 ### Documentation
 1. **[Docs] Setup Sphinx documentation** - v2.2.0
@@ -694,7 +638,7 @@ akoma2md/
 
 **Q2-Q4 2026**:
 - v3.0.0: Major architecture + advanced features
-- Focus: Modularizzazione + Plugin system
+- Focus: Plugin system + Multiple output formats
 
 ---
 
