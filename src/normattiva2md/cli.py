@@ -14,6 +14,7 @@ from .normattiva_api import (
 )
 from .exa_api import lookup_normattiva_url
 from .akoma_utils import parse_article_reference
+from .xml_parser import construct_article_eid
 from .markdown_converter import convert_akomantoso_to_markdown_improved
 from .multi_document import convert_with_references
 from .provvedimenti_api import (
@@ -117,6 +118,11 @@ def main():
 
     # Esportare provvedimenti attuativi in CSV
     {cmd_display} --provvedimenti "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2024;207" -o output.md
+
+    # Filtrare un singolo articolo
+    {cmd_display} --art 4 input.xml output.md
+    {cmd_display} --art 16bis "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" output.md
+    {cmd_display} --art 3 --with-urls "input.xml" > output.md
             """,
     )
 
@@ -201,6 +207,11 @@ def main():
         action="store_true",
         help="Cerca e esporta provvedimenti attuativi da programmagoverno.gov.it in formato CSV",
     )
+    parser.add_argument(
+        "--art",
+        dest="article_filter",
+        help="Filtra output a singolo articolo (es: 4, 16bis, 3ter). Sovrascrive ~artN nell'URL",
+    )
     args = parser.parse_args()
 
     # Combinazione argomenti posizionali e named
@@ -255,6 +266,23 @@ def main():
         except ValueError as e:
             print(f"❌ Errore nel path di output: {e}", file=sys.stderr)
             sys.exit(1)
+
+    # Convert --art parameter to article eId
+    article_filter_eid = None
+    if args.article_filter:
+        article_filter_eid = construct_article_eid(args.article_filter)
+        if not article_filter_eid:
+            print(
+                f"❌ Formato articolo invalido: '{args.article_filter}'. Usa formato: numero[estensione] (es: 4, 16bis, 3ter)",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+        quiet_mode = args.quiet or output_file is None
+        if not quiet_mode:
+            print(
+                f"Filtro articolo attivato: {args.article_filter} (eId: {article_filter_eid})",
+                file=sys.stderr,
+            )
 
     # Gestisci ricerca naturale se specificata
     if args.search_query:
@@ -386,19 +414,32 @@ def main():
         else:
             # Normal conversion (not --with-references mode)
 
-            # Check for article reference in URL
-            article_ref = parse_article_reference(input_source)
-            if article_ref and not quiet_mode:
-                print(f"Rilevato riferimento articolo: {article_ref}", file=sys.stderr)
+            # Determine article filtering: priority is --art > --completo > URL ~artN
+            article_ref = None
 
-            # Determine if we should filter to article or convert complete document
-            force_complete = args.completo
-            if force_complete and article_ref and not quiet_mode:
-                print(
-                    f"Forzando conversione completa della legge (--completo)",
-                    file=sys.stderr,
-                )
-                article_ref = None  # Override article filtering
+            if article_filter_eid:
+                # --art flag has highest priority
+                article_ref = article_filter_eid
+                url_article_ref = parse_article_reference(input_source)
+                if url_article_ref and not quiet_mode:
+                    print(
+                        f"Flag --art sovrascrive riferimento URL (~{url_article_ref})",
+                        file=sys.stderr,
+                    )
+            elif args.completo:
+                # --completo flag: ignore URL article reference
+                url_article_ref = parse_article_reference(input_source)
+                if url_article_ref and not quiet_mode:
+                    print(
+                        f"Forzando conversione completa della legge (--completo ignora ~{url_article_ref})",
+                        file=sys.stderr,
+                    )
+                article_ref = None
+            else:
+                # Use URL article reference if present
+                article_ref = parse_article_reference(input_source)
+                if article_ref and not quiet_mode:
+                    print(f"Rilevato riferimento articolo: {article_ref}", file=sys.stderr)
 
             # Estrai parametri dalla pagina
             params, session = extract_params_from_normattiva_url(
@@ -514,7 +555,9 @@ def main():
                     f"Conversione da file XML locale: '{input_source}' (output a stdout)...",
                     file=sys.stderr,
                 )
-        success = convert_akomantoso_to_markdown_improved(input_source, output_file)
+        success = convert_akomantoso_to_markdown_improved(
+            input_source, output_file, article_ref=article_filter_eid, with_urls=args.with_urls
+        )
 
         if success:
             if not quiet_mode:

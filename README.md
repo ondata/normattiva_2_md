@@ -19,6 +19,7 @@ Convertire le norme legali da XML Akoma Ntoso a Markdown offre vantaggi signific
 ## 🚀 Caratteristiche
 
 - ✅ **Conversione completa** da XML Akoma Ntoso a Markdown
+- ✅ **Filtro articolo CLI** con flag `--art` (es: `--art 4`, `--art 16bis`) senza modificare URL
 - ✅ **Supporto URL articolo-specifico** (`~art3`, `~art16bis`, etc.) per estrarre singoli articoli
 - ✅ **Gestione degli articoli** con numerazione corretta
 - ✅ **Supporto per le modifiche legislative** con evidenziazione `((modifiche))`
@@ -138,6 +139,35 @@ normattiva2md input.xml output.md
 normattiva2md -i input.xml -o output.md
 normattiva2md --input input.xml --output output.md
 ```
+
+### Metodo 2bis: Filtrare un singolo articolo con `--art`
+
+Il flag `--art` consente di estrarre un singolo articolo senza modificare l'URL:
+
+```bash
+# Filtrare articolo da file XML locale
+normattiva2md --art 4 input.xml output.md
+normattiva2md --art 3bis input.xml articolo.md
+
+# Filtrare articolo da URL (più semplice che costruire URL con ~artN)
+normattiva2md --art 16bis "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" art16bis.md
+
+# Il flag --art ha priorità su ~artN nell'URL
+normattiva2md --art 3 "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2005-03-07;82~art5" art3.md
+# → Mostra art. 3, ignora ~art5 nell'URL
+
+# Combinare con --with-urls per link automatici
+normattiva2md --art 4 --with-urls input.xml output.md
+
+# Output su stdout
+normattiva2md --art 3 input.xml > articolo.md
+```
+
+**Note:**
+- Formato articoli: numero + estensione opzionale (es: `4`, `16bis`, `3ter`)
+- Case-insensitive: `16BIS` = `16bis`
+- Se articolo non trovato: output con solo metadata + warning su stderr
+- `--art` ha priorità su `--completo` e `~artN` nell'URL
 
 ### Metodo 3: Esportazione provvedimenti attuativi
 

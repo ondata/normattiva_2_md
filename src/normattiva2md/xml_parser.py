@@ -116,6 +116,42 @@ def extract_metadata_from_xml(root):
 
     return metadata
 
+
+def construct_article_eid(user_input):
+    """
+    Costruisce l'eId di un articolo dal formato user-friendly.
+
+    Args:
+        user_input: stringa con numero articolo ed eventuale estensione (es: "4", "16bis", "3ter")
+
+    Returns:
+        str: eId formato Akoma Ntoso (es: "art_4", "art_16bis") o None se formato invalido
+    """
+    import re
+
+    if not user_input:
+        return None
+
+    # Normalizza input: trim e lowercase
+    user_input = user_input.strip().lower()
+
+    # Valida formato: numero seguito da lettere opzionali
+    pattern = r'^(\d+)([a-z]*)$'
+    match = re.match(pattern, user_input)
+
+    if not match:
+        return None
+
+    numero = match.group(1)
+    estensione = match.group(2)
+
+    # Costruisci eId (con trattino per estensioni, formato Akoma Ntoso)
+    if estensione:
+        return f"art_{numero}-{estensione}"
+    else:
+        return f"art_{numero}"
+
+
 def filter_xml_to_article(root, article_eid, ns):
     """
     Filtra il documento XML per estrarre solo l'articolo specificato

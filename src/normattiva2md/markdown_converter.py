@@ -226,11 +226,16 @@ def convert_akomantoso_to_markdown_improved(
         if article_ref:
             filtered_root = filter_xml_to_article(root, article_ref, AKN_NAMESPACE)
             if filtered_root is None:
+                # Article not found - continue with empty body but include metadata
                 print(
-                    f"❌ Articolo '{article_ref}' non trovato nel documento",
+                    f"⚠️  Warning: Article '{article_ref}' not found in document",
                     file=sys.stderr,
                 )
-                return False
+                # Create empty root to generate metadata-only output
+                filtered_root = ET.Element(root.tag, root.attrib)
+                # Copy meta elements for metadata extraction
+                for meta_elem in root.findall('.//akn:meta', AKN_NAMESPACE):
+                    filtered_root.append(meta_elem)
             root = filtered_root
 
         # Extract metadata from XML if not provided (for local files)

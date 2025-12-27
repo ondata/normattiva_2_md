@@ -4,6 +4,31 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2025-12-27
 
+### Implementazione flag `--art` per filtro articoli
+
+**v2.0.24** | **OpenSpec**: `add-article-filter-flag`
+
+Aggiunto parametro CLI `--art` per filtrare singoli articoli senza modificare URL:
+
+**Implementazione**:
+- `construct_article_eid()` in `xml_parser.py`: converte input utente (es: "4", "16bis") → eId Akoma ("art_4", "art_16-bis")
+- Integrazione in `cli.py`: gestisce priorità `--art` > `--completo` > URL `~artN`
+- Supporto estensioni: bis, ter, quater, quinquies, etc. (case-insensitive)
+- Warning stderr se articolo non trovato, output con solo metadata
+
+**Esempi uso**:
+- `normattiva2md --art 4 input.xml output.md`
+- `normattiva2md --art 16bis "URL" output.md`
+- `normattiva2md --art 3 "URL~art5"` → override, mostra art. 3
+
+**Documentazione aggiornata**: README.md, CLAUDE.md
+
+**Test**: File locale, URL, estensioni, override ~artN, articolo inesistente
+
+**Validazione**: `openspec validate add-article-filter-flag --strict` → PASS
+
+---
+
 ### Fix ricerca naturale Exa e UX interattiva
 
 **v2.0.23**

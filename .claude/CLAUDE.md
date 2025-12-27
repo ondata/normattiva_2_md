@@ -46,6 +46,12 @@ Document structure extraction:
 - Articles: `//akn:article` with `akn:num` (number) and `akn:heading` (title)
 - Legislative modifications: wrapped in `(( ))` from `<ins>` and `<del>` tags
 
+Article filtering:
+
+- `construct_article_eid(user_input)`: Converts user-friendly input (e.g., "4", "16bis") to Akoma eId format (e.g., "art_4", "art_16-bis")
+- `filter_xml_to_article(root, article_eid, ns)`: Extracts single article from XML document
+- Supports article extensions: bis, ter, quater, quinquies, etc. with hyphen in eId
+
 ## Common Development Tasks
 
 ### Running the converter (auto-detect URL/file)
@@ -71,6 +77,12 @@ akoma2md -i input.xml -o output.md
 # Keep temporary XML from URL
 akoma2md "URL" output.md --keep-xml
 akoma2md "URL" --keep-xml > output.md
+
+# Filter single article with --art flag
+akoma2md --art 4 input.xml output.md
+akoma2md --art 16bis "URL" output.md
+akoma2md --art 3 --with-urls input.xml > output.md
+# --art overrides URL ~artN: --art 2 "URL~art5" → extracts art. 2
 
 # Export provvedimenti attuativi to CSV
 akoma2md --provvedimenti "URL" output.md
