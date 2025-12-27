@@ -1,113 +1,8 @@
 # Roadmap - normattiva2md
 
-Punti da attenzionare per le prossime release, basati su code review approfondita.
+Pianificazione release future e miglioramenti programmati.
 
-## ✅ COMPLETED - v1.5.0 to v1.9.0 (2025 Releases)
-
-### Versioni Rilasciate
-- **v1.9.0** (2025-11-04): Cross-references inline nei documenti Markdown
-- **v1.8.0** (2025-11-04): Download automatico leggi citate con `--with-references`
-- **v1.7.0** (2025-11-03): Ricerca AI con Exa API (sostituzione Gemini)
-- **v1.6.0** (2025-11-03): Supporto URL articolo-specifici e flag `--completo`
-- **v1.5.0** (2025-11-02): Ricerca naturale documenti legali
-
-### Funzionalità Implementate
-- ✅ Cross-references inline con mapping URI Akoma→file path
-- ✅ Download automatico leggi citate in struttura organizzata
-- ✅ Ricerca AI con Exa API per lookup naturale documenti
-- ✅ Supporto URL articolo-specifici (~art3, ~art16bis, etc.)
-- ✅ Flag --completo per override download legge completa
-- ✅ Miglioramento messaggi errore e UX CLI
-- ✅ Caricamento automatico API key da .env
-- ✅ Gestione graceful BrokenPipeError e KeyboardInterrupt
-
----
-
-## ✅ COMPLETED - v2.0.0 to v2.0.2 (2025-11-04)
-
-### CLI Rename: akoma2md → normattiva2md
-
-**Status**: ✅ Completed with backward compatibility
-
-#### Changes Made
-- **Entry Points**: Both `akoma2md` and `normattiva2md` commands supported
-- **Documentation**: Updated all references and examples
-- **Branding**: Project renamed for better discoverability
-- **Backward Compatibility**: Old command still works during transition
-
-#### Deprecation Timeline
-- **v2.0.x**: Both commands supported (current)
-- **v3.0.0** (Q2 2026): `akoma2md` command deprecated with warning
-- **v4.0.0** (Q1 2027): `akoma2md` command removed
-
-#### Migration Guide
-```bash
-# Recommended (new)
-normattiva2md input.xml output.md
-
-# Still works (deprecated in future)
-akoma2md input.xml output.md
-```
-
----
-
-## ✅ COMPLETED - v2.0.3 to v2.0.22 (2025-11-04 to 2025-12-03)
-
-### Search & UX Enhancements
-
-**Status**: ✅ Completed
-
-#### Versioni Rilasciate
-- **v2.0.22** (2025-12-03): Security documentation updates for v2.0.x
-- **v2.0.21** (2025-12-01): Exa API key CLI parameter support
-- **v2.0.20** (2025-12-01): CLI rename to normattiva2md completed
-- **v2.0.19** (2025-11-05): Complete flag for article URLs
-- **v2.0.18** (2025-11-05): With-urls parameter for article links
-- **v2.0.17** (2025-11-04): Rate limiting for cross-references
-- **v2.0.16** (2025-11-04): Inline cross-references
-- **v2.0.15** (2025-11-04): Cross-reference download
-- **v2.0.14** (2025-11-04): Article-specific URL support
-- **v2.0.13** (2025-11-03): Switch from Gemini to Exa
-- **v2.0.12** (2025-11-03): Atto intero URL support
-- **v2.0.11** (2025-11-02): Natural language URL lookup
-- **v2.0.10** (2025-11-01): Adjust heading hierarchy and add frontmatter
-- **v2.0.9** (2025-11-01): Version flag support
-- **v2.0.8** (2025-11-04): Improved error messages
-- **v2.0.7** (2025-11-04): Permanent link field in frontmatter
-- **v2.0.6** (2025-11-04): Cleaner search output & improved UX
-- **v2.0.5** (2025-11-04): Enhanced Exa search scoring & URL conversion
-- **v2.0.4** (2025-11-04): Enhanced article recognition in search
-- **v2.0.3** (2025-11-04): README update on PyPI (metadata only)
-
-#### Funzionalità Implementate
-- ✅ Campo `url_permanente` nel frontmatter YAML con URN canonico e vigenza
-- ✅ Output ricerca più pulito: verbose mode solo con `--debug-search`
-- ✅ Scoring Exa migliorato: priorità leggi complete vs articoli specifici
-- ✅ Conversione automatica URL articolo→legge completa quando appropriato
-- ✅ Riconoscimento articoli esteso: "articolo 7", "art 7", "art. 7", numeri complessi (16bis, 16ter)
-- ✅ Bonus/penalità intelligenti per selezione risultati Exa
-- ✅ Metadata PyPI aggiornati e corretti
-- ✅ Rate limiting per cross-references per evitare overload
-- ✅ Cross-references inline nei documenti Markdown
-- ✅ Download automatico leggi citate con `--with-references`
-- ✅ Supporto URL articolo-specifici (~art3, ~art16bis, etc.)
-- ✅ Flag `--completo` per override download legge completa
-- ✅ Ricerca AI con Exa API (sostituzione Gemini)
-- ✅ Supporto URL atto intero
-- ✅ Ricerca naturale documenti legali
-- ✅ Aggiustamento gerarchia heading e frontmatter
-- ✅ Flag `--version` per controllo versione
-- ✅ Miglioramento messaggi errore e UX CLI
-- ✅ Parametro CLI per API key Exa
-- ✅ Rinomina CLI completata: `akoma2md` → `normattiva2md`
-- ✅ Documentazione sicurezza aggiornata per v2.0.x
-
-#### Example Output
-```yaml
----
-url_permanente: https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2005-03-07;82!vig=2025-01-30
----
-```
+**Versione corrente**: v2.0.24
 
 ---
 
@@ -813,5 +708,5 @@ akoma2md/
 
 ---
 
-**Ultimo aggiornamento**: 2025-12-03
-**Versione corrente**: v2.0.22
+**Ultimo aggiornamento**: 2025-12-27
+**Versione corrente**: v2.0.24
