@@ -175,14 +175,15 @@ Alcuni URN possono restituire risultati multipli a causa di incongruenze storich
 
 Se si specifica un articolo inesistente o errato, il sistema si posiziona automaticamente sul primo articolo dell'atto.
 
-### Compatibilità con `fetch_from_url.py`
+### Compatibilità con `normattiva2md`
 
-Il nostro script supporta **tutti i formati** di URL normattiva.it:
+Il comando `normattiva2md` supporta **tutti i formati** di URL normattiva.it:
 - Multivigente, originale, vigente (con o senza data)
 - Con o senza puntamento ad articoli specifici
 - Articoli con estensioni (bis, ter, quater, etc.)
+- Filtro per singolo articolo con opzione `--art`
 
-Il download dell'XML Akoma Ntoso è indipendente dal puntamento all'articolo: viene scaricato sempre l'atto completo.
+Il download dell'XML Akoma Ntoso è indipendente dal puntamento all'articolo nell'URL: viene scaricato sempre l'atto completo (a meno di usare `--art`).
 
 ## Standard Implementati
 
@@ -195,60 +196,68 @@ Normattiva.it implementa due standard principali:
 2. **XML:NIR** - Formato elettronico di rappresentazione (Akoma Ntoso)
    - Pubblicato in GU 102/2002
 
-## Esempi Pratici per `fetch_from_url.py`
+## Esempi Pratici con `normattiva2md`
 
 ### Esempi Base
 
 ```bash
-# Decreto Legge 93/2013 (multivigente)
-python fetch_from_url.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2013-08-14;93" -o dl_93_2013.md
+# Decreto Legge 93/2013 (multivigente) - output a file
+normattiva2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2013-08-14;93" -o dl_93_2013.md
 
-# Legge 53/2022
-python fetch_from_url.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" -o legge_53_2022.md
+# Legge 53/2022 - output a stdout
+normattiva2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" > legge_53_2022.md
 
 # Decreto Legislativo 36/2006 (versione vigente)
-python fetch_from_url.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2006-01-24;36!vig=" -o dlgs_36_2006.md
+normattiva2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2006-01-24;36!vig=" -o dlgs_36_2006.md
 
 # Costituzione
-python fetch_from_url.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:costituzione:1947-12-27" -o costituzione.md
+normattiva2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:costituzione:1947-12-27" -o costituzione.md
 ```
 
 ### Esempi con Versioni Specifiche
 
 ```bash
 # Versione originale (come pubblicato in GU)
-python fetch_from_url.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2008-11-10;180@originale" -o dl_180_2008_orig.md
+normattiva2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2008-11-10;180@originale" -o dl_180_2008_orig.md
 
 # Vigente a data specifica (10 novembre 2009)
-python fetch_from_url.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2008-11-10;180!vig=2009-11-10" -o dl_180_2008_vig_2009.md
+normattiva2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2008-11-10;180!vig=2009-11-10" -o dl_180_2008_vig_2009.md
 ```
 
 ### Esempi con Puntamento Articoli
 
 ```bash
-# Articolo 2 (multivigente)
-python fetch_from_url.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2008-11-10;180~art2" -o dl_180_art2.md
+# Articolo 2 (multivigente) - URL include ~art2 (opzionale, scarica comunque tutto l'atto)
+normattiva2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2008-11-10;180~art2" -o dl_180_art2.md
 
-# Articolo 16-bis
-python fetch_from_url.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2008-11-29;185~art16bis" -o dl_185_art16bis.md
+# Articolo 16-bis - URL include ~art16bis
+normattiva2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2008-11-29;185~art16bis" -o dl_185_art16bis.md
 
 # Articolo 2, versione vigente a data specifica
-python fetch_from_url.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2008-11-10;180~art2!vig=2009-11-10" -o dl_180_art2_vig2009.md
+normattiva2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2008-11-10;180~art2!vig=2009-11-10" -o dl_180_art2_vig2009.md
+
+# Filtrare SOLO l'articolo 2 con --art (scarica solo quell'articolo)
+normattiva2md --art 2 "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2008-11-10;180" -o dl_180_solo_art2.md
+
+# Filtrare articolo 16-bis (input user-friendly, senza trattino)
+normattiva2md --art 16bis "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2008-11-29;185" > art16bis.md
 ```
 
 ### Salvataggio XML
 
 ```bash
-# Salva solo il file XML (senza conversione MD)
-python fetch_from_url.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" --xml-only -o legge_53.xml
+# Salva XML mantenendolo dopo conversione
+normattiva2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" -o legge_53.md --keep-xml
 
-# Salva sia MD che XML
-python fetch_from_url.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" -o legge_53.md --keep-xml
+# Per salvare solo XML, reindirizzare e usare l'XML temporaneo
+normattiva2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" --keep-xml > /dev/null
+# Il file XML rimane in formato: legge_AAAA_NNN.xml
 ```
 
 ## Note Tecniche
 
 - I documenti sono scaricabili in formato XML (Akoma Ntoso) dal database
-- Il nostro script `fetch_from_url.py` estrae automaticamente i parametri dalla pagina HTML
+- Il comando `normattiva2md` estrae automaticamente i parametri dalla pagina HTML
 - Non è necessario conoscere i parametri interni (dataGU, codiceRedaz, dataVigenza)
-- Basta fornire l'URL completo della norma
+- Basta fornire l'URL completo della norma come argomento
+- Output predefinito: stdout (permette piping e composizione con altri tool)
