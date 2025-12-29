@@ -268,19 +268,20 @@ def main():
             sys.exit(1)
 
     # Convert --art parameter to article eId
+    article_filter = getattr(args, "article_filter", None)
     article_filter_eid = None
-    if args.article_filter:
-        article_filter_eid = construct_article_eid(args.article_filter)
+    if article_filter:
+        article_filter_eid = construct_article_eid(article_filter)
         if not article_filter_eid:
             print(
-                f"❌ Formato articolo invalido: '{args.article_filter}'. Usa formato: numero[estensione] (es: 4, 16bis, 3ter)",
+                f"❌ Formato articolo invalido: '{article_filter}'. Usa formato: numero[estensione] (es: 4, 16bis, 3ter)",
                 file=sys.stderr,
             )
             sys.exit(1)
         quiet_mode = args.quiet or output_file is None
         if not quiet_mode:
             print(
-                f"Filtro articolo attivato: {args.article_filter} (eId: {article_filter_eid})",
+                f"Filtro articolo attivato: {article_filter} (eId: {article_filter_eid})",
                 file=sys.stderr,
             )
 
