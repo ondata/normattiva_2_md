@@ -2,11 +2,53 @@
 
 Pianificazione release future e miglioramenti programmati.
 
-**Versione corrente**: v2.0.24
+**Versione corrente**: v2.1.0
+
+Per cronologia dettagliata rilasci vedere [LOG.md](LOG.md).
 
 ---
 
-## 🟡 NEXT RELEASE - v2.1.0 (Prossima Release)
+## ✅ COMPLETATO - v2.1.0 (2026-01-01)
+
+### API Programmabile Python
+
+**Implementato**: API completa per uso programmatico da notebook e script Python
+
+**Componenti creati**:
+- `src/normattiva2md/api.py`: Funzioni standalone e classe Converter
+- `src/normattiva2md/models.py`: Dataclass ConversionResult e SearchResult
+- `src/normattiva2md/exceptions.py`: Gerarchia eccezioni custom
+
+**Funzioni pubbliche**:
+```python
+from normattiva2md import convert_url, convert_xml, search_law, Converter
+
+# Quick usage
+result = convert_url("https://www.normattiva.it/...")
+print(result.title)
+result.save("output.md")
+
+# Advanced usage
+converter = Converter(quiet=True)
+result = converter.search_and_convert("legge stanca")
+```
+
+**Eccezioni custom**:
+- `Normattiva2MDError` (base)
+- `InvalidURLError`, `XMLFileNotFoundError`, `APIKeyError`, `ConversionError`
+
+**Benefici**:
+- 100% backward compatible (CLI invariato)
+- Uso in Jupyter notebooks
+- Batch processing programmabile
+- Type hints completi
+- Logging invece di print()
+
+**Documentazione**: README.md aggiornato con esempi, `examples/basic_usage.py`, `examples/batch_processing.py`
+
+---
+
+## 🟡 IN SVILUPPO - v2.2.0
 
 ### 1. Fix HTML Parsing Fragility
 
@@ -108,32 +150,7 @@ class MarkdownGenerator:
 
 ---
 
-### 4. Integration Tests
-
-**Problema**: Mancano test end-to-end e scenari errore
-
-**Da aggiungere**:
-```python
-class IntegrationTests(unittest.TestCase):
-    @mock.patch('requests.Session.get')
-    def test_url_download_with_network_error(self, mock_get):
-        """Test retry logic on network errors"""
-
-    def test_url_to_markdown_complete_flow(self):
-        """Test complete URL → Markdown conversion"""
-
-    def test_large_xml_rejected(self):
-        """Test >50MB file rejection"""
-
-    def test_malformed_xml_handling(self):
-        """Test malformed XML error handling"""
-```
-
-**File**: Nuovo `tests/test_integration.py`
-
----
-
-### 5. Precompile Regex Patterns
+### 4. Precompile Regex Patterns
 
 **Problema**: Pattern regex compilati ad ogni chiamata (performance)
 
@@ -162,9 +179,9 @@ def parse_chapter_heading(heading_text):
 
 ---
 
-## 🟢 MEDIUM PRIORITY - v2.2.0
+## 🟢 MEDIUM PRIORITY - v2.3.0
 
-### 6. Type Hints
+### 5. Type Hints
 
 **Obiettivo**: Aggiungere type hints a tutte le funzioni
 
@@ -199,7 +216,7 @@ disallow_untyped_defs = true
 
 ---
 
-### 7. API Documentation con Sphinx
+### 6. API Documentation con Sphinx
 
 **Setup**:
 ```bash
@@ -225,7 +242,7 @@ html_theme = 'sphinx_rtd_theme'
 
 ---
 
-### 8. CI/CD Pipeline Completo
+### 7. CI/CD Pipeline Completo
 
 **GitHub Actions workflow**:
 ```yaml
@@ -261,20 +278,16 @@ jobs:
 
 ---
 
-### 9. Version Management
+### 8. Version Management
 
 **Single source of truth**:
 ```python
 # src/normattiva2md/__version__.py
-__version__ = "2.0.24"
-
-# setup.py (deprecated - use pyproject.toml)
-from normattiva2md.__version__ import __version__
-setup(version=__version__)
+__version__ = "2.1.0"
 
 # pyproject.toml (recommended)
 [project]
-version = "2.0.24"
+version = "2.1.0"
 ```
 
 **Automated changelog**:
@@ -289,7 +302,7 @@ conventional-changelog -p angular -i CHANGELOG.md -s
 
 ---
 
-### 10. Optional Dependencies
+### 9. Optional Dependencies
 
 **pyproject.toml**:
 ```toml
@@ -323,13 +336,13 @@ pip install normattiva2md[all]    # tutto
 
 ---
 
-## 🟢 PLANNED - EUR-Lex Integration (v2.3.0)
+## 🟢 PLANNED - EUR-Lex Integration (v2.4.0)
 
 ### EUR-Lex XHTML to Markdown Converter
 
 **Status**: 🎯 Ready for implementation - Analysis completed
 
-**Background**: 
+**Background**:
 - EUR-Lex API esplorata e documentata (`docs/EURLEX_API.md`, `docs/EUR-LEX_INTEGRATION.md`)
 - Script download funzionante (`scripts/download_eurlex.py`)
 - Analisi conversione completata (`docs/EURLEX_CONVERSION_ANALYSIS.md`)
@@ -359,80 +372,12 @@ normattiva2md --source eurlex 32024L1385 --lang IT
 html2text>=2024.2.26  # Conversione XHTML → MD
 ```
 
-**Implementation Steps**:
-
-1. **CLI Wrapper** (~100 linee)
-   ```python
-   # eurlex2md.py (nuovo file)
-   def main():
-       parser = argparse.ArgumentParser(description='Convert EUR-Lex documents to Markdown')
-       parser.add_argument('celex', help='CELEX number (e.g., 32024L1385)')
-       parser.add_argument('--lang', default='EN', help='Language code (IT, EN, FR, DE, ES)')
-       parser.add_argument('--output', help='Output markdown file')
-       parser.add_argument('--keep-xhtml', action='store_true', help='Keep intermediate XHTML')
-       parser.add_argument('--quiet', action='store_true', help='Suppress progress messages')
-   ```
-
-2. **Integrazione html2text** (~50 linee)
-   ```python
-   import html2text
-   
-   def convert_xhtml_to_markdown(xhtml_file, output_file):
-       h = html2text.HTML2Text()
-       h.ignore_tables = True
-       h.ignore_images = True
-       h.unicode_snob = True
-       h.body_width = 0  # No line wrapping
-       
-       with open(xhtml_file, 'r', encoding='utf-8') as f:
-           html = f.read()
-       
-       markdown = h.handle(html)
-       
-       with open(output_file, 'w', encoding='utf-8') as f:
-           f.write(markdown)
-   ```
-
-3. **Riuso download_eurlex.py** (~30 linee refactoring)
-   - Estrarre funzioni riutilizzabili
-   - Supporto library mode (oltre CLI)
-   - Return paths ai file scaricati
-
-4. **Tests** (~150 linee)
-   ```python
-   # tests/test_eurlex.py
-   class TestEURLexConversion(unittest.TestCase):
-       def test_celex_validation(self):
-           """Test CELEX number format validation"""
-       
-       def test_language_mapping(self):
-           """Test IT → ITA, EN → ENG mapping"""
-       
-       def test_xhtml_to_markdown(self):
-           """Test XHTML conversion with test_data/eurlex_sample_it.xhtml"""
-       
-       def test_full_workflow(self):
-           """Test complete CELEX → Markdown flow"""
-   ```
-
-5. **Documentation** (~200 linee)
-   ```markdown
-   # docs/EURLEX_USAGE.md
-   - Installation
-   - Basic usage
-   - Language codes reference
-   - Examples
-   - Troubleshooting
-   ```
-
 **Benefici**:
 ✅ Complementare a Normattiva (UE + IT)
 ✅ Workflow già validato e testato
 ✅ Nessun parser XML custom (usa html2text)
 ✅ 80% codice già implementato
 ✅ API EUR-Lex gratuita e stabile
-
-**Timeline**: 2-3 ore sviluppo + 1 ora testing
 
 **Files da creare**:
 - `eurlex2md.py` (nuovo CLI tool)
@@ -454,14 +399,14 @@ eurlex2md --list-languages  # Show all 24 EU languages
 
 ---
 
-## 🔵 LOW PRIORITY - Future (v2.0.0)
+## 🔵 LOW PRIORITY - Future (v3.0.0)
 
-### 12. Configuration File Support
+### 10. Configuration File Support
 
-**Feature**: `.akoma2md.yml` per configurazione
+**Feature**: `.normattiva2md.yml` per configurazione
 
 ```yaml
-# .akoma2md.yml
+# .normattiva2md.yml
 network:
   timeout: 60
   max_retries: 5
@@ -485,8 +430,8 @@ import yaml
 
 def load_config():
     config_paths = [
-        '.akoma2md.yml',
-        '~/.config/akoma2md/config.yml'
+        '.normattiva2md.yml',
+        '~/.config/normattiva2md/config.yml'
     ]
     for path in config_paths:
         if os.path.exists(path):
@@ -497,7 +442,7 @@ def load_config():
 
 ---
 
-### 13. Internazionalizzazione (i18n)
+### 11. Internazionalizzazione (i18n)
 
 **Error messages in inglese**:
 ```python
@@ -518,18 +463,15 @@ def get_message(key, locale='it', **kwargs):
 
 ---
 
-### 14. Batch Processing Mode
+### 12. Batch Processing Mode
 
 **CLI**:
 ```bash
 # Da file con lista URL
-akoma2md --batch urls.txt --output-dir ./output/
-
-# Da pattern
-akoma2md --batch "https://normattiva.it/leggi/*.xml" -o ./leggi/
+normattiva2md --batch urls.txt --output-dir ./output/
 
 # Con parallelizzazione
-akoma2md --batch urls.txt -o ./out/ --parallel 4
+normattiva2md --batch urls.txt -o ./out/ --parallel 4
 ```
 
 **Implementazione**:
@@ -549,15 +491,15 @@ def batch_convert(url_file, output_dir, parallel=1):
 
 ---
 
-### 15. Validation Mode
+### 13. Validation Mode
 
 **CLI**:
 ```bash
 # Solo validazione, no conversione
-akoma2md --validate input.xml
+normattiva2md --validate input.xml
 
 # Con report dettagliato
-akoma2md --validate input.xml --verbose
+normattiva2md --validate input.xml --verbose
 ```
 
 **Output**:
@@ -576,13 +518,13 @@ akoma2md --validate input.xml --verbose
 
 ## 📊 Metriche di Successo
 
-### v2.1.0 Target (Current Sprint)
+### v2.2.0 Target
 - [ ] Test coverage > 85%
 - [ ] Funzioni max 50 linee
 - [ ] Performance: +20% su documenti >1000 articoli
 - [ ] Zero regressioni
 
-### v2.2.0 Target
+### v2.3.0 Target
 - [ ] Test coverage > 90%
 - [ ] Type hints 100%
 - [ ] Documentazione Sphinx completa
@@ -599,44 +541,38 @@ akoma2md --validate input.xml --verbose
 ## 📋 Issue GitHub da Creare
 
 ### Enhancement
-1. **[Performance] Precompile regex patterns** - v2.1.0
-2. **[Feature] Robust HTML parsing with BeautifulSoup** - v2.1.0
-3. **[Feature] Network retry logic** - v2.1.0
-4. **[DX] Add type hints throughout codebase** - v2.2.0
+1. **[Performance] Precompile regex patterns** - v2.2.0
+2. **[Feature] Robust HTML parsing with BeautifulSoup** - v2.2.0
+3. **[Feature] Network retry logic** - v2.2.0
+4. **[DX] Add type hints throughout codebase** - v2.3.0
 5. **[Feature] Configuration file support** - v3.0.0
 6. **[Feature] Batch processing mode** - v3.0.0
 
 ### Bug
-1. **[Bug] Complete footnote implementation with global counter** - v2.1.0
-
-### Refactor
-(Nessun refactoring maggiore pianificato - refactoring principale completato in v2.0.23)
+1. **[Bug] Complete footnote implementation with global counter** - v2.2.0
 
 ### Documentation
-1. **[Docs] Setup Sphinx documentation** - v2.2.0
-2. **[Docs] API reference with examples** - v2.2.0
-
-### Testing
-1. **[Testing] Add integration tests** - v2.1.0
-2. **[Testing] Add network error scenarios** - v2.1.0
+1. **[Docs] Setup Sphinx documentation** - v2.3.0
+2. **[Docs] API reference with examples** - v2.3.0
 
 ### CI/CD
-1. **[CI] Complete GitHub Actions pipeline** - v2.2.0
-2. **[CI] Automated changelog generation** - v2.2.0
+1. **[CI] Complete GitHub Actions pipeline** - v2.3.0
+2. **[CI] Automated changelog generation** - v2.3.0
 
 ---
 
 ## 🎯 Timeline Proposta
 
-**Q4 2025 (Novembre-Dicembre)**:
-- v2.1.0: High priority refactoring items
-- Focus: Performance + Robustezza
-
 **Q1 2026 (Gennaio-Marzo)**:
-- v2.2.0: Medium priority items
+- v2.2.0: Feature non implementate v2.1.0
+- Focus: Robustezza + Performance
+
+**Q2 2026 (Aprile-Giugno)**:
+- v2.3.0: Medium priority items
 - Focus: DX + Documentation
 
-**Q2-Q4 2026**:
+**Q3-Q4 2026**:
+- v2.4.0: EUR-Lex Integration
 - v3.0.0: Major architecture + advanced features
 - Focus: Plugin system + Multiple output formats
 
@@ -644,13 +580,12 @@ akoma2md --validate input.xml --verbose
 
 ## 📝 Note
 
-- Mantenere backward compatibility per `akoma2md` fino a v3.0.0
-- Deprecation warning per `akoma2md` command da v3.0.0
-- Rimozione `akoma2md` command in v4.0.0
+- Mantenere backward compatibility per CLI fino a v3.0.0
 - Semantic versioning rigoroso
 - Security patches immediate su tutte le versioni supportate
+- Cronologia dettagliata in [LOG.md](LOG.md)
 
 ---
 
-**Ultimo aggiornamento**: 2025-12-27
-**Versione corrente**: v2.0.24
+**Ultimo aggiornamento**: 2026-01-01
+**Versione corrente**: v2.1.0

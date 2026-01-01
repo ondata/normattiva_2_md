@@ -1,13 +1,13 @@
 """
 Test suite for normattiva2md API.
 
-Run with: python -m pytest tests/test_api.py -v
+Run with: python -m unittest tests/test_api.py -v
 """
 
 import sys
 sys.path.insert(0, 'src')
 
-import pytest
+import unittest
 
 from normattiva2md import (
     ConversionResult,
@@ -20,7 +20,7 @@ from normattiva2md import (
 )
 
 
-class TestModels:
+class TestModels(unittest.TestCase):
     """Test data models."""
 
     def test_conversion_result_creation(self):
@@ -32,9 +32,9 @@ class TestModels:
             url_xml="https://www.normattiva.it/do/atto/caricaAKN?...",
         )
 
-        assert result.markdown == "# Test\n\nContent"
-        assert result.metadata["dataGU"] == "20220101"
-        assert result.url is not None
+        self.assertEqual(result.markdown, "# Test\n\nContent")
+        self.assertEqual(result.metadata["dataGU"], "20220101")
+        self.assertIsNotNone(result.url)
 
     def test_conversion_result_str(self):
         """Test ConversionResult string conversion."""
@@ -43,7 +43,7 @@ class TestModels:
             metadata={},
         )
 
-        assert str(result) == "# Test"
+        self.assertEqual(str(result), "# Test")
 
     def test_conversion_result_title_property(self):
         """Test title extraction from markdown."""
@@ -52,7 +52,7 @@ class TestModels:
             metadata={},
         )
 
-        assert result.title == "Legge 9 gennaio 2004, n. 4"
+        self.assertEqual(result.title, "Legge 9 gennaio 2004, n. 4")
 
     def test_conversion_result_title_not_found(self):
         """Test title when no H1 present."""
@@ -61,7 +61,7 @@ class TestModels:
             metadata={},
         )
 
-        assert result.title is None
+        self.assertIsNone(result.title)
 
     def test_conversion_result_metadata_shortcuts(self):
         """Test metadata property shortcuts."""
@@ -74,9 +74,9 @@ class TestModels:
             },
         )
 
-        assert result.data_gu == "20220101"
-        assert result.codice_redaz == "22G00001"
-        assert result.data_vigenza == "20250101"
+        self.assertEqual(result.data_gu, "20220101")
+        self.assertEqual(result.codice_redaz, "22G00001")
+        self.assertEqual(result.data_vigenza, "20250101")
 
     def test_search_result_creation(self):
         """Test SearchResult creation."""
@@ -86,9 +86,9 @@ class TestModels:
             score=0.95,
         )
 
-        assert result.url.startswith("https://")
-        assert result.title == "Legge 4/2004"
-        assert result.score == 0.95
+        self.assertTrue(result.url.startswith("https://"))
+        self.assertEqual(result.title, "Legge 4/2004")
+        self.assertEqual(result.score, 0.95)
 
     def test_search_result_str(self):
         """Test SearchResult string representation."""
@@ -98,56 +98,56 @@ class TestModels:
             score=0.95,
         )
 
-        assert str(result) == "[0.95] Legge 4/2004"
+        self.assertEqual(str(result), "[0.95] Legge 4/2004")
 
 
-class TestExceptions:
+class TestExceptions(unittest.TestCase):
     """Test exception hierarchy."""
 
     def test_exception_hierarchy(self):
         """Test that all exceptions derive from base."""
-        assert issubclass(InvalidURLError, Normattiva2MDError)
-        assert issubclass(XMLFileNotFoundError, Normattiva2MDError)
-        assert issubclass(APIKeyError, Normattiva2MDError)
-        assert issubclass(ConversionError, Normattiva2MDError)
+        self.assertTrue(issubclass(InvalidURLError, Normattiva2MDError))
+        self.assertTrue(issubclass(XMLFileNotFoundError, Normattiva2MDError))
+        self.assertTrue(issubclass(APIKeyError, Normattiva2MDError))
+        self.assertTrue(issubclass(ConversionError, Normattiva2MDError))
 
     def test_catch_base_exception(self):
         """Test catching all errors with base class."""
-        with pytest.raises(Normattiva2MDError):
+        with self.assertRaises(Normattiva2MDError):
             raise InvalidURLError("test")
 
-        with pytest.raises(Normattiva2MDError):
+        with self.assertRaises(Normattiva2MDError):
             raise ConversionError("test")
 
     def test_exception_message(self):
         """Test exception messages."""
         exc = InvalidURLError("URL non valido: test.com")
-        assert "URL non valido" in str(exc)
+        self.assertIn("URL non valido", str(exc))
 
 
-class TestImports:
+class TestImports(unittest.TestCase):
     """Test that all public API is importable."""
 
     def test_import_functions(self):
         """Test importing standalone functions."""
         from normattiva2md import convert_url, convert_xml, search_law
 
-        assert callable(convert_url)
-        assert callable(convert_xml)
-        assert callable(search_law)
+        self.assertTrue(callable(convert_url))
+        self.assertTrue(callable(convert_xml))
+        self.assertTrue(callable(search_law))
 
     def test_import_class(self):
         """Test importing Converter class."""
         from normattiva2md import Converter
 
-        assert Converter is not None
+        self.assertIsNotNone(Converter)
 
     def test_import_models(self):
         """Test importing data models."""
         from normattiva2md import ConversionResult, SearchResult
 
-        assert ConversionResult is not None
-        assert SearchResult is not None
+        self.assertIsNotNone(ConversionResult)
+        self.assertIsNotNone(SearchResult)
 
     def test_import_exceptions(self):
         """Test importing exceptions."""
@@ -159,21 +159,21 @@ class TestImports:
             ConversionError,
         )
 
-        assert all([
+        self.assertTrue(all([
             Normattiva2MDError,
             InvalidURLError,
             XMLFileNotFoundError,
             APIKeyError,
             ConversionError,
-        ])
+        ]))
 
     def test_import_version(self):
         """Test importing version."""
         from normattiva2md import __version__
 
-        assert __version__ is not None
-        assert isinstance(__version__, str)
+        self.assertIsNotNone(__version__)
+        self.assertIsInstance(__version__, str)
 
 
 if __name__ == "__main__":
-    pytest.main([__file__, "-v"])
+    unittest.main()
