@@ -43,7 +43,7 @@ jobs:
         id: examples_changed
         run: |
           if git rev-parse --verify HEAD^ >/dev/null 2>&1; then
-            if git diff --name-only HEAD^ HEAD | grep -q '^examples/'; then
+            if git diff --name-only HEAD^ HEAD | grep -q '^docs/esempi/'; then
               echo "changed=true" >> "$GITHUB_OUTPUT"
             else
               echo "changed=false" >> "$GITHUB_OUTPUT"
@@ -56,7 +56,7 @@ jobs:
         if: github.event_name == 'workflow_dispatch' || steps.examples_changed.outputs.changed == 'true'
         run: |
           rm -rf site/_site/examples
-          cp -R examples site/_site/examples
+          cp -R docs/esempi site/_site/esempi
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
