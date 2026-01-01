@@ -4,61 +4,20 @@ Questa directory contiene la pianificazione dettagliata per le feature future di
 
 ## 📂 Contenuto
 
-### api-programmabile/
-**Status**: ✅ Pianificazione completa  
-**Data**: 2025-12-04  
-**Effort**: 14-21 ore  
-
-Pianificazione completa per rendere normattiva2md usabile come libreria Python da notebook e script, mantenendo 100% compatibilità CLI.
-
-**Quick Start**: Leggi [`api-programmabile/SUMMARY.md`](api-programmabile/SUMMARY.md)
-
-**Documenti**:
-- 📄 [SUMMARY.md](api-programmabile/SUMMARY.md) - Executive summary
-- 📚 [INDEX.md](api-programmabile/INDEX.md) - Indice navigazione completo
-- 🏗️ [01-architecture.md](api-programmabile/01-architecture.md) - Design architetturale
-- 📝 [02-api-specification.md](api-programmabile/02-api-specification.md) - Specifiche API
-- 📦 [03-models.md](api-programmabile/03-models.md) - Dataclasses
-- ⚠️ [04-exceptions.md](api-programmabile/04-exceptions.md) - Sistema eccezioni
-- 🚀 [05-implementation-plan.md](api-programmabile/05-implementation-plan.md) - Piano 6 fasi
-- 💡 [06-examples.md](api-programmabile/06-examples.md) - 11 esempi completi
-
-**Deliverables**:
-- 3 nuovi file Python (exceptions, models, api)
-- 3 file test
-- 4 esempi + Jupyter notebook
-- Documentazione completa
-
-**Next**: Review → Implementazione Fase 1
-
----
+Al momento non ci sono planning attivi in questa directory.
 
 ## 🗂️ Struttura Planning
 
 ```
 planning/
-├── README.md                    # Questo file
-└── api-programmabile/           # API Python usabile da notebook
-    ├── SUMMARY.md               # Executive summary
-    ├── INDEX.md                 # Indice navigazione
-    ├── README.md                # Overview
-    ├── 01-architecture.md       # Architettura
-    ├── 02-api-specification.md  # Specifiche API
-    ├── 03-models.md             # Dataclasses
-    ├── 04-exceptions.md         # Eccezioni
-    ├── 05-implementation-plan.md # Piano 6 fasi
-    └── 06-examples.md           # Esempi completi
+└── README.md                    # Questo file
 ```
 
 ---
 
 ## 📊 Status Overview
 
-| Feature | Status | Docs | Effort | Priority |
-|---------|--------|------|--------|----------|
-| API Programmabile | ✅ Planned | 9 files, 3279 righe | 14-21h | Alta |
-
----
+Nessuna feature in planning al momento.
 
 ## 🎯 Prossime Feature da Pianificare
 
