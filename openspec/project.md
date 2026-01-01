@@ -17,7 +17,7 @@ Normattiva2MD (formerly Akoma2MD) is a command-line tool that converts Akoma Nto
 - **Build Tools**: PyInstaller (standalone executables), setuptools, Makefile for automation
 - **Testing**: unittest (standard library)
 - **CI/CD**: GitHub Actions
-- **Dependencies**: requests>=2.25.0 (only external dependency)
+- **Dependencies**: requests>=2.25.0, rich>=13.0.0,<14.0.0
 - **External APIs**: Exa AI API for natural language document search
 - **Package Distribution**: PyPI (https://pypi.org/project/normattiva2md/)
 
@@ -36,13 +36,14 @@ Normattiva2MD (formerly Akoma2MD) is a command-line tool that converts Akoma Nto
 - **Dual CLI support**: Maintain both `akoma2md` (legacy) and `normattiva2md` (preferred) commands
 
 ### Architecture Patterns
-- **CLI-first design**: Native command-line interface with flexible argument parsing
+- **CLI-first design**: Native command-line interface with flexible argument parsing and article filtering (--art flag)
 - **Modular conversion**: Separate functions for different XML element types
 - **Streaming processing**: Handle large XML documents efficiently
 - **Hierarchical structure preservation**: Maintain legal document organization (chapters, articles, paragraphs)
 - **URL-aware processing**: Automatic detection and downloading of normattiva.it URLs
 - **AI-powered search**: Natural language lookup using Exa AI API for document discovery
 - **Cross-reference system**: Automatic download and linking of cited legal documents
+- **Programmable API**: Modular Python API (api.py, models.py, exceptions.py) with standalone functions (convert_url, convert_xml, search_law) for integration in scripts and applications
 
 ### Testing Strategy
 - **Unit tests**: unittest framework for core conversion functions
