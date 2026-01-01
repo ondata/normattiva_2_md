@@ -18,9 +18,9 @@ def read_readme():
 
 
 setup(
-    name="akoma2md",
+    name="normattiva2md",
     version="2.1.4",
-    description="⚠️ DEPRECATED - Use 'normattiva2md' instead | Convertitore da XML Akoma Ntoso a Markdown (CLI: normattiva2md)",
+    description="Convertitore da XML Akoma Ntoso a formato Markdown con download automatico delle leggi citate e cross-references inline (CLI: normattiva2md)",
     long_description=read_readme(),
     long_description_content_type="text/markdown",
     author="Andrea Borruso",
@@ -55,7 +55,6 @@ setup(
     # Script da riga di comando
     entry_points={
         "console_scripts": [
-            "akoma2md=normattiva2md.cli:main",
             "normattiva2md=normattiva2md.cli:main",
         ],
     },

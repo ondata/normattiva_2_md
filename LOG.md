@@ -4,6 +4,36 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2026-01-01
 
+### 🚀 Lancio Pubblico - Normattiva2MD Pronto per il Mondo
+
+**Attività completate per il lancio ufficiale:**
+- ✅ **Coerenza configurazione**: Aggiornato setup.py per sincronizzare con pyproject.toml (name="normattiva2md")
+- ✅ **PyPI**: v2.1.4 già pubblicato e disponibile via `pip install normattiva2md`
+- ✅ **GitHub Release**: v2.1.4 già pubblicato con binari per Linux e Windows
+- ✅ **Documentazione cittadini**: Creato `docs/QUICKSTART.md` con guida in italiano per uso pratico
+- ✅ **Piano di lancio**: Creato `docs/LAUNCH_ANNOUNCEMENT.md` con strategia multicanale
+
+**Cosa è pronto:**
+- Progetto completo, testato, con all'attivo 27+ feature implementate
+- Documentazione tecnica (README, API docs, OpenSpec specs)
+- Documentazione per utenti non-tech (guida quick-start con esempi)
+- Binari standalone per cittadini senza Python
+
+**Prossimi step (suggeriti):**
+1. Condividi su GitHub Discussions e forum tech italiani
+2. Tweet su Twitter/X con i template forniti
+3. Contatta comunità open data (OnData, Docs Italia)
+4. Annuncia a professori universitari, ricercatori
+5. Raccogli feedback per prossime versioni
+
+**Valore proposto:**
+- Per cittadini: Leggi italiane leggibili e analizzabili
+- Per AI enthusiast: Leggere leggi in ChatGPT/Claude
+- Per ricercatori: Strumento open source per analisi normative
+- Per developer: API Python + CLI + cross-references
+
+## 2026-01-01
+
 ### Release v2.1.4 - Supporto Type Hints per IDE
 
 **Miglioramento esperienza sviluppo**:
