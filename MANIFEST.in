@@ -1,0 +1,4 @@
+include README.md
+include LICENSE
+recursive-include src/normattiva2md *.py
+include src/normattiva2md/py.typed
