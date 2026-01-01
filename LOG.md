@@ -4,6 +4,22 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2026-01-01
 
+### Release v2.1.1 - Bug Fix
+
+**Patch release**: Corretto NameError critico che impediva l'uso da URL normattiva.it
+
+**Fix implementato:**
+- Risolto NameError nella funzione di completamento forzato (issue #16)
+- Il bug impediva il download automatico da URL normattiva.it
+- Fix mergiato in PR #18
+- Versione bumped: v2.1.0 → v2.1.1
+
+**Distribuzione:**
+- GitHub Release: https://github.com/ondata/normattiva_2_md/releases/tag/v2.1.1
+- PyPI: https://pypi.org/project/normattiva2md/2.1.1/
+
+## 2026-01-01
+
 ### Aggiornamento ROADMAP + Fix CI + Release v2.1.0
 
 **ROADMAP.md aggiornata**:
