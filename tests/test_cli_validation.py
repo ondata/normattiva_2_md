@@ -33,7 +33,8 @@ class TestCLIValidation(unittest.TestCase):
             debug_search=False,
             auto_select=True,
             exa_api_key=None,
-            version=False
+            version=False,
+            article_filter=None
         )
         mock_parse.return_value = mock_args
         mock_exists.return_value = True

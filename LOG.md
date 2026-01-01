@@ -4,6 +4,26 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2026-01-01
 
+### Refactoring: Uniformazione Chiamate Funzioni
+
+**Code cleanup e miglioramenti manutenibilità**:
+- Uniformate chiamate a `convert_akomantoso_to_markdown_improved()` con keyword arguments
+- Rimosse ridefinizioni multiple di `quiet_mode` (definito una sola volta)
+- Rimosso `getattr()` non necessario per `article_filter`
+- File modificati: `cli.py`, `multi_document.py`, `test_cli_validation.py`
+
+**Problemi risolti**:
+1. Parametro `article_ref` inconsistente (posizionale vs keyword) → uniformato con keyword
+2. Variabile `quiet_mode` ridefinita 3 volte → definita una sola volta all'inizio
+3. Uso non necessario di `getattr()` → accesso diretto all'attributo + fix test mock
+
+**Impatto**:
+- Codice più robusto e manutenibile
+- Nessun breaking change per API Python
+- 53/53 test passati
+
+## 2026-01-01
+
 ### Release v2.1.1 - Bug Fix
 
 **Patch release**: Corretto NameError critico che impediva l'uso da URL normattiva.it

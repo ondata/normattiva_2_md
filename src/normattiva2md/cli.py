@@ -267,8 +267,11 @@ def main():
             print(f"❌ Errore nel path di output: {e}", file=sys.stderr)
             sys.exit(1)
 
+    # Determine quiet mode (output to stdout or --quiet flag)
+    quiet_mode = args.quiet or output_file is None
+
     # Convert --art parameter to article eId
-    article_filter = getattr(args, "article_filter", None)
+    article_filter = args.article_filter
     article_filter_eid = None
     if article_filter:
         article_filter_eid = construct_article_eid(article_filter)
@@ -278,7 +281,6 @@ def main():
                 file=sys.stderr,
             )
             sys.exit(1)
-        quiet_mode = args.quiet or output_file is None
         if not quiet_mode:
             print(
                 f"Filtro articolo attivato: {article_filter} (eId: {article_filter_eid})",
@@ -392,7 +394,6 @@ def main():
     # Auto-detect: URL o file locale?
     if is_normattiva_url(input_source):
         # Gestione URL
-        quiet_mode = args.quiet or output_file is None  # Quiet when output to stdout
         if not quiet_mode:
             print(f"Rilevato URL normattiva.it: {input_source}", file=sys.stderr)
 
@@ -494,8 +495,8 @@ def main():
             success = convert_akomantoso_to_markdown_improved(
                 xml_temp_path,
                 output_file,
-                metadata,
-                article_ref,
+                metadata=metadata,
+                article_ref=article_ref,
                 with_urls=args.with_urls,
             )
 
@@ -544,7 +545,6 @@ def main():
 
     else:
         # Gestione file XML locale
-        quiet_mode = args.quiet or output_file is None  # Quiet when output to stdout
         if not quiet_mode:
             if output_file:
                 print(
@@ -557,7 +557,11 @@ def main():
                     file=sys.stderr,
                 )
         success = convert_akomantoso_to_markdown_improved(
-            input_source, output_file, article_ref=article_filter_eid, with_urls=args.with_urls
+            input_source,
+            output_file,
+            metadata=None,
+            article_ref=article_filter_eid,
+            with_urls=args.with_urls,
         )
 
         if success:

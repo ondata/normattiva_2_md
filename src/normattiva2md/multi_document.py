@@ -119,7 +119,9 @@ def convert_with_references(
         # Per ora, convertiamo la legge principale senza cross-references
         # Li aggiungeremo dopo aver scaricato tutte le leggi
         if not convert_akomantoso_to_markdown_improved(
-            xml_temp_path, main_md_path, metadata
+            xml_temp_path,
+            main_md_path,
+            metadata=metadata,
         ):
             print(
                 "❌ Errore durante la conversione della legge principale",
@@ -227,7 +229,10 @@ def convert_with_references(
                     file=sys.stderr,
                 )
             if not convert_akomantoso_to_markdown_improved(
-                xml_temp_path, main_md_path, metadata, cross_references=cross_references
+                xml_temp_path,
+                main_md_path,
+                metadata=metadata,
+                cross_references=cross_references,
             ):
                 print(
                     "⚠️  Avviso: riconversione con collegamenti fallita, mantengo versione senza link",
