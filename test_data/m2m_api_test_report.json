@@ -1,0 +1,52 @@
+{
+  "timestamp": "2026-01-01T11:51:13.853902",
+  "summary": {
+    "total": 3,
+    "successful": 0,
+    "failed": 3
+  },
+  "results": [
+    {
+      "test_name": "Legge Stanca (2004)",
+      "params": {
+        "dataGU": "2004-01-17",
+        "codiceRedazionale": "004G0015",
+        "versione": 0
+      },
+      "success": false,
+      "status_code": null,
+      "error": "Connection error: HTTPSConnectionPool(host='api.normattiva.it', port=443): Max retries exceeded with url: /t/normattiva.api/bff-mobile/v1/api/v1/atto/dettaglio-atto (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+      "response_data": null,
+      "headers": null,
+      "timing_ms": null
+    },
+    {
+      "test_name": "Decreto Dignità (2018)",
+      "params": {
+        "dataGU": "2018-07-13",
+        "codiceRedazionale": "018G00112",
+        "versione": 0
+      },
+      "success": false,
+      "status_code": null,
+      "error": "Connection error: HTTPSConnectionPool(host='api.normattiva.it', port=443): Max retries exceeded with url: /t/normattiva.api/bff-mobile/v1/api/v1/atto/dettaglio-atto (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+      "response_data": null,
+      "headers": null,
+      "timing_ms": null
+    },
+    {
+      "test_name": "CAD - Codice Amministrazione Digitale (2005)",
+      "params": {
+        "dataGU": "2005-05-16",
+        "codiceRedazionale": "005G0104",
+        "versione": 0
+      },
+      "success": false,
+      "status_code": null,
+      "error": "Connection error: HTTPSConnectionPool(host='api.normattiva.it', port=443): Max retries exceeded with url: /t/normattiva.api/bff-mobile/v1/api/v1/atto/dettaglio-atto (Caused by ProxyError('Unable to connect to proxy', OSError('Tunnel connection failed: 403 Forbidden')))",
+      "response_data": null,
+      "headers": null,
+      "timing_ms": null
+    }
+  ]
+}
