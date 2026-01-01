@@ -4,6 +4,33 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2026-01-01
 
+### Documentazione API OpenData - Struttura Versionata
+
+**Organizzazione documentazione API OpenData Normattiva**:
+- Creata struttura `docs/api-opendata/` con documentazione completa API M2M
+- Spostati 3 file MD da `docs/` e `tmp/` → `docs/api-opendata/`
+- Creata sottocartella `scripts/` con test funzionanti (3 script Python/Bash)
+- Creata sottocartella `output/` per risultati test (non versionata)
+- Aggiunto `README.md` con guida completa workflow API
+
+**Correzioni API dopo test**:
+- Endpoint `/ricerca/semplice` funzionante ✅ (errori iniziali: URL incompleto, header mancante, paginazione obbligatoria)
+- Workflow completo testato: Ricerca → Dettaglio → HTML → Markdown
+- Eliminata necessità di parsing URL con approccio API-first
+
+**Script aggiornati a path relativi**:
+- `test_workflow_completo_funzionante.py`: usa `OUTPUT_DIR` relativo a script
+- `api_html_to_markdown.py`: converter HTML→MD con path relativi
+- `test_dettaglio.sh`: bash test con output relativo
+- Tutti i riferimenti `tmp/` sostituiti con `scripts/` e `output/`
+
+**File modificati**:
+- `.gitignore`: aggiunta `docs/api-opendata/output/`
+- 3 MD file: aggiornati path da `tmp/` a `scripts/`/`output/`
+- 3 script: convertiti da path assoluti a relativi
+
+## 2026-01-01
+
 ### Refactoring: Uniformazione Chiamate Funzioni
 
 **Code cleanup e miglioramenti manutenibilità**:

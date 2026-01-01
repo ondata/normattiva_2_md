@@ -67,6 +67,7 @@ node_modules/
 plans/
 tasks/todo.md
 tmp/
+docs/api-opendata/output/
 .gh-cache/
 .claude/agents/
 tasks/proposta_schema_dati/*
