@@ -485,7 +485,7 @@ def main():
             # Add article reference to metadata if present (or if overridden by --completo)
             if article_ref:
                 metadata["article"] = article_ref
-            elif force_complete and parse_article_reference(input_source):
+            elif args.completo and parse_article_reference(input_source):
                 # Note that complete conversion was forced
                 metadata["article"] = parse_article_reference(
                     input_source
