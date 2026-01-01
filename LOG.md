@@ -4,7 +4,7 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2026-01-01
 
-### Aggiornamento ROADMAP + Fix CI
+### Aggiornamento ROADMAP + Fix CI + Release v2.1.0
 
 **ROADMAP.md aggiornata**:
 - Versione corrente: v2.0.24 → v2.1.0
@@ -18,6 +18,13 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 - Problema: pytest non installato in workflow
 - Soluzione: unittest (già disponibile, usato da altri test)
 - 15/15 test passano localmente
+
+**Release v2.1.0 pubblicata**:
+- Tag v2.1.0 ricreato su commit con fix (5e8e8d5)
+- Build GitHub Actions: ✓ Success (Linux 40s, Windows 1m1s)
+- Release pubblicata: https://github.com/ondata/normattiva_2_md/releases/tag/v2.1.0
+- Binari disponibili: Linux (tar.gz), Windows (zip)
+- Marcata come "Latest" su GitHub
 
 ## 2026-01-01
 
