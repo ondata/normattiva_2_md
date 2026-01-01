@@ -4,6 +4,23 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2026-01-01
 
+### Aggiornamento ROADMAP + Fix CI
+
+**ROADMAP.md aggiornata**:
+- Versione corrente: v2.0.24 → v2.1.0
+- Sezione "✅ COMPLETATO - v2.1.0": API Python documentata
+- 4 feature non implementate spostate in v2.2.0 (HTML parsing, Network retry, Footnote, Regex)
+- Timeline aggiornata: Q1-Q4 2026
+- EUR-Lex Integration confermata per v2.4.0
+
+**Fix GitHub Actions CI**:
+- Convertito `test_api.py` da pytest a unittest
+- Problema: pytest non installato in workflow
+- Soluzione: unittest (già disponibile, usato da altri test)
+- 15/15 test passano localmente
+
+## 2026-01-01
+
 ### Environment cleanup
 
 - rimosso `venv` obsoleto
