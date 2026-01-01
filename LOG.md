@@ -4,6 +4,21 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2026-01-01
 
+### Release v2.1.4 - Supporto Type Hints per IDE
+
+**Miglioramento esperienza sviluppo**:
+- Aggiunto `py.typed` marker per abilitare type hints in IDE (VSCode, PyCharm, etc.)
+- Creato `MANIFEST.in` per includere py.typed nel pacchetto distribuito
+- Docstring complete già presenti ora mostrate automaticamente con autocompletamento
+- Type checking supportato con mypy per code validation
+
+**Documentazione API**:
+- Aggiornato `openspec/project.md` con dipendenze Rich, flag --art e API programmabile
+- Archiviate 4 proposte OpenSpec completate (add-article-filter-flag, add-project-site-ghpages, improve-cli-help-output, update-site-api-21)
+- Specifiche aggiornate: cli-interface, markdown-conversion, project-website
+
+## 2026-01-01
+
 ### Release v2.1.3 - Miglioramento Help CLI
 
 **Help con pager interattivo**:
