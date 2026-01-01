@@ -1308,7 +1308,6 @@ Comando testato: `python3 convert_akomantoso.py --search "legge di bilancio 2024
 Creata pianificazione completa per rendere normattiva2md usabile da notebook e script Python:
 
 **Documentazione creata:**
-- `planning/api-programmabile/` - cartella completa pianificazione
 - 7 documenti tecnici dettagliati (architettura, specs, models, exceptions, plan, examples, index)
 - Piano implementazione 6 fasi (14-21h totali)
 
