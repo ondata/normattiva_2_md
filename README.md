@@ -516,9 +516,9 @@ dataVigenza: 20251101
 ```bash
 git clone https://github.com/ondata/normattiva_2_md.git
 cd normattiva_2_md
-python -m venv venv
-source venv/bin/activate  # Su Windows: venv\Scripts\activate
-pip install -e .
+python3 -m venv .venv
+source .venv/bin/activate  # Su Windows: .venv\Scripts\activate
+pip3 install -e .
 ```
 
 ### Creazione di un eseguibile autonomo (opzionale)

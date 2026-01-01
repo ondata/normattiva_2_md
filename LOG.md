@@ -4,6 +4,12 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2026-01-01
 
+### Environment cleanup
+
+- rimosso `venv` obsoleto
+- aggiornato README.md: usa `.venv` standard
+- creato DEVELOPMENT.md con setup chiaro e comandi test
+
 ### API Programmabile Python
 
 **v2.1.0**
