@@ -146,6 +146,64 @@ normattiva2md "https://normattiva.it/..." output.md</code></pre>
     </div>
 </section>
 
+<!-- API Usage -->
+<section id="api" class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">Uso delle API</h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                Dalla v2.1 puoi integrare normattiva2md direttamente nei tuoi script Python
+            </p>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+            <div class="space-y-6">
+                <div class="bg-white border border-gray-200 rounded-xl p-6">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">API programmabile</h3>
+                    <p class="text-gray-600 mb-4">
+                        Moduli dedicati per conversione, modelli dati e gestione errori
+                        (<code class="bg-gray-100 px-2 py-1 rounded">api.py</code>,
+                        <code class="bg-gray-100 px-2 py-1 rounded">models.py</code>,
+                        <code class="bg-gray-100 px-2 py-1 rounded">exceptions.py</code>).
+                    </p>
+                    <div class="text-sm text-gray-500">
+                        Risultati strutturati con <code class="bg-gray-100 px-2 py-1 rounded">ConversionResult</code>
+                        e <code class="bg-gray-100 px-2 py-1 rounded">SearchResult</code>
+                    </div>
+                </div>
+                <div class="bg-white border border-gray-200 rounded-xl p-6">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Funzioni standalone</h3>
+                    <p class="text-gray-600 mb-4">
+                        Tre entry point per partire subito: <code class="bg-gray-100 px-2 py-1 rounded">convert_url()</code>,
+                        <code class="bg-gray-100 px-2 py-1 rounded">convert_xml()</code> e
+                        <code class="bg-gray-100 px-2 py-1 rounded">search_law()</code>.
+                    </p>
+                    <div class="text-sm text-gray-500">
+                        Ideale per pipeline, notebook e integrazioni rapide
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-900 rounded-xl overflow-hidden shadow-lg">
+                <pre class="text-sm"><code class="language-python">from normattiva2md import convert_url, convert_xml, search_law
+
+# Conversione da URL
+result = convert_url(
+    "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53",
+    article="3"
+)
+print(result.markdown[:500])
+
+# Conversione da XML locale
+xml_result = convert_xml("documento.xml")
+
+# Ricerca con linguaggio naturale
+hits = search_law("legge stanca accessibilità")
+for hit in hits[:3]:
+    print(hit.title, hit.urn)</code></pre>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- Demo: Before/After -->
 <section id="demo" class="py-20 bg-gray-50">
     <div class="container mx-auto px-4">
