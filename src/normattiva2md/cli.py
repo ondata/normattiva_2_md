@@ -5,6 +5,185 @@ import tempfile
 import xml.etree.ElementTree as ET
 
 from .constants import VERSION
+
+
+def print_rich_help():
+    """
+    Display Rich-formatted help information.
+    Lazy imports Rich only when needed to avoid startup overhead.
+    """
+    from rich.console import Console
+    from rich.panel import Panel
+    from rich.table import Table
+    from rich.box import ROUNDED
+    from rich.syntax import Syntax
+    from rich.rule import Rule
+    from rich.text import Text
+    from io import StringIO
+
+    console = Console(file=StringIO(), record=True)
+
+    cmd = os.path.basename(sys.argv[0]) or "normattiva2md"
+    cmd_display = cmd if not cmd.endswith(".py") else "normattiva2md"
+
+    # Title panel
+    title_text = Text()
+    title_text.append(cmd_display, style="bold cyan")
+    title_text.append(f" v{VERSION}", style="bold green")
+    title = Panel(
+        title_text,
+        subtitle="Convertitore da XML Akoma Ntoso a Markdown",
+        border_style="cyan",
+        padding=(1, 2),
+    )
+    console.print(title)
+    console.print()
+
+    # Description
+    console.print(
+        "Converte documenti Akoma Ntoso in formato Markdown da file XML o URL normattiva.it",
+        style="italic",
+    )
+    console.print()
+
+    # Usage section
+    console.print(Rule("[bold blue]Usage[/bold blue]"))
+    console.print()
+
+    usage_table = Table(show_header=False, box=None, padding=(0, 1))
+    usage_table.add_column("", style="bold")
+    usage_table.add_column("")
+
+    usage_table.add_row("Simple:", f"{cmd_display} input.xml output.md")
+    usage_table.add_row("Named args:", f"{cmd_display} -i input.xml -o output.md")
+    usage_table.add_row(
+        "URL:", f'{cmd_display} "https://www.normattiva.it/..." output.md'
+    )
+    usage_table.add_row(
+        "Search:", f'{cmd_display} --search "legge stanca" -o output.md'
+    )
+    console.print(usage_table)
+    console.print()
+
+    # Options section
+    console.print(Rule("[bold blue]Options[/bold blue]"))
+    console.print()
+
+    # Input/Output options
+    io_table = Table(
+        title="[bold cyan]Input/Output[/bold cyan]", show_header=False, box=ROUNDED
+    )
+    io_table.add_column("Option", style="bold yellow")
+    io_table.add_column("Description")
+
+    io_table.add_row("-i, --input", "File XML locale o URL normattiva.it")
+    io_table.add_row("-o, --output", "File Markdown di output (default: stdout)")
+    io_table.add_row("-h, --help", "Mostra questo help")
+    io_table.add_row("-v, --version", "Mostra versione")
+    console.print(io_table)
+    console.print()
+    console.print()
+
+    # Search options
+    search_table = Table(
+        title="[bold cyan]Search[/bold cyan]", show_header=False, box=ROUNDED
+    )
+    search_table.add_column("Option", style="bold yellow")
+    search_table.add_column("Description")
+
+    search_table.add_row("-s, --search", "Cerca documento in linguaggio naturale")
+    search_table.add_row("--exa-api-key", "Chiave API per Exa AI")
+    search_table.add_row("--debug-search", "Mostra JSON ricerca e selezione manuale")
+    search_table.add_row(
+        "--auto-select", "Seleziona automaticamente il miglior risultato"
+    )
+    console.print(search_table)
+    console.print()
+    console.print()
+
+    # Filtering options
+    filter_table = Table(
+        title="[bold cyan]Filtering[/bold cyan]", show_header=False, box=ROUNDED
+    )
+    filter_table.add_column("Option", style="bold yellow")
+    filter_table.add_column("Description")
+
+    filter_table.add_row("--art", "Filtra a singolo articolo (es: 4, 16bis)")
+    filter_table.add_row("-c, --completo", "Forza conversione completa con URL ~artN")
+    console.print(filter_table)
+    console.print()
+    console.print()
+
+    # Processing options
+    proc_table = Table(
+        title="[bold cyan]Processing[/bold cyan]", show_header=False, box=ROUNDED
+    )
+    proc_table.add_column("Option", style="bold yellow")
+    proc_table.add_column("Description")
+
+    proc_table.add_row("--with-urls", "Genera link agli URL normattiva.it")
+    proc_table.add_row("--with-references", "Scarica anche leggi citate")
+    proc_table.add_row("--provvedimenti", "Esporta provvedimenti attuativi CSV")
+    proc_table.add_row("--validate", "Validazione strutturale del Markdown")
+    console.print(proc_table)
+    console.print()
+    console.print()
+
+    # Debug options
+    debug_table = Table(
+        title="[bold cyan]Debug[/bold cyan]", show_header=False, box=ROUNDED
+    )
+    debug_table.add_column("Option", style="bold yellow")
+    debug_table.add_column("Description")
+
+    debug_table.add_row("-q, --quiet", "Disabilita output non essenziali")
+    debug_table.add_row("--keep-xml", "Mantiene file XML scaricati")
+    console.print(debug_table)
+    console.print()
+
+    # Examples section
+    console.print(Rule("[bold blue]Examples[/bold blue]"))
+    console.print()
+
+    examples = [
+        f"{cmd_display} input.xml output.md",
+        f'{cmd_display} "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" output.md',
+        f'{cmd_display} --search "legge stanca" -o output.md',
+        f"{cmd_display} --art 16bis input.xml > output.md",
+        f"{cmd_display} --with-references <url> laws_dir/",
+    ]
+
+    for example in examples:
+        code = Syntax(example, lexer="bash", theme="monokai", line_numbers=False)
+        console.print(code)
+    console.print()
+
+    # Footer with navigation hints
+    footer_text = Text()
+    footer_text.append("Project: ", style="dim")
+    footer_text.append("https://github.com/ondata/normattiva_2_md", style="dim blue")
+    footer_text.append("\n\n", style="dim")
+    footer_text.append("Navigazione: ", style="dim italic")
+    footer_text.append("↑↓ PgUp/PgDn Spazio ", style="dim yellow")
+    footer_text.append("| Esci: ", style="dim italic")
+    footer_text.append("q", style="dim yellow")
+    
+    footer = Panel(
+        footer_text,
+        border_style="dim",
+        padding=(0, 2),
+    )
+    console.print(footer)
+
+    # Export content and display with pager
+    help_text = console.export_text()
+    pager_console = Console()
+    with pager_console.pager(styles=True):
+        pager_console.print(help_text)
+
+    sys.exit(0)
+
+
 from .utils import sanitize_output_path, generate_snake_case_filename, load_env_file
 from .normattiva_api import (
     is_normattiva_url,
@@ -71,6 +250,11 @@ def main():
     """
     cmd = os.path.basename(sys.argv[0]) or "normattiva2md"
     cmd_display = cmd if not cmd.endswith(".py") else "normattiva2md"
+
+    # Check if help is requested or no arguments
+    if len(sys.argv) == 1 or "--help" in sys.argv or "-h" in sys.argv:
+        print_rich_help()
+
     parser = argparse.ArgumentParser(
         description="Converte documenti Akoma Ntoso in formato Markdown da file XML o URL normattiva.it",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -220,8 +404,7 @@ def main():
 
     # Logica di fallback per input/output se non specificati
     if input_source is None and args.search_query is None:
-        parser.print_help(sys.stderr)
-        sys.exit(1)
+        print_rich_help()
 
     # Esegui load_env_file all'inizio
     # Sebbene load_env_file sia in utils.py, la sua chiamata deve essere qui per inizializzare le variabili d'ambiente prima dell'uso.
@@ -372,7 +555,9 @@ def main():
                                 .lower()
                             )
                         except KeyboardInterrupt:
-                            print("\r❌ Operazione annullata dall'utente", file=sys.stderr)
+                            print(
+                                "\r❌ Operazione annullata dall'utente", file=sys.stderr
+                            )
                             sys.exit(0)
                         if overwrite not in ["s", "si", "sì", "y", "yes"]:
                             print("❌ Download annullato dall'utente", file=sys.stderr)
@@ -441,7 +626,9 @@ def main():
                 # Use URL article reference if present
                 article_ref = parse_article_reference(input_source)
                 if article_ref and not quiet_mode:
-                    print(f"Rilevato riferimento articolo: {article_ref}", file=sys.stderr)
+                    print(
+                        f"Rilevato riferimento articolo: {article_ref}", file=sys.stderr
+                    )
 
             # Estrai parametri dalla pagina
             params, session = extract_params_from_normattiva_url(
@@ -622,6 +809,7 @@ def main():
             )
             if not csv_written:
                 sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

@@ -4,6 +4,16 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2026-01-01
 
+### Release v2.1.3 - Miglioramento Help CLI
+
+**Help con pager interattivo**:
+- Aggiunto pager automatico per `--help` (navigazione con ↑↓ PgUp/PgDn, esci con `q`)
+- Spaziatura migliorata tra sezioni Options per maggiore leggibilità
+- Footer con istruzioni di navigazione del pager
+- Aggiunto flag `-h, --help` nella documentazione help
+
+## 2026-01-01
+
 ### Documentazione API OpenData - Struttura Versionata
 
 **Organizzazione documentazione API OpenData Normattiva**:
@@ -1329,3 +1339,5 @@ Creata pianificazione completa per rendere normattiva2md usabile da notebook e s
 **Compatibilità:** 100% backward compatible - CLI funziona esattamente come prima
 
 **Prossimo step:** Review pianificazione → implementazione Fase 1 (Foundation)
+## 2026-01-01
+- Improved CLI help output with Rich library for better readability and organization
