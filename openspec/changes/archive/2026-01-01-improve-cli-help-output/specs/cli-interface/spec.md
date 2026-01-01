@@ -1,6 +1,6 @@
 # cli-interface Spec Delta
 
-## MODIFIED Requirements
+## ADDED Requirements
 
 ### Requirement: CLI Help Display
 The system SHALL display comprehensive help information when invoked without arguments or with `--help` flag.

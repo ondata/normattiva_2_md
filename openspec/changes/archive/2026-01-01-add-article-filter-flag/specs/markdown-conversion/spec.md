@@ -1,6 +1,6 @@
 # markdown-conversion Delta Specification
 
-## MODIFIED Requirements
+## ADDED Requirements
 
 ### Requirement: Article Filtering During Conversion
 The conversion process SHALL support filtering XML content to a specific article before generating markdown output.
