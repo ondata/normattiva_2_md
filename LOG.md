@@ -2,6 +2,45 @@
 
 Questo file documenta gli avanzamenti significativi e le decisioni chiave del progetto `normattiva_2_md`.
 
+## 2026-01-01
+
+### API Programmabile Python
+
+**v2.1.0**
+
+Aggiunta API Python per uso in notebook e script, mantenendo 100% compatibilità CLI.
+
+**Nuovi file**:
+- `src/normattiva2md/api.py`: funzioni standalone e classe Converter
+- `src/normattiva2md/models.py`: dataclass ConversionResult e SearchResult
+- `src/normattiva2md/exceptions.py`: gerarchia eccezioni custom
+- `examples/basic_usage.py`: esempi uso base
+- `examples/batch_processing.py`: esempi batch
+- `tests/test_api.py`: test suite API (15 test)
+
+**Funzioni pubbliche**:
+- `convert_url(url, article, with_urls, quiet)` → ConversionResult
+- `convert_xml(xml_path, article, with_urls, metadata, quiet)` → ConversionResult
+- `search_law(query, exa_api_key, limit, quiet)` → List[SearchResult]
+- `Converter` class per configurazione persistente e batch
+
+**Eccezioni**:
+- `Normattiva2MDError` (base)
+- `InvalidURLError`, `XMLFileNotFoundError`, `APIKeyError`, `ConversionError`
+
+**Esempio uso**:
+```python
+from normattiva2md import convert_url
+
+result = convert_url("https://www.normattiva.it/...")
+print(result.title)
+result.save("output.md")
+```
+
+**Documentazione**: README.md aggiornato con sezione "Utilizzo come Libreria Python"
+
+---
+
 ## 2025-12-27
 
 ### Implementazione flag `--art` per filtro articoli

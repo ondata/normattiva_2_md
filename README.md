@@ -102,6 +102,103 @@ pip install -e .
 normattiva2md input.xml output.md
 ```
 
+## 🐍 Utilizzo come Libreria Python
+
+Oltre al CLI, `normattiva2md` è utilizzabile come libreria Python nei tuoi script o notebook Jupyter:
+
+### Quick Start
+
+```python
+from normattiva2md import convert_url, convert_xml, search_law
+
+# Conversione da URL
+result = convert_url("https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2004-01-09;4")
+print(result.markdown[:500])
+print(result.title)
+print(result.metadata)
+result.save("legge_stanca.md")
+
+# Conversione da file XML locale
+result = convert_xml("documento.xml")
+result.save("output.md")
+
+# Ricerca in linguaggio naturale (richiede Exa API key)
+results = search_law("legge stanca accessibilità")
+for r in results:
+    print(f"[{r.score:.2f}] {r.title}")
+    print(f"  URL: {r.url}")
+```
+
+### Classe Converter per Uso Avanzato
+
+```python
+from normattiva2md import Converter
+
+# Converter con configurazione persistente
+conv = Converter(
+    exa_api_key="your-key",  # o usa EXA_API_KEY da .env
+    quiet=True
+)
+
+# Ricerca e conversione in un passo
+result = conv.search_and_convert("decreto dignità")
+result.save("decreto_dignita.md")
+
+# Batch processing
+urls = [
+    "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2004-01-09;4",
+    "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2005-03-07;82",
+]
+for i, url in enumerate(urls):
+    result = conv.convert_url(url)
+    if result:
+        result.save(f"legge_{i+1}.md")
+```
+
+### Gestione Errori
+
+```python
+from normattiva2md import (
+    convert_url,
+    InvalidURLError,
+    ConversionError,
+    APIKeyError,
+    Normattiva2MDError,
+)
+
+try:
+    result = convert_url("https://www.normattiva.it/...")
+except InvalidURLError as e:
+    print(f"URL non valido: {e}")
+except ConversionError as e:
+    print(f"Errore conversione: {e}")
+except Normattiva2MDError as e:
+    print(f"Errore: {e}")
+
+# Gestione errori soft (ritornano None)
+result = convert_url(url, article="999")
+if result is None:
+    print("Articolo non trovato")
+```
+
+### Opzioni Avanzate
+
+```python
+# Estrai singolo articolo
+result = convert_url(url, article="16bis")
+
+# Genera link markdown ai riferimenti
+result = convert_url(url, with_urls=True)
+
+# Modalità silenziosa (no logging)
+result = convert_url(url, quiet=True)
+```
+
+### Oggetti Ritornati
+
+- **`ConversionResult`**: Contiene `markdown`, `metadata`, `url`, `url_xml` + helper come `title`, `data_gu`, `save()`
+- **`SearchResult`**: Contiene `url`, `title`, `score`
+
 ## 💻 Utilizzo
 
 ### Metodo 1: Da URL Normattiva (consigliato)

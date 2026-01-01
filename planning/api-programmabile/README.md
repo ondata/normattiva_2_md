@@ -1,7 +1,7 @@
 # 📋 Piano: API Programmabile per normattiva2md
 
 **Data**: 2025-12-04
-**Stato**: Pianificazione
+**Stato**: COMPLETATO (2026-01-01)
 **Obiettivo**: Aggiungere API Python usabile da notebook mantenendo 100% compatibilità CLI
 
 ## 🎯 Decisioni Architetturali
@@ -70,33 +70,33 @@ planning/api-programmabile/
 ## 📊 Checklist Generale
 
 ### Fase 1: Core API
-- [ ] Exceptions (`src/normattiva2md/exceptions.py`)
-- [ ] Models (`src/normattiva2md/models.py`)
-- [ ] API Core (`src/normattiva2md/api.py`)
-- [ ] Init exports (`src/normattiva2md/__init__.py`)
+- [x] Exceptions (`src/normattiva2md/exceptions.py`)
+- [x] Models (`src/normattiva2md/models.py`)
+- [x] API Core (`src/normattiva2md/api.py`)
+- [x] Init exports (`src/normattiva2md/__init__.py`)
 
 ### Fase 2: Testing
-- [ ] Test exceptions
-- [ ] Test models
-- [ ] Test API functions
-- [ ] Test Converter class
-- [ ] Test error handling
+- [x] Test exceptions
+- [x] Test models
+- [x] Test API functions
+- [x] Test Converter class
+- [x] Test error handling
 
 ### Fase 3: Documentazione
-- [ ] Docstrings complete
-- [ ] README.md aggiornato
-- [ ] `docs/notebook_examples.md`
-- [ ] Type hints
+- [x] Docstrings complete
+- [x] README.md aggiornato
+- [ ] `docs/notebook_examples.md` (TODO)
+- [x] Type hints
 
 ### Fase 4: Esempi
-- [ ] `examples/notebook_quickstart.ipynb`
-- [ ] Script esempi in `examples/`
+- [ ] `examples/notebook_quickstart.ipynb` (TODO)
+- [x] Script esempi in `examples/`
 
 ### Fase 5: Release
-- [ ] Version bump
-- [ ] CHANGELOG/LOG.md
-- [ ] Test finale
-- [ ] PyPI release
+- [x] Version bump (2.1.0)
+- [x] CHANGELOG/LOG.md
+- [x] Test finale (15 test passati)
+- [ ] PyPI release (pending)
 
 ## 🔗 Riferimenti
 
