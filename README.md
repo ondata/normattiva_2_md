@@ -102,7 +102,10 @@ pip install -e .
 normattiva2md input.xml output.md
 ```
 
+
 ## 🐍 Utilizzo come Libreria Python
+
+> **Nota:** Per vedere esempi pratici e testare la libreria, puoi aprire il notebook Jupyter di esempio: [examples/quickstart.ipynb](examples/quickstart.ipynb)
 
 Oltre al CLI, `normattiva2md` è utilizzabile come libreria Python nei tuoi script o notebook Jupyter:
 
@@ -350,7 +353,7 @@ Scelta: 3
 ✅ URL selezionato manualmente: https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2004-01-09;4!vig
 
 📥 Vuoi scaricare questo documento? (s/N): s
-📝 Nome file [legge_9_gennaio_2004_n_4.md]: 
+📝 Nome file [legge_9_gennaio_2004_n_4.md]:
 ✅ URL selezionato: https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2004-01-09;4!vig
 Rilevato URL normattiva.it: https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2004-01-09;4!vig
 ...
