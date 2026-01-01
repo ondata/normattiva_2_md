@@ -37,6 +37,11 @@ jobs:
         env:
           JEKYLL_ENV: production
 
+      - name: Publish examples folder
+        run: |
+          rm -rf site/_site/examples
+          cp -R examples site/_site/examples
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
