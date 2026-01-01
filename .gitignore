@@ -67,6 +67,8 @@ node_modules/
 plans/
 tasks/todo.md
 tmp/
+.gh-cache/
+.claude/agents/
 tasks/proposta_schema_dati/*
 !tasks/proposta_schema_dati/email_schema_dati.qmd
 !tasks/proposta_schema_dati/custom-reference-doc.docx
