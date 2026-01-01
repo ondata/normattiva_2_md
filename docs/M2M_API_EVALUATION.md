@@ -485,6 +485,110 @@ numero_gu: 13
 
 ---
 
+## Aggiornamento: Formato JSON
+
+**Data**: 2026-01-01 (pomeriggio)
+
+### Scoperta Importante
+
+Le collezioni API OpenData supportano anche **formato JSON** con struttura **equivalente a XML Akoma Ntoso**.
+
+**Test effettuato**: Download collezione in formato JSON e analisi struttura
+
+**Risultato**: ✅ **JSON perfettamente convertibile in Markdown**
+
+### Struttura JSON
+
+```json
+{
+  "metadati": {
+    "urn": "urn:nir:...",
+    "eli": "eli/id/...",
+    "tipoDoc": "LEGGE",
+    "numDoc": "4",
+    "dataDoc": "2004-01-09"
+  },
+  "articolato": {
+    "elementi": [
+      {
+        "nomeNir": "articolo",
+        "numNir": "1",
+        "rubricaNir": "Titolo articolo",
+        "testo": "Testo completo dell'articolo...",
+        "noteArt": "Note...",
+        "elementi": []  // Ricorsivo: commi, elenchi, etc.
+      }
+    ]
+  }
+}
+```
+
+### Proof of Concept JSON→Markdown
+
+**Script**: `tmp/json_to_markdown_poc.py`
+
+**Test**: Conversione DECRETO 12 aprile 1988, n. 164
+
+**Risultato**:
+```markdown
+---
+urn: urn:nir:ministero.agricoltura.e.foreste:decreto:1988-04-12;164
+tipo: DECRETO
+numero: 164
+---
+
+# DECRETO 12 aprile 1988, n. 164
+
+## Art. 1
+[Testo completo...]
+
+## Art. 2
+[Testo completo...]
+```
+
+✅ **Conversione perfettamente funzionante**
+
+### Vantaggi Formato JSON
+
+**Rispetto a XML AKN**:
+- ✅ Parsing più semplice (nativo Python, no librerie XML)
+- ✅ Struttura più intuitiva (dict/list invece di DOM)
+- ✅ File più compatti (~20-30% più piccoli)
+- ✅ Metadata arricchiti (URN, ELI, storia versioni)
+- ✅ Più facile da debuggare e testare
+
+**Rispetto a HTML**:
+- ✅ Struttura completa e precisa
+- ✅ Nessun parsing HTML necessario
+- ✅ Metadata inclusi
+- ✅ Note articoli separate
+
+### Limitazioni
+
+❌ **Stesso problema**: Disponibile solo tramite **collezioni ZIP**
+
+- Collezioni preconfezionate (GET download)
+- Collezioni asincrone (workflow email + polling)
+
+**Non disponibile**:
+- ❌ Endpoint diretto per singolo atto in JSON
+- ❌ Endpoint `/atto/dettaglio-atto` ritorna solo HTML
+
+### Valutazione Comparativa Completa
+
+Vedi documento dedicato: **`docs/JSON_VS_XML_EVALUATION.md`**
+
+Confronto dettagliato tra:
+- XML AKN (formato attuale)
+- JSON (nuovo formato testato)
+- Approccio attuale (caricaAKN)
+
+**Conclusione finale**: Approccio attuale rimane ottimale per singoli atti
+
+**Futuro promettente**: JSON ideale se Normattiva aggiunge endpoint diretto
+
+---
+
 ## Risorse
 
 ### Documentazione
@@ -494,15 +598,23 @@ numero_gu: 13
 - **PDF Specs**: https://dati.normattiva.it/assets/come_fare_per/API_Normattiva_OpenData.pdf
 - **OpenAPI 3.0**: https://dati.normattiva.it/assets/come_fare_per/openapi-bff-opendata.json
 
+### Documenti Analisi
+- **`docs/JSON_VS_XML_EVALUATION.md`**: Confronto completo formati e workflow
+
 ### Test Effettuati
 - `tmp/test_api_correct.py`: Test endpoint dettaglio-atto
 - `tmp/test_api_formats.py`: Test formati payload diversi
 - `tmp/test_full_response.py`: Salvataggio risposta completa
 - `tmp/api_response_full.json`: Esempio risposta API reale
 - `tmp/openapi-bff-opendata.json`: Specifica OpenAPI completa
+- **`tmp/json_to_markdown_poc.py`**: ✅ Converter JSON→Markdown funzionante
+- **`tmp/sample_atto_json.json`**: Esempio JSON scaricato
+- **`tmp/sample_atto_from_json.md`**: Output Markdown da JSON
+- `tmp/sample_json.zip`: Collezione JSON completa
 
 ---
 
 **Data documento**: 2026-01-01
-**Stato**: ✅ Analisi completata
+**Ultimo aggiornamento**: 2026-01-01 (pomeriggio - aggiunta analisi JSON)
+**Stato**: ✅ Analisi completata (HTML + JSON + XML AKN)
 **Prossimi step**: Nessuno (approccio attuale rimane ottimale)
