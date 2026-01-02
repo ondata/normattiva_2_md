@@ -39,23 +39,9 @@ jobs:
         env:
           JEKYLL_ENV: production
 
-      - name: Detect examples changes
-        id: examples_changed
-        run: |
-          if git rev-parse --verify HEAD^ >/dev/null 2>&1; then
-            if git diff --name-only HEAD^ HEAD | grep -q '^docs/esempi/'; then
-              echo "changed=true" >> "$GITHUB_OUTPUT"
-            else
-              echo "changed=false" >> "$GITHUB_OUTPUT"
-            fi
-          else
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Publish examples folder
-        if: github.event_name == 'workflow_dispatch' || steps.examples_changed.outputs.changed == 'true'
         run: |
-          rm -rf site/_site/examples
+          rm -rf site/_site/esempi
           cp -R docs/esempi site/_site/esempi
 
       - name: Upload Pages artifact
