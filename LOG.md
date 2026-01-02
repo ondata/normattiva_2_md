@@ -2,6 +2,16 @@
 
 Questo file documenta gli avanzamenti significativi e le decisioni chiave del progetto `normattiva_2_md`.
 
+## 2026-01-02
+
+### Fix CI Test Failures + Documentation
+
+- Fixed failing tests: `test_generate_front_matter_complete` e `test_generate_front_matter_partial` non erano sincronizzati con legal_notice introdotto in v2.1.5
+- Updated tests per includere legal_notice negli expected outputs
+- **Importante**: Documentazione aggiornata per richiedere sempre uso di `.venv` per build/test/publish per evitare binary bloat
+  - DEVELOPMENT.md: Aggiunto avvertimento CRITICAL sulla necessità di usare venv
+  - CLAUDE.md: Aggiunta sezione "Development Environment" con reference a DEVELOPMENT.md
+
 ## 2026-01-01
 
 ### 🚀 Lancio Pubblico - Normattiva2MD Pronto per il Mondo
