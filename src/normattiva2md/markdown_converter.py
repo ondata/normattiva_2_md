@@ -35,6 +35,8 @@ def generate_front_matter(metadata):
 
     # Generate YAML front matter
     lines = ["---"]
+    # Add legal warning at the top
+    lines.append("legal_notice: I testi presenti nella banca dati \"Normattiva\" non hanno carattere di ufficialità. L'unico testo ufficiale è quello pubblicato sulla Gazzetta Ufficiale Italiana.")
     for key, value in front_matter_data.items():
         lines.append(f"{key}: {value}")
     lines.append("---")

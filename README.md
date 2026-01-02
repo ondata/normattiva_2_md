@@ -6,6 +6,16 @@
 
 **Normattiva2MD** è uno strumento da riga di comando progettato per convertire documenti XML in formato **Akoma Ntoso** (in particolare le norme pubblicate su `normattiva.it`) in documenti **Markdown** leggibili e ben formattati. L'obiettivo principale è offrire un formato compatto e immediatamente riutilizzabile quando le norme devono essere fornite come contesto a un **Large Language Model (LLM)** o elaborate in pipeline di Intelligenza Artificiale.
 
+## ⚠️ Avvertenza legale
+
+**I testi presenti nella banca dati "Normattiva" non hanno carattere di ufficialità.**
+
+**L'unico testo ufficiale e definitivo è quello pubblicato sulla Gazzetta Ufficiale Italiana a mezzo stampa, che prevale in casi di discordanza.**
+
+Gli utenti di questo strumento devono essere consapevoli che i documenti convertiti da normattiva.it sono forniti a scopo informativo e non hanno valore legale ufficiale. Per qualsiasi utilizzo legale o giuridico, consultare sempre la versione ufficiale pubblicata sulla Gazzetta Ufficiale Italiana.
+
+---
+
 ## 🎯 Perché Markdown per le norme?
 
 Convertire le norme legali da XML Akoma Ntoso a Markdown offre vantaggi significativi:

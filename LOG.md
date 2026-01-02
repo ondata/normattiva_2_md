@@ -1384,5 +1384,29 @@ Creata pianificazione completa per rendere normattiva2md usabile da notebook e s
 **Compatibilità:** 100% backward compatible - CLI funziona esattamente come prima
 
 **Prossimo step:** Review pianificazione → implementazione Fase 1 (Foundation)
+## 2026-01-02
+
+### Aggiunta Avviso Legale su README, CLI e Front Matter
+
+**Conformità legale:** Aggiunto avviso legale prominente sullo status ufficiale dei documenti
+
+**Modifiche implementate:**
+- **README.md**: Nuova sezione `⚠️ Avvertenza legale` subito dopo introduzione
+- **cli.py - Rich help**: Panel visuale rosso/giallo con avvertenza alla apertura help
+- **cli.py - argparse epilog**: Avvertenza anche nel footer standard `--help`
+- **markdown_converter.py**: Campo `legal_notice` nel front matter YAML di ogni documento
+
+**Avviso fornito:**
+- I testi presenti in Normattiva non hanno carattere di ufficialità
+- L'unico testo ufficiale è quello pubblicato sulla Gazzetta Ufficiale Italiana
+- Utilizzo solo a scopo informativo
+
+**Posizionamento strategico:**
+1. Prima di usare il tool → README
+2. Quando richiede aiuto → CLI
+3. Nel documento generato → Front matter YAML
+
+**Impatto:** Nessuno breaking change, avvertenza informativa, importante per conformità legale
+
 ## 2026-01-01
 - Improved CLI help output with Rich library for better readability and organization

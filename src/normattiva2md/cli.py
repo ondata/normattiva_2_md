@@ -39,6 +39,22 @@ def print_rich_help():
     console.print(title)
     console.print()
 
+    # Legal warning
+    warning_text = Text()
+    warning_text.append(
+        "⚠️  I testi presenti nella banca dati \"Normattiva\" non hanno carattere di ufficialità.\n"
+        "L'unico testo ufficiale e definitivo è quello pubblicato sulla Gazzetta Ufficiale Italiana.",
+        style="bold yellow on dark_red"
+    )
+    warning_panel = Panel(
+        warning_text,
+        title="[bold red]AVVERTENZA LEGALE[/bold red]",
+        border_style="red",
+        padding=(1, 2),
+    )
+    console.print(warning_panel)
+    console.print()
+
     # Description
     console.print(
         "Converte documenti Akoma Ntoso in formato Markdown da file XML o URL normattiva.it",
@@ -260,6 +276,11 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         prog=cmd_display,
         epilog=f"""
+⚠️  AVVERTENZA LEGALE:
+  I testi presenti nella banca dati "Normattiva" non hanno carattere di ufficialità.
+  L'unico testo ufficiale e definitivo è quello pubblicato sulla Gazzetta Ufficiale Italiana.
+  Per qualsiasi utilizzo legale o giuridico, consultare sempre la versione ufficiale.
+
   Esempi d'uso:
 
     # Output a file
