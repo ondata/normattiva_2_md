@@ -143,6 +143,16 @@ pip install .
 - Prevents double-wrapping of `(( ))` in modifications
 - Filters out horizontal separator lines (`----`)
 
+## Development Environment
+
+**IMPORTANT**: Always follow procedures in `@/DEVELOPMENT.md` for:
+- Creating and activating virtual environment (`.venv`)
+- Running tests
+- Building executables
+- Packaging and releases
+
+**Why**: The virtual environment isolates dependencies and prevents binary bloat from global packages.
+
 ## Project Constraints
 
 - **Minimal dependencies**: only `requests` for URL fetching

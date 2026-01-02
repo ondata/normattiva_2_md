@@ -54,9 +54,16 @@ normattiva_2_md/
 ### Run all tests (recommended)
 
 ```bash
-source .venv/bin/activate
+# Activate venv FIRST (required for all test/build operations)
+source .venv/bin/activate  # Linux/macOS
+# or
+.venv\Scripts\activate  # Windows
+
+# Then run tests
 make test
 ```
+
+**Always activate venv before testing, building, or running any development command.**
 
 ### Alternative: unittest (no extra deps)
 
@@ -88,15 +95,32 @@ normattiva2md --art 3 test_data/*.xml test.md
 
 ## Building Binary
 
+**CRITICAL**: Always use the activated virtual environment (.venv) - never build with system Python.
+
+This prevents binary bloat from global packages:
+
 ```bash
+# Activate venv first
+source .venv/bin/activate  # Linux/macOS
+# or
+.venv\Scripts\activate  # Windows
+
+# Then build
 pip3 install pyinstaller
 pyinstaller --onefile --name normattiva2md __main__.py
 # Output: dist/normattiva2md
 ```
 
+If you build outside venv, the binary will be 4-5x larger due to unnecessary system packages being bundled.
+
 ## Publishing to PyPI
 
 ```bash
+# Activate venv first
+source .venv/bin/activate  # Linux/macOS
+# or
+.venv\Scripts\activate  # Windows
+
 # Build
 python3 setup.py sdist bdist_wheel
 
