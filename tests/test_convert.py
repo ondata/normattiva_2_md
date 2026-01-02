@@ -165,6 +165,7 @@ class ConvertAkomaNtosoTest(unittest.TestCase):
         }
         result = generate_front_matter(metadata)
         expected = """---
+legal_notice: I testi presenti nella banca dati "Normattiva" non hanno carattere di ufficialità. L'unico testo ufficiale è quello pubblicato sulla Gazzetta Ufficiale Italiana.
 url: https://example.com
 url_xml: https://example.com/xml
 dataGU: 20231201
@@ -180,6 +181,7 @@ dataVigenza: 20231231
         metadata = {"url": "https://example.com", "dataGU": "20231201"}
         result = generate_front_matter(metadata)
         expected = """---
+legal_notice: I testi presenti nella banca dati "Normattiva" non hanno carattere di ufficialità. L'unico testo ufficiale è quello pubblicato sulla Gazzetta Ufficiale Italiana.
 url: https://example.com
 dataGU: 20231201
 ---
