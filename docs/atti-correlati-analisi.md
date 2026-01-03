@@ -180,8 +180,17 @@ def parse_related_acts_html(html_content):
     soup = BeautifulSoup(html_content, 'html.parser')
     table = soup.find('table', {'id': 'rigaItem'})
 
+    # Controllo: nessuna tabella = nessun atto correlato
+    if not table:
+        return []
+
+    tbody = table.find('tbody')
+    # Controllo: tbody vuoto = nessun atto correlato
+    if not tbody:
+        return []
+
     acts = []
-    for row in table.find('tbody').find_all('tr'):
+    for row in tbody.find_all('tr'):
         cells = row.find_all('td')
 
         # Estrai dati...
@@ -213,6 +222,127 @@ install_requires=[
 ]
 ```
 
+## Gestione Atti Correlati Assenti
+
+È fondamentale prevedere la possibilità che una norma non abbia atti correlati.
+
+### Comportamento API
+
+L'endpoint `vediAttiCorrelati` può restituire:
+
+1. **Tabella con dati**: lista atti correlati
+2. **Tabella vuota**: `<tbody>` senza `<tr>`
+3. **Tabella inesistente**: nessun elemento con `id="rigaItem"`
+4. **HTML di errore**: pagina di errore generica
+
+### Implementazione Sugerita
+
+```python
+def fetch_related_acts(params, session=None, quiet=False):
+    """
+    Recupera elenco atti correlati con gestione caso vuoto
+
+    Returns:
+        list: elenco atti correlati (vuoto se non presenti)
+        None: errore API
+    """
+    url = "https://www.normattiva.it/do/atto/vediAttiCorrelati"
+    payload = {
+        "atto.dataPubblicazioneGazzetta": params["dataPubblicazioneGazzetta"],
+        "atto.codiceRedazionale": params["codiceRedazionale"],
+        "currentSearch": "ricerca_avanzata_aggiornamenti"
+    }
+
+    try:
+        response = (session or requests).get(url, params=payload, timeout=30)
+        response.raise_for_status()
+
+        acts = parse_related_acts_html(response.text)
+
+        if not acts:
+            if not quiet:
+                print("ℹ️  Nessun atto correlato trovato per questa norma")
+
+        return acts
+
+    except requests.RequestException as e:
+        if not quiet:
+            print(f"❌ Errore recupero atti correlati: {e}")
+        return None
+```
+
+### Messaggi Utente
+
+**Caso atti correlati presenti:**
+```
+✅ Trovati 3 atti correlati:
+  1. DECRETO LEGISLATIVO 6 settembre 1989, n. 322
+  2. DECRETO LEGISLATIVO 16 dicembre 1989, n. 418
+  3. LEGGE 15 marzo 1997, n. 59
+```
+
+**Caso nessun atto correlato:**
+```
+ℹ️  Nessun atto correlato trovato per questa norma
+```
+
+**Caso errore API:**
+```
+⚠️  Impossibile recuperare atti correlati: errore HTTP 500
+```
+
+### CLI Flag Opzionale
+
+```bash
+# Mostra atti correlati se presenti, ignora se assenti (nessun errore)
+normattiva2md "URL" output.md --related-acts
+
+# Fail se atti correlati non trovati (per script automatizzati)
+normattiva2md "URL" output.md --related-acts --fail-if-no-related
+
+# Silenzioso (nessun output se assenti)
+normattiva2md "URL" output.md --related-acts --quiet
+```
+
+## Esempi Concreti
+
+### Caso 1: Legge con atti correlati
+
+**Norma**: `urn:nir:stato:legge:1988-08-23;400` (Legge 23/1988)
+
+```bash
+$ normattiva2md --related-acts "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:1988-08-23;400"
+
+✅ Trovati 3 atti correlati:
+  1. DECRETO LEGISLATIVO 6 settembre 1989, n. 322
+  2. DECRETO LEGISLATIVO 16 dicembre 1989, n. 418
+  3. LEGGE 15 marzo 1997, n. 59
+
+💾 Salvati in: atti_correlati.json
+```
+
+### Caso 2: Legge senza atti correlati
+
+**Norma**: `urn:nir:stato:legge:2022-05-05;53` (Legge 53/2022)
+
+```bash
+$ normattiva2md --related-acts "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53"
+
+ℹ️  Nessun atto correlato trovato per questa norma
+
+💾 File atti_correlati.json vuoto creato
+```
+
+### Caso 3: Output JSON con lista vuota
+
+```json
+{
+  "url_originale": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53",
+  "numero_atti_correlati": 0,
+  "atti_correlati": []
+}
+```
+
 ## Casi d'uso CLI
 
 ```bash
@@ -242,6 +372,10 @@ normattiva2md --related-acts-only "URL" > atti_correlati.json
 1. ⚠️ **Formato HTML**: richiede parsing (non JSON nativo)
 2. ⚠️ **Dipendenza aggiuntiva**: BeautifulSoup4
 3. ⚠️ **Funziona solo da URL**: non da file XML locale (parametri non disponibili nell'XML)
+4. ⚠️ **Non tutte le norme hanno atti correlati**:
+   - Esempio con atti correlati: `urn:nir:stato:legge:1988-08-23;400` (Legge 23/1988)
+   - Esempio senza atti correlati: `urn:nir:stato:legge:2022-05-05;53` (Legge 53/2022)
+   - Bisogna gestire il caso di risposta vuota o tabella inesistente
 
 ## Stima implementazione
 
@@ -251,9 +385,12 @@ normattiva2md --related-acts-only "URL" > atti_correlati.json
   - [ ] Aggiungere `beautifulsoup4` a `setup.py`
   - [ ] Creare funzione `fetch_related_acts()` in `normattiva_api.py`
   - [ ] Creare funzione `parse_related_acts_html()` per parsing
+  - [ ] **Aggiungere controllo lista vuota** e tabella inesistente
   - [ ] Aggiungere opzioni CLI in `cli.py`
   - [ ] Aggiungere formattatori output (JSON, Markdown, plain text)
-  - [ ] Test con diversi tipi di atti
+  - [ ] Test con norme **con e senza** atti correlati:
+    - [ ] `urn:nir:stato:legge:1988-08-23;400` (con atti correlati)
+    - [ ] `urn:nir:stato:legge:2022-05-05;53` (senza atti correlati)
   - [ ] Documentazione README
 
 ## Conclusione
