@@ -116,6 +116,8 @@ normattiva2md input.xml output.md
 ## 🐍 Utilizzo come Libreria Python
 
 > **Nota:** Per vedere esempi pratici e testare la libreria, puoi aprire il notebook Jupyter di esempio: [examples/quickstart.ipynb](examples/quickstart.ipynb)
+>
+> **📚 Documentazione API completa:** [docs/API_REFERENCE.md](docs/API_REFERENCE.md) - Tutti i metodi, classi, eccezioni con esempi dettagliati.
 
 Oltre al CLI, `normattiva2md` è utilizzabile come libreria Python nei tuoi script o notebook Jupyter:
 
