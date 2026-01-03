@@ -483,6 +483,12 @@ normattiva2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legi
                         </svg>
                         Documentazione
                     </a>
+                    <a href="https://github.com/ondata/normattiva_2_md/blob/main/docs/API_REFERENCE.md" target="_blank" class="inline-flex items-center gap-2 bg-gray-200 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-300 transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                        </svg>
+                        API Reference
+                    </a>
                     <a href="https://pypi.org/project/normattiva2md/" target="_blank" class="inline-flex items-center gap-2 bg-gray-200 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-300 transition">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
