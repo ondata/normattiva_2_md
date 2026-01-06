@@ -1,0 +1,2292 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "OpenAPI definition",
+    "version": "v0"
+  },
+  "servers": [
+    {
+      "url": "https://api.normattiva.it/t/normattiva.api/bff-opendata/v1",
+      "description": "Generated server url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Ricerca Asincrona",
+      "description": "Api per la gestione della ricerca asincrona"
+    },
+    {
+      "name": "Tipologiche",
+      "description": "Api per l'estrazione di tipologiche"
+    },
+    {
+      "name": "Atto",
+      "description": "Api gestione atti"
+    },
+    {
+      "name": "Collections",
+      "description": "Api per la gestione delle collections"
+    },
+    {
+      "name": "Ricerca",
+      "description": "Api per la gestione della ricerca"
+    }
+  ],
+  "paths": {
+    "/api/v1/ricerca-asincrona/conferma-ricerca": {
+      "put": {
+        "tags": [
+          "Ricerca Asincrona"
+        ],
+        "summary": "Conferma richiesta di una ricerca asincrona",
+        "description": "Conferma richiesta di una ricerca asincrona",
+        "operationId": "confermaRicercaAsincrona",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfermaRicercaAsincronaRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Nuova ricerca asincrona confermata con successo",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusRicercaAsincronaDTO"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Richiesta non processabile",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Nuova ricerca asincrona confermata con successo. Possibile prolungamento tempi di fornitura URL di download della collezione.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusRicercaAsincronaDTO"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Errore interno del server",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "La richiesta non ha prodotto risultati",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusRicercaAsincronaDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Richiesta mal formata / Input non valido",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Carico eccessivo. Impossibile prendere in carico la richiesta. URL di collezione predefinita equivalente fornita in uscita.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusRicercaAsincronaDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ricerca/semplice": {
+      "post": {
+        "tags": [
+          "Ricerca"
+        ],
+        "summary": "API per la ricerca semplice",
+        "description": "Ritorna il risultato di una ricerca semplice tramite testo",
+        "operationId": "ricercaSemplice",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RicercaSempliceRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Richiesta elaborata e risultati estratti con successo",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RicercaResponseFrontEnd"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Errore interno del server",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Indirizzo non trovato o non correttamente specificato",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RicercaResponseFrontEnd"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Richiesta non processabile",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RicercaResponseFrontEnd"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Richiesta mal formata / Input non valido",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RicercaResponseFrontEnd"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ricerca/avanzata": {
+      "post": {
+        "tags": [
+          "Ricerca"
+        ],
+        "summary": "API per la ricerca avanzata",
+        "description": "Ritorna il risultato della ricerca parametrizzata",
+        "operationId": "ricercaAvanzata",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RicercaAvanzataRequestFrontEnd"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Richiesta elaborata e risultati estratti con successo",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RicercaResponseFrontEnd"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Errore interno del server",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Indirizzo non trovato o non correttamente specificato",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RicercaResponseFrontEnd"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Richiesta non processabile",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RicercaResponseFrontEnd"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Richiesta mal formata / Input non valido",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RicercaResponseFrontEnd"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ricerca/aggiornati": {
+      "post": {
+        "tags": [
+          "Ricerca"
+        ],
+        "summary": "API per la ricerca degli atti aggiornati fra due date",
+        "description": "Ritorna la lista degli atti aggiornati fra due date",
+        "operationId": "ricercaAttiAggiornati",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RicercaAttiAggiornatiItfDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Richiesta elaborata e risultati estratti con successo",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RicercaResponseFrontEnd"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Errore interno del server",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Indirizzo non trovato o non correttamente specificato",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RicercaResponseFrontEnd"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Richiesta non processabile",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RicercaResponseFrontEnd"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Richiesta mal formata / Input non valido",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RicercaResponseFrontEnd"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ricerca-asincrona/nuova-ricerca": {
+      "post": {
+        "tags": [
+          "Ricerca Asincrona"
+        ],
+        "summary": "Imposta una nuova ricerca asincrona",
+        "description": "Imposta una nuova ricerca asincrona",
+        "operationId": "nuovaRicercaAsincrona",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NuovaRicercaAsincronaRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "404": {
+            "description": "Indirizzo non trovato o non correttamente specificato",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Nuova ricerca asincrona accettata con successo",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Errore interno del server",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Richiesta non processabile",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Nuova ricerca asincrona accettata con successo e restituito in risposta il token per controllare stato della ricerca",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Richiesta mal formata / Input non valido",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/atto/dettaglio-atto": {
+      "post": {
+        "tags": [
+          "Atto"
+        ],
+        "summary": "API per dettaglio atto",
+        "description": "Ritorna il dettaglio dell'atto fornito",
+        "operationId": "getDettaglioAtto",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DettaglioAttoRicercaFilterDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "500": {
+            "description": "Errore interno del server",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Richiesta non processabile",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDettaglioAttoResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Risorsa non trovata per la ricerca impostata",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDettaglioAttoResponseDto"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Interrogazione eseguita con successo",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDettaglioAttoResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Richiesta mal formata / Input non valido",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseDettaglioAttoResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tipologiche/estensioni": {
+      "get": {
+        "tags": [
+          "Tipologiche"
+        ],
+        "summary": "API per Tipologie estensioni file",
+        "description": "Ritorna una lista delle estensioni disponibili per l'esportazione dei file",
+        "operationId": "getEstensioni",
+        "responses": {
+          "200": {
+            "description": "Richiesta elaborata e risultati estratti con successo",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TipologicaDto"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Errore interno del server",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Indirizzo non trovato o non correttamente specificato",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TipologicaDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Richiesta mal formata / Input non valido",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TipologicaDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tipologiche/denominazione-atto": {
+      "get": {
+        "tags": [
+          "Tipologiche"
+        ],
+        "summary": "API tipologica denominazione atto",
+        "description": "Ritorna una lista con le denominazioni degli atti disponibili",
+        "operationId": "tipologicaDenominazione",
+        "responses": {
+          "200": {
+            "description": "Richiesta elaborata e risultati estratti con successo",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TipologicaDto"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Errore interno del server",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Indirizzo non trovato o non correttamente specificato",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TipologicaDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Richiesta mal formata / Input non valido",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TipologicaDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tipologiche/classe-provvedimento": {
+      "get": {
+        "tags": [
+          "Tipologiche"
+        ],
+        "summary": "API tipologica classe provvedimento ",
+        "description": "Ritorna una lista con le classi di provvedimento disponibili",
+        "operationId": "tipologicaClasse",
+        "responses": {
+          "200": {
+            "description": "Richiesta elaborata e risultati estratti con successo",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TipologicaDto"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Errore interno del server",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Indirizzo non trovato o non correttamente specificato",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TipologicaDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Richiesta mal formata / Input non valido",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TipologicaDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ricerca/predefinita": {
+      "get": {
+        "tags": [
+          "Ricerca"
+        ],
+        "summary": "API per le ricerche predefinite",
+        "description": "Ritorna una lista di configurazioni per ricerche predefinite",
+        "operationId": "ricercaPredefinita",
+        "responses": {
+          "200": {
+            "description": "Richiesta elaborata e risultati estratti con successo",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RicercaPredefinita"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Errore interno del server",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Indirizzo non trovato o non correttamente specificato",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RicercaPredefinita"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Richiesta non processabile",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RicercaPredefinita"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Richiesta mal formata / Input non valido",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RicercaPredefinita"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ricerca-asincrona/check-status/{token}": {
+      "get": {
+        "tags": [
+          "Ricerca Asincrona"
+        ],
+        "summary": "Controlla stato  richiesta di una ricerca asincrona",
+        "description": "Controlla stato richiesta di una ricerca asincrona",
+        "operationId": "checkStatus",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Risorsa non trovata per la ricerca impostata",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Richiesta non processabile",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Nuova ricerca asincrona confermata con successo. Possibile prolungamento tempi di fornitura URL di download della collezione.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusRicercaAsincronaDTO"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Errore interno del server",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "303": {
+            "description": "Interrogazione eseguita con successo e restituito url per download risultato ricerca",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusRicercaAsincronaDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Richiesta mal formata / Input non valido",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Carico eccessivo. Impossibile prendere in carico la richiesta. URL di collezione predefinita equivalente fornita in uscita.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Interrogazione eseguita con successo",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusRicercaAsincronaDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/collections/download/collection-preconfezionata": {
+      "get": {
+        "tags": [
+          "Collections"
+        ],
+        "summary": "Download dell'archivio di una collezione preconfezionata",
+        "description": "Scarica un file zip contenente gli atti associati a quella collection.",
+        "operationId": "scaricaCollezionePreconfezionata",
+        "parameters": [
+          {
+            "name": "nome",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "formato",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "formatoRichiesta",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Errore interno del server",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Richiesta errata o file non valido",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Richiesta non processabile",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/StreamingResponseBody"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "File scaricato con successo",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/StreamingResponseBody"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Risorsa non trovata per la ricerca impostata",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/StreamingResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/collections/download/collection-asincrona/{token}": {
+      "get": {
+        "tags": [
+          "Collections"
+        ],
+        "summary": "Download dell'archivio di una collezione preconfezionata",
+        "description": "Scarica un file zip contenente gli atti associati a quella collection.",
+        "operationId": "scaricaCollezioneAsincrona",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "description": "Codice della collection che si vuole ottenere",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Errore interno del server",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Richiesta errata o file non valido",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "File scaricato con successo",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/StreamingResponseBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/collections/collection-predefinite": {
+      "get": {
+        "tags": [
+          "Collections"
+        ],
+        "summary": "Estrazione delle Collezioni Predefinite",
+        "description": "Restituisce le nomenclature delle Collezioni Predefinite",
+        "operationId": "ottieniCollezioniPredefinite",
+        "responses": {
+          "200": {
+            "description": "Richiesta elaborata e risultati estratti con successo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CollezionePredefinitaDTO"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Errore interno del server",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Indirizzo non trovato o non correttamente specificato",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CollezionePredefinitaDTO"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Richiesta non processabile",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CollezionePredefinitaDTO"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Richiesta mal formata / Input non valido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CollezionePredefinitaDTO"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ConfermaRicercaAsincronaRequest": {
+        "required": [
+          "token"
+        ],
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "ErrorResponseDto": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "StatusRicercaAsincronaDTO": {
+        "type": "object",
+        "properties": {
+          "stato": {
+            "type": "integer",
+            "description": "Stato della ricerca asincrona. I valori possibili sono: <ul><li><strong>0</strong> - Ricerca da confermare</li><li><strong>1</strong> - Ricerca confermata in attesa di elaborazione</li><li><strong>2</strong> - Ricerca confermata e in elaborazione</li><li><strong>3</strong> - Ricerca elaborata con successo</li><li><strong>4</strong> - Errore durante elaborazione ricerca.</li><li><strong>5</strong> - Carico eccessivo. Impossibile prendere in carico la richiesta. URL di collezione predefinita equivalente fornita in uscita.</li><li><strong>6</strong> - Nuova ricerca asincrona confermata con successo. Possibile prolungamento tempi di fornitura URL di download della collezione.</li></ul>",
+            "format": "int32",
+            "example": 0
+          },
+          "descrizioneStato": {
+            "type": "string",
+            "description": "Descrizione dello stato della ricerca asincrona."
+          },
+          "descrizioneErrore": {
+            "type": "string",
+            "description": "Valorizzato sono per lo stato 4"
+          }
+        },
+        "description": "DTO per rappresentare lo stato di una ricerca asincrona."
+      },
+      "Paginazione": {
+        "type": "object",
+        "properties": {
+          "paginaCorrente": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "numeroElementiPerPagina": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "RicercaSempliceRequest": {
+        "type": "object",
+        "properties": {
+          "testoRicerca": {
+            "type": "string"
+          },
+          "orderType": {
+            "type": "string"
+          },
+          "filtriMap": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "paginazione": {
+            "$ref": "#/components/schemas/Paginazione"
+          },
+          "limitaAnniVigenza": {
+            "type": "boolean"
+          }
+        },
+        "description": "testo ricerca semplice"
+      },
+      "ContentDisposition": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "filename": {
+            "type": "string"
+          },
+          "charset": {
+            "type": "string"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int64",
+            "deprecated": true
+          },
+          "creationDate": {
+            "type": "string",
+            "format": "date-time",
+            "deprecated": true
+          },
+          "modificationDate": {
+            "type": "string",
+            "format": "date-time",
+            "deprecated": true
+          },
+          "readDate": {
+            "type": "string",
+            "format": "date-time",
+            "deprecated": true
+          },
+          "formData": {
+            "type": "boolean"
+          },
+          "attachment": {
+            "type": "boolean"
+          },
+          "inline": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "body": {
+            "$ref": "#/components/schemas/ProblemDetail"
+          },
+          "statusCode": {
+            "$ref": "#/components/schemas/HttpStatusCode"
+          },
+          "detailMessageArguments": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "typeMessageCode": {
+            "type": "string"
+          },
+          "detailMessageCode": {
+            "type": "string"
+          },
+          "titleMessageCode": {
+            "type": "string"
+          },
+          "headers": {
+            "type": "object",
+            "properties": {
+              "contentDisposition": {
+                "$ref": "#/components/schemas/ContentDisposition"
+              },
+              "acceptCharset": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "range": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/HttpRange"
+                }
+              },
+              "location": {
+                "type": "string",
+                "format": "uri"
+              },
+              "allow": {
+                "uniqueItems": true,
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/HttpMethod"
+                }
+              },
+              "host": {
+                "type": "object",
+                "properties": {
+                  "hostString": {
+                    "type": "string"
+                  },
+                  "address": {
+                    "type": "object",
+                    "properties": {
+                      "hostAddress": {
+                        "type": "string"
+                      },
+                      "address": {
+                        "type": "string",
+                        "format": "byte"
+                      },
+                      "hostName": {
+                        "type": "string"
+                      },
+                      "linkLocalAddress": {
+                        "type": "boolean"
+                      },
+                      "multicastAddress": {
+                        "type": "boolean"
+                      },
+                      "anyLocalAddress": {
+                        "type": "boolean"
+                      },
+                      "loopbackAddress": {
+                        "type": "boolean"
+                      },
+                      "siteLocalAddress": {
+                        "type": "boolean"
+                      },
+                      "mcglobal": {
+                        "type": "boolean"
+                      },
+                      "mcnodeLocal": {
+                        "type": "boolean"
+                      },
+                      "mclinkLocal": {
+                        "type": "boolean"
+                      },
+                      "mcsiteLocal": {
+                        "type": "boolean"
+                      },
+                      "mcorgLocal": {
+                        "type": "boolean"
+                      },
+                      "canonicalHostName": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "port": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "unresolved": {
+                    "type": "boolean"
+                  },
+                  "hostName": {
+                    "type": "string"
+                  }
+                }
+              },
+              "cacheControl": {
+                "type": "string"
+              },
+              "contentLanguage": {
+                "type": "object",
+                "properties": {
+                  "language": {
+                    "type": "string"
+                  },
+                  "displayName": {
+                    "type": "string"
+                  },
+                  "country": {
+                    "type": "string"
+                  },
+                  "variant": {
+                    "type": "string"
+                  },
+                  "script": {
+                    "type": "string"
+                  },
+                  "unicodeLocaleAttributes": {
+                    "uniqueItems": true,
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "unicodeLocaleKeys": {
+                    "uniqueItems": true,
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "displayLanguage": {
+                    "type": "string"
+                  },
+                  "displayScript": {
+                    "type": "string"
+                  },
+                  "displayCountry": {
+                    "type": "string"
+                  },
+                  "displayVariant": {
+                    "type": "string"
+                  },
+                  "extensionKeys": {
+                    "uniqueItems": true,
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "iso3Language": {
+                    "type": "string"
+                  },
+                  "iso3Country": {
+                    "type": "string"
+                  }
+                }
+              },
+              "etag": {
+                "type": "string"
+              },
+              "acceptLanguage": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "range": {
+                      "type": "string"
+                    },
+                    "weight": {
+                      "type": "number",
+                      "format": "double"
+                    }
+                  }
+                }
+              },
+              "basicAuth": {
+                "type": "string",
+                "writeOnly": true
+              },
+              "accept": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/MediaType"
+                }
+              },
+              "acceptLanguageAsLocales": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "language": {
+                      "type": "string"
+                    },
+                    "displayName": {
+                      "type": "string"
+                    },
+                    "country": {
+                      "type": "string"
+                    },
+                    "variant": {
+                      "type": "string"
+                    },
+                    "script": {
+                      "type": "string"
+                    },
+                    "unicodeLocaleAttributes": {
+                      "uniqueItems": true,
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "unicodeLocaleKeys": {
+                      "uniqueItems": true,
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "displayLanguage": {
+                      "type": "string"
+                    },
+                    "displayScript": {
+                      "type": "string"
+                    },
+                    "displayCountry": {
+                      "type": "string"
+                    },
+                    "displayVariant": {
+                      "type": "string"
+                    },
+                    "extensionKeys": {
+                      "uniqueItems": true,
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "iso3Language": {
+                      "type": "string"
+                    },
+                    "iso3Country": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "acceptPatch": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/MediaType"
+                }
+              },
+              "accessControlAllowCredentials": {
+                "type": "boolean"
+              },
+              "accessControlAllowHeaders": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "accessControlAllowMethods": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/HttpMethod"
+                }
+              },
+              "accessControlAllowOrigin": {
+                "type": "string"
+              },
+              "accessControlExposeHeaders": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "accessControlMaxAge": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "accessControlRequestHeaders": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "accessControlRequestMethod": {
+                "$ref": "#/components/schemas/HttpMethod"
+              },
+              "bearerAuth": {
+                "type": "string",
+                "writeOnly": true
+              },
+              "connection": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "expires": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "ifMatch": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "ifNoneMatch": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "ifUnmodifiedSince": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "origin": {
+                "type": "string"
+              },
+              "pragma": {
+                "type": "string"
+              },
+              "upgrade": {
+                "type": "string"
+              },
+              "vary": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "ifModifiedSince": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "contentType": {
+                "$ref": "#/components/schemas/MediaType"
+              },
+              "contentLength": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "empty": {
+                "type": "boolean"
+              },
+              "all": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "writeOnly": true
+              },
+              "lastModified": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "date": {
+                "type": "integer",
+                "format": "int64"
+              }
+            },
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "HttpMethod": {
+        "type": "object"
+      },
+      "HttpRange": {
+        "type": "object"
+      },
+      "HttpStatusCode": {
+        "type": "object",
+        "properties": {
+          "is4xxClientError": {
+            "type": "boolean"
+          },
+          "is5xxServerError": {
+            "type": "boolean"
+          },
+          "is1xxInformational": {
+            "type": "boolean"
+          },
+          "is2xxSuccessful": {
+            "type": "boolean"
+          },
+          "is3xxRedirection": {
+            "type": "boolean"
+          },
+          "error": {
+            "type": "boolean"
+          }
+        }
+      },
+      "MediaType": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "subtype": {
+            "type": "string"
+          },
+          "parameters": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "qualityValue": {
+            "type": "number",
+            "format": "double"
+          },
+          "wildcardType": {
+            "type": "boolean"
+          },
+          "wildcardSubtype": {
+            "type": "boolean"
+          },
+          "subtypeSuffix": {
+            "type": "string"
+          },
+          "concrete": {
+            "type": "boolean"
+          },
+          "charset": {
+            "type": "string"
+          }
+        }
+      },
+      "ProblemDetail": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "format": "uri"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "instance": {
+            "type": "string",
+            "format": "uri"
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "FacetItemListDto": {
+        "type": "object",
+        "properties": {
+          "codice": {
+            "type": "string"
+          },
+          "valore": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "descrizione": {
+            "type": "string"
+          }
+        }
+      },
+      "HlArticoloDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "numArticolo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "artProgressivo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "descNumArticolo": {
+            "type": "string"
+          },
+          "versione": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "allegato": {
+            "type": "boolean"
+          },
+          "gruppo": {
+            "type": "string"
+          },
+          "fragments": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "header": {
+            "type": "string"
+          }
+        }
+      },
+      "RicercaResponseAtto": {
+        "type": "object",
+        "properties": {
+          "numeroAtto": {
+            "type": "string"
+          },
+          "numeroAttoAlfanumerico": {
+            "type": "string"
+          },
+          "dataGU": {
+            "type": "string"
+          },
+          "numeroGU": {
+            "type": "string"
+          },
+          "codiceRedazionale": {
+            "type": "string"
+          },
+          "titoloAtto": {
+            "type": "string"
+          },
+          "giornoProvvedimento": {
+            "type": "string"
+          },
+          "meseProvvedimento": {
+            "type": "string"
+          },
+          "meseProvvedimentoIta": {
+            "type": "string"
+          },
+          "meseProvvedimentoEng": {
+            "type": "string"
+          },
+          "annoProvvedimento": {
+            "type": "string"
+          },
+          "numeroProvvedimento": {
+            "type": "string"
+          },
+          "denominazioneAtto": {
+            "type": "string"
+          },
+          "numeroSupplemento": {
+            "type": "string"
+          },
+          "tipoSupplemento": {
+            "type": "string"
+          },
+          "suffissoArticoloSelezionato": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "subArt1ArticoloSelezionato": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hlTitoli": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "hlArticoli": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HlArticoloDto"
+            }
+          },
+          "annoDataGU": {
+            "type": "string"
+          },
+          "dataGUStr": {
+            "type": "string"
+          },
+          "tipoSupplementoIt": {
+            "type": "string"
+          },
+          "tipoSupplementoEn": {
+            "type": "string"
+          },
+          "dataEmanazione": {
+            "type": "string"
+          },
+          "descrizioneAtto": {
+            "type": "string"
+          },
+          "dataUltimaModifica": {
+            "type": "string"
+          },
+          "ultimiAttiModificanti": {
+            "type": "string"
+          }
+        }
+      },
+      "RicercaResponseFrontEnd": {
+        "type": "object",
+        "properties": {
+          "listaAtti": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RicercaResponseAtto"
+            }
+          },
+          "facetMap": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/FacetItemListDto"
+              }
+            }
+          },
+          "numeroPagine": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "numeroAttiTrovati": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "paginaCorrente": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "numeroElementiPerPagina": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "RicercaAvanzataRequestFrontEnd": {
+        "type": "object",
+        "properties": {
+          "denominazioneAtto": {
+            "type": "string"
+          },
+          "filtriMap": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "titoloRicerca": {
+            "type": "string"
+          },
+          "testoRicerca": {
+            "type": "string"
+          },
+          "dataInizioEmanazione": {
+            "type": "string"
+          },
+          "dataFineEmanazione": {
+            "type": "string"
+          },
+          "dataInizioPubProvvedimento": {
+            "type": "string"
+          },
+          "dataFinePubProvvedimento": {
+            "type": "string"
+          },
+          "vigenza": {
+            "type": "string"
+          },
+          "classeProvvedimento": {
+            "type": "string"
+          },
+          "orderType": {
+            "type": "string"
+          },
+          "paginazione": {
+            "$ref": "#/components/schemas/Paginazione"
+          },
+          "limitaAnniVigenza": {
+            "type": "boolean"
+          }
+        },
+        "description": "parametri ricerca avanzata"
+      },
+      "RicercaAttiAggiornatiItfDto": {
+        "type": "object",
+        "properties": {
+          "dataInizioAggiornamento": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dataFineAggiornamento": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "description": "intervallo di aggiornamento"
+      },
+      "NuovaRicercaAsincronaRequest": {
+        "required": [
+          "formato",
+          "parametriRicerca"
+        ],
+        "type": "object",
+        "properties": {
+          "formato": {
+            "type": "string"
+          },
+          "richiestaExport": {
+            "type": "string",
+            "description": "Richiesta export (O per ORIGINARIO, M per MULTIVIGENTE, V per vigente)",
+            "example": "O",
+            "enum": [
+              "O",
+              "V",
+              "M"
+            ]
+          },
+          "modalita": {
+            "type": "string",
+            "description": "Modalita (C per CLASSICA, R per RESPONSIVE)",
+            "example": "C",
+            "enum": [
+              "C",
+              "R"
+            ]
+          },
+          "email": {
+            "type": "string"
+          },
+          "parametriRicerca": {
+            "$ref": "#/components/schemas/RicercaAvanzataFilterDto"
+          },
+          "tipoRicerca": {
+            "type": "string"
+          }
+        }
+      },
+      "RicercaAvanzataFilterDto": {
+        "type": "object",
+        "properties": {
+          "denominazioneAtto": {
+            "type": "string"
+          },
+          "numeroProvvedimento": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "annoProvvedimento": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "meseProvvedimento": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "giornoProvvedimento": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "numeroArticolo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "filtriMap": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "titoloContainsType": {
+            "type": "string",
+            "enum": [
+              "ALL_WORDS",
+              "SOME_WORDS",
+              "ENTIRE_STRING",
+              "NEITHER_WORDS"
+            ]
+          },
+          "titoloRicerca": {
+            "type": "string"
+          },
+          "titoloNot": {
+            "type": "string"
+          },
+          "testoContainsType": {
+            "type": "string",
+            "enum": [
+              "ALL_WORDS",
+              "SOME_WORDS",
+              "ENTIRE_STRING",
+              "NEITHER_WORDS"
+            ]
+          },
+          "testoRicerca": {
+            "type": "string"
+          },
+          "testoNot": {
+            "type": "string"
+          },
+          "dataInizioPubblicazione": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dataFinePubblicazione": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dataVigenza": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dataInizioEmanazione": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dataFineEmanazione": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "classeProvvedimento": {
+            "type": "string"
+          },
+          "orderType": {
+            "type": "string"
+          },
+          "limitaAnniVigenza": {
+            "type": "boolean"
+          }
+        }
+      },
+      "DettaglioAttoRicercaFilterDto": {
+        "type": "object",
+        "properties": {
+          "dataGU": {
+            "type": "string"
+          },
+          "codiceRedazionale": {
+            "type": "string"
+          },
+          "idArticolo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sottoArticolo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sottoArticolo1": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "flagTipoArticolo": {
+            "type": "string"
+          },
+          "idGruppo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "progressivo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "versione": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dataVigenza": {
+            "type": "string"
+          },
+          "tipoDettaglio": {
+            "type": "string"
+          }
+        },
+        "description": "atto richiesto di cui si vuole conoscere il dettaglio"
+      },
+      "AttoDto": {
+        "type": "object",
+        "properties": {
+          "titolo": {
+            "type": "string"
+          },
+          "sottoTitolo": {
+            "type": "string"
+          },
+          "dataPubblicazioneGazzetta": {
+            "type": "string"
+          },
+          "articoloHtml": {
+            "type": "string"
+          },
+          "tipoProvvedimentoDescrizione": {
+            "type": "string"
+          },
+          "tipoProvvedimentoCodice": {
+            "type": "string"
+          },
+          "annoProvvedimento": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "meseProvvedimento": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "giornoProvvedimento": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "numeroProvvedimento": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tipoSupplementoCode": {
+            "type": "string"
+          },
+          "numeroSupplemento": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "annoGU": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "meseGU": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "giornoGU": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "numeroGU": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dataPubblicazioneInGazzetta": {
+            "type": "string"
+          },
+          "articoloDataInizioVigenza": {
+            "type": "string"
+          },
+          "articoloDataFineVigenza": {
+            "type": "string"
+          },
+          "testoInVigore": {
+            "type": "string"
+          }
+        }
+      },
+      "DettaglioAttoResponseDto": {
+        "type": "object",
+        "properties": {
+          "atto": {
+            "$ref": "#/components/schemas/AttoDto"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "ResponseDettaglioAttoResponseDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/DettaglioAttoResponseDto"
+          },
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "TipologicaDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "RicercaPredefinita": {
+        "type": "object",
+        "properties": {
+          "ricerchePredefinite": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RicercaPredefinitaDTO"
+            }
+          }
+        }
+      },
+      "RicercaPredefinitaDTO": {
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string"
+          },
+          "dettagli": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RicercaPredefinitaDettaglioDTO"
+            }
+          },
+          "dataCreazione": {
+            "type": "string"
+          }
+        }
+      },
+      "RicercaPredefinitaDettaglioDTO": {
+        "type": "object",
+        "properties": {
+          "nomeCampo": {
+            "type": "string"
+          },
+          "valoreCampo": {
+            "type": "string"
+          }
+        }
+      },
+      "StreamingResponseBody": {
+        "type": "object"
+      },
+      "CollezionePredefinitaDTO": {
+        "type": "object",
+        "properties": {
+          "nomeCollezione": {
+            "type": "string"
+          },
+          "formatoCollezione": {
+            "type": "string"
+          },
+          "descrizioneFormatoCollezione": {
+            "type": "string"
+          },
+          "dataCreazione": {
+            "type": "string"
+          },
+          "numeroAtti": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    }
+  }
+}
