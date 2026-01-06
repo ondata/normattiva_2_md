@@ -35,10 +35,10 @@ Convertire le norme legali da XML Akoma Ntoso a Markdown offre vantaggi signific
 - ✅ **Supporto per le modifiche legislative** con evidenziazione `((modifiche))`
 - ✅ **Gerarchia book-style intelligente** con parsing strutturato (H1→H2→H3→H4)
 - ✅ **Front matter YAML** con metadati completi (URL, dataGU, codiceRedaz, dataVigenza, article)
-- ✅ **Machine-to-machine ready** per LLM, RAG e parsing automatico
+- ✅ **Machine-to-machine ready** per LLM, RAG e parsing automatici
 - ✅ **CLI flessibile** con argomenti posizionali e nominati
 - ✅ **Gestione errori robusta** con messaggi informativi
-- ✅ **Nessuna dipendenza esterna** per conversione XML→Markdown (solo librerie standard Python)
+- ✅ **Dipendenze minime**: requests (URL fetch), rich (output terminalizzato)
 - ✅ **Ricerca in linguaggio naturale** richiede [Exa AI API](https://exa.ai) per l'integrazione AI
 - ✅ **Modalità debug interattiva** (v2.0.16+) con download guidato e nomi file intelligenti
 
@@ -99,7 +99,10 @@ normattiva2md -s "legge stanca accessibilità" --exa-api-key "your-exa-api-key" 
 ```bash
 git clone https://github.com/ondata/normattiva_2_md.git
 cd normattiva_2_md
-pip install -e .
+python3 -m venv .venv
+source .venv/bin/activate  # Linux/macOS
+# .venv\Scripts\activate  # Windows
+pip3 install -e .
 normattiva2md input.xml output.md
 ```
 
@@ -108,8 +111,7 @@ normattiva2md input.xml output.md
 ```bash
 git clone https://github.com/ondata/normattiva_2_md.git
 cd normattiva_2_md
-pip install -e .
-normattiva2md input.xml output.md
+python3 __main__.py input.xml output.md
 ```
 
 
@@ -523,8 +525,9 @@ dataVigenza: 20251101
 ### Requisiti
 
 - Python 3.7+
-- Nessuna dipendenza esterna per conversione XML→Markdown (solo librerie standard Python)
-- [Exa AI API](https://exa.ai) per funzionalità di ricerca in linguaggio naturale
+- requests>=2.25.0 (URL fetch)
+- rich>=13.0.0,<14.0.0 (output terminalizzato)
+- [Exa AI API](https://exa.ai) per funzionalità di ricerca in linguaggio naturale (opzionale)
 
 ### Configurazione dell'ambiente di sviluppo
 
@@ -542,7 +545,7 @@ Per creare un eseguibile autonomo per uso locale:
 
 ```bash
 pip install pyinstaller
-pyinstaller --onefile --name normattiva2md __main__.py
+python3 -m PyInstaller --onefile --name normattiva2md __main__.py
 # L'eseguibile sarà in dist/normattiva2md
 ```
 
