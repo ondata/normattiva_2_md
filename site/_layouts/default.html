@@ -7,6 +7,8 @@
 
     <title>{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}</title>
     <meta name="description" content="{{ site.description }}">
+    <meta name="keywords" content="normattiva, markdown, AI, LLM, leggi italiane, conversione XML, Akoma Ntoso, normativa italiana, RAG, chatbot legale, API normattiva">
+    <link rel="canonical" href="{{ site.url }}{{ site.baseurl }}{{ page.url }}">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
@@ -24,6 +26,37 @@
     <meta name="twitter:title" content="{% if page.title %}{{ page.title }} | {% endif %}{{ site.title }}">
     <meta name="twitter:description" content="{{ site.description }}">
     <meta name="twitter:image" content="{{ site.url }}{{ site.baseurl }}/assets/og-image.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ site.baseurl }}/assets/favicon.svg">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "normattiva2md",
+      "description": "{{ site.description }}",
+      "url": "{{ site.url }}{{ site.baseurl }}/",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Linux, macOS, Windows",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "onData",
+        "url": "https://www.ondata.it"
+      },
+      "softwareVersion": "2.0.21",
+      "programmingLanguage": "Python",
+      "codeRepository": "https://github.com/ondata/normattiva_2_md",
+      "license": "https://opensource.org/licenses/MIT",
+      "keywords": "normattiva, markdown, AI, LLM, leggi italiane, conversione XML, Akoma Ntoso"
+    }
+    </script>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
