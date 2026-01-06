@@ -138,9 +138,7 @@ normattiva2md "https://normattiva.it/..." output.md</code></pre>
                 <p class="text-gray-600 mb-4">
                     Security features, CI/CD con GitHub Actions, binary precompilati. Testato e documentato.
                 </p>
-                <div class="text-sm text-gray-500">
-                    v2.0.18 - Stable release
-                </div>
+                
             </div>
         </div>
     </div>
