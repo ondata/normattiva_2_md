@@ -35,28 +35,33 @@ normattiva2md test_data/20050516_005G0104_VIGENZA_20250130.xml test.md
 
 ## Dependencies
 
-**Core**: no external deps (standard library only)
+**Core** (from setup.py):
+- `requests>=2.25.0`: URL fetching
+- `rich>=13.0.0,<14.0.0`: Terminal formatting
 
 **Optional**:
-- `requests`: URL fetching
 - `exa_py`: natural language search (requires API key)
 
 ## Project Structure
 
 ```
 normattiva_2_md/
-├── __main__.py             # Entrypoint (imports src.normattiva2md.cli)
+├── __main__.py                    # Entrypoint
 ├── src/normattiva2md/
-│   ├── cli.py              # Main CLI (argparse)
-│   ├── api.py              # Normattiva API client
-│   ├── xml_parser.py       # XML to structured data
-│   ├── markdown_converter.py # Converter logic
-│   ├── models.py           # Data models
-│   └── ...                 # Other modules
-├── setup.py                # PyPI config
-├── .venv/                  # Virtual environment (gitignored)
-├── test_data/              # Sample XML files
-└── tests/                  # Test suite
+│   ├── cli.py                    # Main CLI
+│   ├── api.py                    # Normattiva API
+│   ├── xml_parser.py             # XML parser
+│   ├── markdown_converter.py     # Converter
+│   ├── models.py                 # Data models
+│   ├── akoma_utils.py            # Akoma Ntoso utilities
+│   ├── normattiva_api.py         # Legacy API
+│   ├── provvedimenti_api.py      # Provvedimenti API
+│   ├── exa_api.py                # Exa search API
+│   └── ...                       # Altri moduli
+├── setup.py                      # PyPI config
+├── pyproject.toml                # Modern Python config
+├── test_data/                    # Sample XML files
+└── tests/                        # Test suite
 ```
 
 ## Testing
@@ -124,7 +129,7 @@ source .venv/bin/activate  # Linux/macOS
 
 # Then build
 pip3 install pyinstaller
-pyinstaller --onefile --name normattiva2md __main__.py
+python3 -m PyInstaller --onefile --name normattiva2md __main__.py
 # Output: dist/normattiva2md
 ```
 
