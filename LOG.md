@@ -2,6 +2,15 @@
 
 Questo file documenta gli avanzamenti significativi e le decisioni chiave del progetto `normattiva_2_md`.
 
+## 2026-01-06
+
+### Pre-lancio newsletter: Aggiornamento documentazione sviluppo
+
+- **DEVELOPMENT.md**: Aggiornata struttura progetto da `convert_akomantoso.py` (obsoleto) a `__main__.py` + `src/normattiva2md/`
+- **Workaround cross-device link**: Aggiunta soluzione `TMPDIR=$PWD/tmp pip install -e .` per WSL/Linux con `/tmp` su filesystem diverso
+- **EXA_API_KEY**: Documentati warning test opzionali e come configurare API key
+- Progetto pronto per lancio pubblico via newsletter
+
 ## 2026-01-02
 
 ### Fix CI Test Failures + Documentation

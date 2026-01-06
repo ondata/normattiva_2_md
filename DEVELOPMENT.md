@@ -25,6 +25,10 @@ source .venv/bin/activate
 # Install editable
 pip3 install -e .
 
+# On WSL/Linux, if you get "Invalid cross-device link" error:
+# (This happens when /tmp is on a different filesystem)
+TMPDIR=$PWD/tmp pip3 install -e .
+
 # Test
 normattiva2md test_data/20050516_005G0104_VIGENZA_20250130.xml test.md
 ```
@@ -41,12 +45,18 @@ normattiva2md test_data/20050516_005G0104_VIGENZA_20250130.xml test.md
 
 ```
 normattiva_2_md/
-├── convert_akomantoso.py   # Main CLI tool
-├── fetch_normattiva.py     # Alternative fetcher (tulit-based)
-├── provvedimenti_api.py    # Provvedimenti export
+├── __main__.py             # Entrypoint (imports src.normattiva2md.cli)
+├── src/normattiva2md/
+│   ├── cli.py              # Main CLI (argparse)
+│   ├── api.py              # Normattiva API client
+│   ├── xml_parser.py       # XML to structured data
+│   ├── markdown_converter.py # Converter logic
+│   ├── models.py           # Data models
+│   └── ...                 # Other modules
 ├── setup.py                # PyPI config
 ├── .venv/                  # Virtual environment (gitignored)
-└── test_data/              # Sample XML files
+├── test_data/              # Sample XML files
+└── tests/                  # Test suite
 ```
 
 ## Testing
@@ -64,6 +74,13 @@ make test
 ```
 
 **Always activate venv before testing, building, or running any development command.**
+
+**Note**: Tests may show warnings for missing `EXA_API_KEY` environment variable. To suppress:
+```bash
+export EXA_API_KEY=your_key_here
+make test
+```
+(Or skip EXA tests entirely if you don't have API access.)
 
 ### Alternative: unittest (no extra deps)
 
