@@ -1,6 +1,7 @@
 # Ignora la directory di build di PyInstaller
 build/
 dist/
+*.spec
 
 # File Python compilati
 *.pyc
