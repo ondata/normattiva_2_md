@@ -315,7 +315,9 @@ Prima di utilizzare questa funzionalità, assicurati di aver configurato l'[API 
 
 ```bash
 # Ricerca automatica (seleziona automaticamente il miglior risultato)
+# Usa --auto-select per evitare i prompt interattivi e usare il primo risultato suggerito.
 normattiva2md -s "legge stanca accessibilità" output.md
+normattiva2md -s "codice amministrazione digitale" --auto-select > cad.md
 normattiva2md --search "decreto dignità" --exa-api-key "your-key" > decreto.md
 
 # Output su stdout
