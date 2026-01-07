@@ -92,12 +92,18 @@ When using normattiva2md:
 
 ## Dependencies
 
-normattiva2md has minimal dependencies to reduce attack surface:
+normattiva2md keeps runtime dependencies minimal to reduce attack surface, but they
+now include:
 
 - `requests>=2.25.0` - HTTP library with security features
+- `rich>=13.0.0,<14.0.0` - CLI output formatting
 - Python 3.7+ standard library
 
-No external XML parsing libraries are used (uses standard library `xml.etree.ElementTree`).
+No external XML parsing libraries are used (the standard library
+`xml.etree.ElementTree` is used).
+
+Build-time dependencies are limited to packaging tooling (for example
+`setuptools` and `wheel`) as declared in `pyproject.toml`.
 
 ## Acknowledgments
 
