@@ -23,6 +23,10 @@ Quest'analisi è stata realizzata con il supporto del tool [normattiva2md](https
 
 ## 📝 Cronologia aggiornamenti
 
+**2026-01-07**
+
+- Aggiunti 3 reati previsti dalla [Direttiva UE 2024/1385](#nota-contesto-europeo-e-opportunità-per-litalia) (stalking online, molestie online, istigazione alla violenza/odio online) per anticipare il recepimento normativo
+
 **2025-12-26**
 
 - Aggiunto riferimento alla [Legge 181/2025 sul femminicidio](#supporto-normativo-aggiuntivo-la-legge-1812025)
