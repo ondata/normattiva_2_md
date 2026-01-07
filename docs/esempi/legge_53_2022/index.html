@@ -17,7 +17,7 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 page*/
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
 </style>
@@ -50,7 +50,7 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
   <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Indice</h2>
-
+   
   <ul>
   <li><a href="#cronologia-aggiornamenti" id="toc-cronologia-aggiornamenti" class="nav-link active" data-scroll-target="#cronologia-aggiornamenti">📝 Cronologia aggiornamenti</a></li>
   <li><a href="#introduzione" id="toc-introduzione" class="nav-link" data-scroll-target="#introduzione">Introduzione</a></li>
@@ -92,11 +92,11 @@ ul.task-list li input[type="checkbox"] {
 
 <div class="quarto-title-meta">
 
-
-
-
+    
+  
+    
   </div>
-
+  
 
 
 </header>
@@ -871,8 +871,44 @@ Nota
 <td>Tratta di persone</td>
 <td>Art. 601 CP</td>
 </tr>
+<tr class="odd">
+<td>ee</td>
+<td>Stalking online</td>
+<td>Art. 7 Direttiva UE 2024/1385</td>
+</tr>
+<tr class="even">
+<td>ff</td>
+<td>Molestie online</td>
+<td>Art. 8 Direttiva UE 2024/1385</td>
+</tr>
+<tr class="odd">
+<td>gg</td>
+<td>Istigazione alla violenza o all’odio online</td>
+<td>Art. 9 Direttiva UE 2024/1385</td>
+</tr>
 </tbody>
 </table>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Reati aggiuntivi non previsti dalla L. 53/2022
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>I reati con codici <strong>ee</strong>, <strong>ff</strong> e <strong>gg</strong> (stalking online, molestie online e istigazione alla violenza/odio online) <strong>non sono attualmente previsti dall’Art. 5, comma 3 della Legge 53/2022</strong>, ma derivano dalla <a href="https://eur-lex.europa.eu/legal-content/IT/TXT/?uri=CELEX:32024L1385"><strong>Direttiva UE 2024/1385</strong></a> (articoli 7, 8 e 9) che l’Italia dovrà recepire entro il <strong>14 giugno 2027</strong>.</p>
+<p>Sono stati inclusi in questa proposta per:</p>
+<ol type="1">
+<li><strong>Anticipare l’attuazione</strong> della normativa europea in arrivo</li>
+<li><strong>Completare il quadro</strong> dei reati digitali, sempre più rilevanti</li>
+<li><strong>Garantire continuità</strong> nel monitoraggio senza dover ristrutturare lo schema in futuro</li>
+<li><strong>Fornire dati comparabili</strong> a livello europeo sin da subito</li>
+</ol>
+<p>Si raccomanda quindi di prevedere fin da ora la raccolta di questi dati, in attesa del formale recepimento della direttiva.</p>
+</div>
+</div>
 <hr>
 </section>
 <section id="tipologia-di-arma" class="level3">
@@ -1074,7 +1110,7 @@ Nota
     anchorJS.add('.anchored');
     const isCodeAnnotation = (el) => {
       for (const clz of el.classList) {
-        if (clz.startsWith('code-annotation-')) {
+        if (clz.startsWith('code-annotation-')) {                     
           return true;
         }
       }
@@ -1094,11 +1130,11 @@ Nota
         button.setAttribute("data-bs-toggle", "tooltip");
         button.setAttribute("data-bs-placement", "left");
         button.setAttribute("data-bs-title", "Copiato!");
-        tooltip = new bootstrap.Tooltip(button,
-          { trigger: "manual",
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
             customClass: "code-copy-button-tooltip",
             offset: [0, -8]});
-        tooltip.show();
+        tooltip.show();    
       }
       setTimeout(function() {
         if (tooltip) {
@@ -1179,7 +1215,7 @@ Nota
       if (onUntriggerFn) {
         config.onUntrigger = onUntriggerFn;
       }
-      window.tippy(el, config);
+      window.tippy(el, config); 
     }
     const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
     for (var i=0; i<noterefs.length; i++) {
@@ -1254,7 +1290,7 @@ Nota
       tippyHover(xref, undefined, function(instance) {
         instance.disable();
         let url = xref.getAttribute('href');
-        let hash = undefined;
+        let hash = undefined; 
         if (url.startsWith('#')) {
           hash = url;
         } else {
@@ -1282,7 +1318,7 @@ Nota
               if (note !== null) {
                 const html = processXRef(id, note);
                 instance.setContent(html);
-              }
+              } 
             }).finally(() => {
               instance.enable();
               instance.show();
@@ -1306,7 +1342,7 @@ Nota
               }
               const html = processXRef(null, note);
               instance.setContent(html);
-            }
+            } 
           }).finally(() => {
             instance.enable();
             instance.show();
@@ -1346,7 +1382,7 @@ Nota
               height = bottom - top;
             }
             if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it
+              // cook up a div (if necessary) and position it 
               let div = window.document.getElementById("code-annotation-line-highlight");
               if (div === null) {
                 div = window.document.createElement("div");
