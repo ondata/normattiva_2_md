@@ -25,7 +25,7 @@ title: Converti leggi italiane in Markdown AI-ready
                         Vedi su GitHub
                     </span>
                 </a>
-                <a href="https://deepwiki.com/ondata/normattiva_2_md" target="_blank" class="bg-blue-500 bg-opacity-30 backdrop-blur-sm border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-opacity-40 transition">
+                <a href="https://deepwiki.com/ondata/normattiva_2_md" target="_blank" class="bg-purple-500 bg-opacity-30 backdrop-blur-sm border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-opacity-40 transition">
                     <span class="flex items-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
