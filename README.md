@@ -3,7 +3,7 @@
 [![Versione PyPI](https://img.shields.io/pypi/v/normattiva2md.svg)](https://pypi.org/project/normattiva2md/)
 [![Versione Python](https://img.shields.io/badge/python-3.7+-blue.svg)](https://python.org)
 [![Licenza](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![DeepWiki](https://img.shields.io/badge/deepwiki-ondata%2Fnormattiva__2__md-blue.svg)](https://deepwiki.com/ondata/normattiva_2_md)
+[![deepwiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/ondata/normattiva_2_md)
 
 **Normattiva2MD** è uno strumento da riga di comando progettato per convertire documenti XML in formato **Akoma Ntoso** (in particolare le norme pubblicate su `normattiva.it`) in documenti **Markdown** leggibili e ben formattati. L'obiettivo principale è offrire un formato compatto e immediatamente riutilizzabile quando le norme devono essere fornite come contesto a un **Large Language Model (LLM)** o elaborate in pipeline di Intelligenza Artificiale.
 
