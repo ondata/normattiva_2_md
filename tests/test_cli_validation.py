@@ -3,18 +3,18 @@ from unittest.mock import patch, MagicMock, mock_open
 import argparse
 import os
 
-from src.normattiva2md.cli import main
+from normattiva2md.cli import main
 
 class TestCLIValidation(unittest.TestCase):
 
-    @patch('src.normattiva2md.cli.argparse.ArgumentParser.parse_args')
-    @patch('src.normattiva2md.cli.convert_akomantoso_to_markdown_improved')
-    @patch('src.normattiva2md.cli.MarkdownValidator')
-    @patch('src.normattiva2md.cli.StructureComparer')
-    @patch('src.normattiva2md.cli.download_akoma_ntoso')
-    @patch('src.normattiva2md.cli.ET.parse')
+    @patch('normattiva2md.cli.argparse.ArgumentParser.parse_args')
+    @patch('normattiva2md.cli.convert_akomantoso_to_markdown_improved')
+    @patch('normattiva2md.cli.MarkdownValidator')
+    @patch('normattiva2md.cli.StructureComparer')
+    @patch('normattiva2md.cli.download_akoma_ntoso')
+    @patch('normattiva2md.cli.ET.parse')
     @patch('os.path.exists')
-    @patch('src.normattiva2md.cli.open', new_callable=mock_open, read_data="# MD Content")
+    @patch('normattiva2md.cli.open', new_callable=mock_open, read_data="# MD Content")
     def test_validate_flag_triggers_validation(self, mock_cli_open, mock_exists, mock_et_parse, mock_download, mock_comparer, mock_validator, mock_convert, mock_parse):
         # Setup mocks
         mock_args = argparse.Namespace(

@@ -45,3 +45,44 @@ normattiva2md = "normattiva2md.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"] # Scansiona pacchetti in src/
+
+# Configurazione pytest
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "-ra",
+]
+
+# Configurazione coverage
+[tool.coverage.run]
+source = ["src/normattiva2md"]
+branch = true
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/__pycache__/*",
+    "*/venv/*",
+    "*/.venv/*",
+]
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "@abstractmethod",
+]
+
+[tool.coverage.html]
+directory = "htmlcov"

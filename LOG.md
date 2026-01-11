@@ -2,6 +2,32 @@
 
 Questo file documenta gli avanzamenti significativi e le decisioni chiave del progetto `normattiva_2_md`.
 
+## 2026-01-11
+
+### Coverage Reporting Implementation
+
+- Configurato pytest-cov per reporting coverage
+- **Coverage attuale: 40%** (1763 statements, 703 coperti)
+- Moduli eccellenti (≥90%): validation.py (95%), exceptions.py (100%), constants.py (100%)
+- Moduli critici con basso coverage: api.py (14%), cli.py (21%), normattiva_api.py (32%), xml_parser.py (47%)
+- Aggiunta configurazione in `pyproject.toml` per pytest e coverage.py
+- Documentazione coverage in `DEVELOPMENT.md` con comandi quick-start
+- Analisi dettagliata gap in `tmp/coverage_analysis.md`
+- Report HTML interattivo generato in `htmlcov/`
+- Target prossimo sprint: 60-70% coverage
+- .gitignore già configurato per htmlcov/ e .coverage
+- **Aggiornato** `docs/evaluation-v2.1.5.md` con sezione update e raccomandazione #1 completata
+
+### Project Evaluation v2.1.5
+
+- Valutazione completa codebase senza consultare valutazioni precedenti
+- Analisi strutturata: architettura, qualità codice, test, documentazione, sicurezza, performance
+- Creato `docs/evaluation-v2.1.5.md` con assessment dettagliato
+- Overall Grade: A- (89/100)
+- Punti di forza: architettura pulita, documentazione eccellente, production-ready
+- Aree miglioramento: test coverage, complessità codice, tooling (linting/mypy)
+- Research notes persistite in `tmp/research_notes.md` con ipotesi competitive e livelli di confidenza
+
 ## 2026-01-06
 
 ### Pre-lancio newsletter: Aggiornamento documentazione sviluppo

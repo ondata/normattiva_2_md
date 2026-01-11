@@ -102,6 +102,54 @@ pip3 install pytest
 python3 -m pytest tests/ -v
 ```
 
+### Coverage Testing
+
+**Current coverage: 40%** (Target: 70%+)
+
+Run tests with coverage reporting:
+
+```bash
+source .venv/bin/activate
+
+# Install coverage tools (one-time)
+pip3 install pytest pytest-cov
+
+# Run tests with coverage
+pytest --cov=src/normattiva2md --cov-report=term-missing --cov-report=html tests/
+
+# View HTML report
+open htmlcov/index.html  # macOS
+xdg-open htmlcov/index.html  # Linux
+start htmlcov/index.html  # Windows
+```
+
+**Coverage reports:**
+- Terminal: Shows line-by-line missing coverage
+- HTML: `htmlcov/index.html` - Interactive browsable report
+
+**Coverage config** is in `pyproject.toml`:
+- Source: `src/normattiva2md/`
+- Branch coverage enabled
+- Excludes: tests, venv, __pycache__
+
+**Quick commands:**
+```bash
+# Just show coverage percentage
+pytest --cov=src/normattiva2md tests/ -q
+
+# Only show files with <100% coverage
+pytest --cov=src/normattiva2md --cov-report=term:skip-covered tests/
+
+# Generate coverage badge data
+pytest --cov=src/normattiva2md --cov-report=json tests/
+```
+
+**Improving coverage:**
+1. Check `htmlcov/index.html` for red/yellow lines
+2. Add tests for uncovered code paths
+3. Focus on high-impact modules first (api.py, xml_parser.py, normattiva_api.py)
+4. See `tmp/coverage_analysis.md` for detailed gap analysis
+
 ### Manual testing
 
 ```bash

@@ -1,6 +1,6 @@
 import unittest
 import textwrap
-from src.normattiva2md.validation import MarkdownValidator, ReportGenerator
+from normattiva2md.validation import MarkdownValidator, ReportGenerator
 
 class TestMarkdownValidator(unittest.TestCase):
     def setUp(self):

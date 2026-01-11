@@ -1,6 +1,6 @@
 import unittest
 import xml.etree.ElementTree as ET
-from src.normattiva2md.validation import StructureComparer
+from normattiva2md.validation import StructureComparer
 
 class TestStructureComparer(unittest.TestCase):
     def setUp(self):
