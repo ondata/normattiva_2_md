@@ -77,3 +77,4 @@ tasks/proposta_schema_dati/*
 !tasks/proposta_schema_dati/_quarto.yml
 
 /.luarc.json
+tmp.*
