@@ -37,10 +37,15 @@ from .normattiva_api import (
     download_akoma_ntoso,
     extract_params_from_normattiva_url,
     is_normattiva_url,
+    normalize_normattiva_url,
     validate_normattiva_url,
 )
 from .utils import load_env_file
-from .xml_parser import construct_article_eid, extract_metadata_from_xml, filter_xml_to_article
+from .xml_parser import (
+    construct_article_eid,
+    extract_metadata_from_xml,
+    filter_xml_to_article,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -81,22 +86,24 @@ def convert_url(
     # Load .env file for API keys
     load_env_file()
 
+    normalized_url = normalize_normattiva_url(url)
+
     # Validate URL
     try:
-        validate_normattiva_url(url)
+        validate_normattiva_url(normalized_url)
     except ValueError as e:
         raise InvalidURLError(
-            f"URL non valido: {e}. "
-            f"L'URL deve essere HTTPS e dominio normattiva.it"
+            f"URL non valido: {e}. L'URL deve essere HTTPS e dominio normattiva.it"
         )
 
     if not quiet:
-        logger.info(f"Conversione URL: {url}")
+        logger.info(f"Conversione URL: {normalized_url}")
 
     # Extract parameters from URL
-    params, session = extract_params_from_normattiva_url(url, quiet=quiet)
+    params, session = extract_params_from_normattiva_url(normalized_url, quiet=quiet)
+
     if not params:
-        logger.warning(f"Impossibile estrarre parametri da {url}")
+        logger.warning(f"Impossibile estrarre parametri da {normalized_url}")
         return None
 
     # Download XML to temp file
@@ -114,7 +121,7 @@ def convert_url(
             "dataGU": params["dataGU"],
             "codiceRedaz": params["codiceRedaz"],
             "dataVigenza": params["dataVigenza"],
-            "url": url,
+            "url": normalized_url,
             "url_xml": f"https://www.normattiva.it/do/atto/caricaAKN?dataGU={params['dataGU']}&codiceRedaz={params['codiceRedaz']}&dataVigenza={params['dataVigenza']}",
         }
 
@@ -132,7 +139,7 @@ def convert_url(
         )
 
         if result:
-            result.url = url
+            result.url = normalized_url
             result.url_xml = metadata["url_xml"]
 
         return result
@@ -182,8 +189,7 @@ def convert_xml(
     # Check file exists
     if not os.path.exists(xml_path):
         raise XMLFileNotFoundError(
-            f"File XML non trovato: '{xml_path}'. "
-            f"Verifica che il path sia corretto."
+            f"File XML non trovato: '{xml_path}'. Verifica che il path sia corretto."
         )
 
     if not quiet:
@@ -352,7 +358,9 @@ def search_law(
             )
 
         if response.status_code != 200:
-            logger.warning(f"Errore Exa API (HTTP {response.status_code}): {response.text}")
+            logger.warning(
+                f"Errore Exa API (HTTP {response.status_code}): {response.text}"
+            )
             return []
 
         data = response.json()
@@ -373,7 +381,9 @@ def search_law(
             query_lower,
             re.IGNORECASE,
         )
-        requested_article = article_match.group(1).replace(" ", "") if article_match else None
+        requested_article = (
+            article_match.group(1).replace(" ", "") if article_match else None
+        )
 
         for result in raw_results:
             result_url = result.get("url")

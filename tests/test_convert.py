@@ -19,6 +19,7 @@ from normattiva2md.normattiva_api import (
     validate_normattiva_url,
     is_normattiva_url,
     extract_params_from_normattiva_url,
+    normalize_normattiva_url,
 )
 from normattiva2md.utils import sanitize_output_path
 from normattiva2md.exa_api import lookup_normattiva_url
@@ -239,6 +240,14 @@ class SecurityTests(unittest.TestCase):
             with self.subTest(url=url):
                 # Should not raise exception
                 self.assertTrue(validate_normattiva_url(url))
+
+    def test_normalize_normattiva_url_removes_backslashes(self):
+        """Test that escaped URLs are normalized"""
+        escaped_url = "https://www.normattiva.it/uri-res/N2Ls\\?urn:nir:stato:legge:2005-03-10\\;33\\!vig\\=2026-01-12"
+        expected_url = "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2005-03-10;33!vig=2026-01-12"
+        self.assertEqual(normalize_normattiva_url(escaped_url), expected_url)
+        self.assertTrue(validate_normattiva_url(escaped_url))
+        self.assertTrue(is_normattiva_url(escaped_url))
 
     def test_validate_normattiva_url_rejects_http(self):
         """Test that HTTP (non-HTTPS) URLs are rejected"""

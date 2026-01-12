@@ -1,10 +1,35 @@
+import os
 import re
 import sys
-from urllib.parse import urlparse
-from .constants import ALLOWED_DOMAINS, DEFAULT_TIMEOUT, VERSION, MAX_FILE_SIZE_BYTES, MAX_FILE_SIZE_MB
-import requests
-import os
 from datetime import datetime
+from urllib.parse import urlparse
+
+import requests
+
+from .constants import (
+    ALLOWED_DOMAINS,
+    DEFAULT_TIMEOUT,
+    VERSION,
+    MAX_FILE_SIZE_BYTES,
+    MAX_FILE_SIZE_MB,
+)
+
+
+def normalize_normattiva_url(url):
+    """
+    Normalizza URL normattiva.it rimuovendo escape backslash.
+
+    Args:
+        url: URL string
+
+    Returns:
+        str: URL normalizzato
+    """
+    if not isinstance(url, str):
+        return url
+
+    return url.replace("\\", "")
+
 
 def validate_normattiva_url(url):
     """
@@ -20,6 +45,7 @@ def validate_normattiva_url(url):
         ValueError: If URL is invalid or not from allowed domain
     """
     try:
+        url = normalize_normattiva_url(url)
         parsed = urlparse(url)
 
         # Check scheme is HTTPS
@@ -39,6 +65,7 @@ def validate_normattiva_url(url):
     except Exception as e:
         raise ValueError(f"URL non valido: {e}")
 
+
 def is_normattiva_url(input_str):
     """
     Verifica se l'input è un URL di normattiva.it
@@ -52,16 +79,19 @@ def is_normattiva_url(input_str):
     if not isinstance(input_str, str):
         return False
 
+    normalized = normalize_normattiva_url(input_str)
+
     # Check if it looks like a URL
-    if not re.match(r"https?://(www\.)?normattiva\.it/", input_str, re.IGNORECASE):
+    if not re.match(r"https?://(www\.)?normattiva\.it/", normalized, re.IGNORECASE):
         return False
 
     # Validate URL for security
     try:
-        validate_normattiva_url(input_str)
+        validate_normattiva_url(normalized)
         return True
     except ValueError:
         return False
+
 
 def is_normattiva_export_url(url):
     """
@@ -82,6 +112,7 @@ def is_normattiva_export_url(url):
     # Check if it's an export URL
     return "/esporta/attoCompleto" in url and is_normattiva_url(url)
 
+
 def extract_params_from_normattiva_url(url, session=None, quiet=False):
     """
     Scarica la pagina normattiva e estrae i parametri necessari per il download
@@ -100,6 +131,8 @@ def extract_params_from_normattiva_url(url, session=None, quiet=False):
     Returns:
         tuple: (params dict, session)
     """
+    url = normalize_normattiva_url(url)
+
     # Reject export URLs as they require authentication
     if is_normattiva_export_url(url):
         print(

@@ -2,6 +2,13 @@
 
 Questo file documenta gli avanzamenti significativi e le decisioni chiave del progetto `normattiva_2_md`.
 
+## 2026-01-12
+
+### URL con escape backslash
+
+- Normalizzazione URL normattiva.it con backslash in CLI/API
+- Aggiornati test sicurezza per URL con escape
+
 ## 2026-01-11
 
 ### Coverage Reporting Implementation

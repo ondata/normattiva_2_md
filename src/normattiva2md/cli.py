@@ -42,9 +42,9 @@ def print_rich_help():
     # Legal warning
     warning_text = Text()
     warning_text.append(
-        "⚠️  I testi presenti nella banca dati \"Normattiva\" non hanno carattere di ufficialità.\n"
+        '⚠️  I testi presenti nella banca dati "Normattiva" non hanno carattere di ufficialità.\n'
         "L'unico testo ufficiale e definitivo è quello pubblicato sulla Gazzetta Ufficiale Italiana.",
-        style="bold yellow on dark_red"
+        style="bold yellow on dark_red",
     )
     warning_panel = Panel(
         warning_text,
@@ -183,7 +183,7 @@ def print_rich_help():
     footer_text.append("↑↓ PgUp/PgDn Spazio ", style="dim yellow")
     footer_text.append("| Esci: ", style="dim italic")
     footer_text.append("q", style="dim yellow")
-    
+
     footer = Panel(
         footer_text,
         border_style="dim",
@@ -203,6 +203,7 @@ def print_rich_help():
 from .utils import sanitize_output_path, generate_snake_case_filename, load_env_file
 from .normattiva_api import (
     is_normattiva_url,
+    normalize_normattiva_url,
     validate_normattiva_url,
     extract_params_from_normattiva_url,
     download_akoma_ntoso,
@@ -599,6 +600,7 @@ def main():
 
     # Auto-detect: URL o file locale?
     if is_normattiva_url(input_source):
+        input_source = normalize_normattiva_url(input_source)
         # Gestione URL
         if not quiet_mode:
             print(f"Rilevato URL normattiva.it: {input_source}", file=sys.stderr)
