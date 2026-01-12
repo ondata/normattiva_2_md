@@ -9,6 +9,10 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 - Normalizzazione URL normattiva.it con backslash in CLI/API
 - Aggiornati test sicurezza per URL con escape
 
+### Documentazione release
+
+- Aggiunta sezione GitHub Release in DEVELOPMENT.md
+
 ## 2026-01-11
 
 ### Coverage Reporting Implementation

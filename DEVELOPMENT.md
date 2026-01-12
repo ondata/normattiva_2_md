@@ -198,6 +198,19 @@ python3 setup.py sdist bdist_wheel
 twine upload dist/*
 ```
 
+## GitHub Release
+
+```bash
+# Push commit + tag
+
+git push
+git push --tags
+
+# Create release
+
+gh release create vX.Y.Z --title "vX.Y.Z" --notes "- summary"
+```
+
 ## Code Style
 
 - Concise variable names
