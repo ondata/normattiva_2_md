@@ -1,0 +1,55 @@
+name: Documentation Improvement
+description: Suggerisci miglioramenti alla documentazione
+title: "[DOCS] "
+labels: ["documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Grazie per aiutarci a migliorare la documentazione!
+  
+  - type: dropdown
+    id: doc_type
+    attributes:
+      label: Tipo di documentazione
+      description: Quale parte della documentazione va migliorata?
+      options:
+        - README
+        - Guida utente
+        - Esempi
+        - Commenti nel codice
+        - API/Reference
+        - Altro
+    validations:
+      required: true
+  
+  - type: textarea
+    id: issue
+    attributes:
+      label: Problema attuale
+      description: Cosa manca o non è chiaro nella documentazione attuale?
+      placeholder: Es. Non è spiegato come gestire documenti con allegati...
+    validations:
+      required: true
+  
+  - type: textarea
+    id: improvement
+    attributes:
+      label: Miglioramento proposto
+      description: Come dovrebbe essere migliorata la documentazione?
+      placeholder: Es. Aggiungere una sezione che spiega...
+    validations:
+      required: true
+  
+  - type: input
+    id: location
+    attributes:
+      label: Posizione
+      description: Dove si trova la documentazione da migliorare?
+      placeholder: Es. README.md sezione "Installazione", docs/examples.md
+  
+  - type: textarea
+    id: context
+    attributes:
+      label: Contesto aggiuntivo
+      description: Altre informazioni o suggerimenti

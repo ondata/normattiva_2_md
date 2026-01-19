@@ -1,0 +1,48 @@
+name: Feature Request
+description: Proponi una nuova funzionalità o un miglioramento
+title: "[FEATURE] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Grazie per contribuire a migliorare normattiva2md! Descrivi la tua proposta nei campi seguenti.
+  
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problema o necessità
+      description: Quale problema risolverebbe questa funzionalità?
+      placeholder: Es. Attualmente non è possibile convertire documenti che contengono...
+    validations:
+      required: true
+  
+  - type: textarea
+    id: solution
+    attributes:
+      label: Soluzione proposta
+      description: Descrivi la funzionalità che vorresti implementata
+      placeholder: Es. Vorrei che il tool supportasse...
+    validations:
+      required: true
+  
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternative considerate
+      description: Hai valutato soluzioni alternative?
+  
+  - type: textarea
+    id: examples
+    attributes:
+      label: Esempi
+      description: Fornisci esempi di utilizzo o casi d'uso
+      placeholder: |
+        Input: ...
+        Output atteso: ...
+  
+  - type: textarea
+    id: context
+    attributes:
+      label: Contesto aggiuntivo
+      description: Altre informazioni, link o riferimenti utili

@@ -1,0 +1,76 @@
+name: Bug Report
+description: Segnala un problema o un comportamento inatteso
+title: "[BUG] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Grazie per aver segnalato un bug! Compila i campi seguenti per aiutarci a risolvere il problema.
+  
+  - type: textarea
+    id: description
+    attributes:
+      label: Descrizione del problema
+      description: Descrivi il bug riscontrato in modo chiaro e conciso
+      placeholder: Es. La conversione fallisce quando il documento contiene...
+    validations:
+      required: true
+  
+  - type: textarea
+    id: steps
+    attributes:
+      label: Passi per riprodurre
+      description: Come possiamo riprodurre il problema?
+      placeholder: |
+        1. Esegui il comando '...'
+        2. Usa il file XML '...'
+        3. Osserva l'errore
+    validations:
+      required: true
+  
+  - type: textarea
+    id: expected
+    attributes:
+      label: Comportamento atteso
+      description: Cosa ti aspettavi che accadesse?
+    validations:
+      required: true
+  
+  - type: textarea
+    id: actual
+    attributes:
+      label: Comportamento effettivo
+      description: Cosa è successo invece?
+    validations:
+      required: true
+  
+  - type: textarea
+    id: logs
+    attributes:
+      label: Log o messaggi di errore
+      description: Incolla eventuali log o messaggi di errore
+      render: shell
+  
+  - type: input
+    id: version
+    attributes:
+      label: Versione
+      description: Quale versione di normattiva2md stai usando?
+      placeholder: Es. 0.2.5
+    validations:
+      required: true
+  
+  - type: input
+    id: os
+    attributes:
+      label: Sistema operativo
+      placeholder: Es. Ubuntu 22.04, Windows 11, macOS 14
+    validations:
+      required: true
+  
+  - type: textarea
+    id: context
+    attributes:
+      label: Contesto aggiuntivo
+      description: Altre informazioni utili (file XML di esempio, screenshot, ecc.)
