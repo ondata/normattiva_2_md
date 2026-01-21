@@ -191,11 +191,14 @@ source .venv/bin/activate  # Linux/macOS
 # or
 .venv\Scripts\activate  # Windows
 
+# Clean dist before building/uploading (avoid non-PyPI artifacts)
+rm -f dist/*
+
 # Build
 python3 setup.py sdist bdist_wheel
 
 # Upload (twine already installed)
-twine upload dist/*
+twine upload dist/*.tar.gz dist/*.whl
 ```
 
 ## GitHub Release
