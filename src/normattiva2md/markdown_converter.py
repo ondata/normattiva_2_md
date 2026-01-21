@@ -180,8 +180,56 @@ def clean_text_content(element, cross_references=None):
 
     # Replace multiple spaces with a single space, and strip leading/trailing whitespace
     cleaned_text = re.sub(r"\s+", " ", full_text).strip()
+    
+    # Remove dash separators before inline AGGIORNAMENTO
+    cleaned_text = re.sub(r"\s*[-–—]{2,}\s*AGGIORNAMENTO", " AGGIORNAMENTO", cleaned_text)
 
     return cleaned_text
+
+
+def process_content_with_paragraphs(content_element, ns, cross_references=None):
+    """
+    Process a <content> element that may contain multiple <p> elements.
+    Treats each <p> as a block-level element with appropriate spacing.
+    
+    Args:
+        content_element: The <content> XML element
+        ns: XML namespace
+        cross_references: Optional cross-reference mapping
+    
+    Returns:
+        str: Processed text with proper line breaks between paragraphs
+    """
+    if content_element is None:
+        return ""
+    
+    # Check if content has <p> children
+    p_elements = content_element.findall("./akn:p", ns)
+    
+    if not p_elements:
+        # No <p> children, process normally
+        return clean_text_content(content_element, cross_references)
+    
+    # Process each <p> separately
+    parts = []
+    for p_elem in p_elements:
+        p_text = clean_text_content(p_elem, cross_references).strip()
+        
+        # Skip empty, dash-only, or parentheses-only lines
+        if not p_text or re.match(r"^[-()]+$", p_text):
+            continue
+            
+        # Check if this is an AGGIORNAMENTO header
+        if p_text.startswith("AGGIORNAMENTO"):
+            parts.append(f"\n\n{p_text}")
+        else:
+            # Regular text - add with space if not first
+            if parts:
+                parts.append(f" {p_text}")
+            else:
+                parts.append(p_text)
+    
+    return "".join(parts)
 
 def convert_akomantoso_to_markdown_improved(
     xml_file_path,
@@ -300,10 +348,12 @@ def generate_markdown_fragments(root, ns, metadata=None, cross_references=None):
     # Generate body content
     preamble_fragments = extract_preamble_fragments(root, ns, cross_references)
     body_elements_fragments = extract_body_fragments(root, ns, cross_references)
+    attachment_fragments = extract_attachments_fragments(root, ns, cross_references)
 
     body_fragments = []
     body_fragments.extend(preamble_fragments)
     body_fragments.extend(body_elements_fragments)
+    body_fragments.extend(attachment_fragments)
 
     # Join body content (NO downgrade - proper hierarchy from parsing)
     body_text = "".join(body_fragments)
@@ -367,6 +417,25 @@ def extract_body_fragments(root, ns, cross_references=None):
 
     for element in body:
         fragments.extend(process_body_element(element, ns, cross_references))
+    return fragments
+
+
+def extract_attachments_fragments(root, ns, cross_references=None):
+    """Collect attachment fragments that live outside the main body."""
+
+    fragments = []
+    attachments_container = root.find(".//akn:attachments", ns)
+    if attachments_container is None:
+        return fragments
+
+    attachment_elements = attachments_container.findall("./akn:attachment", ns)
+    if not attachment_elements:
+        return fragments
+
+    fragments.append("## Allegati\n\n")
+    for attachment in attachment_elements:
+        fragments.extend(process_attachment(attachment, ns, cross_references))
+
     return fragments
 
 def process_body_element(element, ns, cross_references=None):
@@ -523,13 +592,107 @@ def process_attachment(attachment_element, ns, cross_references=None):
     """
     attachment_fragments = []
     heading_element = attachment_element.find("./akn:heading", ns)
+    clean_heading = ""
+    heading_from_prefix = False
+    heading_from_paragraph = False
     if heading_element is not None and heading_element.text:
         clean_heading = clean_text_content(heading_element, cross_references)
-        attachment_fragments.append(f"### Allegato: {clean_heading}\n\n")
+
+    if not clean_heading:
+        # Try to derive a meaningful heading from the first paragraph (common in Normattiva)
+        first_p = attachment_element.find(".//akn:p", ns)
+        if first_p is not None:
+            raw_text = "".join(first_p.itertext())
+            raw_text = re.sub(r"\s+", " ", raw_text).strip()
+            match = re.match(
+                r"(Art\.?\s*\d+(?:-\w+)?\.?\s*(\(\([^)]*\)\)|\([^)]*\))?)", raw_text
+            )
+            if match:
+                clean_heading = match.group(1)
+                heading_from_paragraph = True
+            else:
+                prefix_match = re.match(r"^(.*?)(?:\s+Art\.)", raw_text)
+                if prefix_match:
+                    clean_heading = prefix_match.group(1).strip()
+                    heading_from_prefix = True
+                    heading_from_paragraph = True
+
+    if clean_heading:
+        heading_level = "###"
+        if heading_from_prefix and clean_heading == clean_heading.upper():
+            heading_level = "##"
+        attachment_fragments.append(f"{heading_level} {clean_heading}\n\n")
     else:
         attachment_fragments.append("### Allegato\n\n")
 
     # Process attachment content (similar to body processing)
+    main_body = attachment_element.find(".//akn:mainBody", ns)
+    if main_body is not None:
+        paragraphs = main_body.findall("./akn:paragraph", ns)
+        if paragraphs:
+            for paragraph in paragraphs:
+                # Process paragraph content with support for multiple <p> elements
+                para_content = paragraph.find("./akn:content", ns)
+                text = process_content_with_paragraphs(para_content, ns, cross_references) if para_content is not None else ""
+                
+                if text and clean_heading:
+                    normalized = re.sub(r"\s+", " ", text).strip()
+                    if normalized.startswith(clean_heading):
+                        trimmed = normalized[len(clean_heading):].lstrip()
+                        if heading_from_paragraph:
+                            if trimmed.startswith("."):
+                                trimmed = trimmed[1:].lstrip()
+                            text = trimmed
+
+                # Promote uppercase title lines (e.g. "CODICE CIVILE") to a heading
+                if text:
+                    normalized = re.sub(r"\s+", " ", text).strip()
+                    if not heading_from_paragraph:
+                        title_match = re.match(
+                            r"^(?P<title>[A-Z][A-Z0-9' .-]{3,})\s+Art\.",
+                            normalized,
+                        )
+                        if title_match:
+                            title = title_match.group("title").strip()
+                            if title and title == title.upper() and len(title) <= 80:
+                                attachment_fragments.append(f"## {title}\n\n")
+                                text = normalized[len(title) :].lstrip()
+                        if normalized and normalized == normalized.upper() and len(normalized) <= 80:
+                            attachment_fragments.append(f"## {normalized}\n\n")
+                            continue
+                if text:
+                    art_match = re.match(
+                        r"^Art\.?\s*(?P<num>\d+[A-Za-z-]*)\.?\s*(?P<title>\([^)]*\))?\s*(?P<body>.*)$",
+                        text,
+                    )
+                    if art_match:
+                        num = art_match.group("num")
+                        title = art_match.group("title") or ""
+                        body = art_match.group("body").lstrip()
+                        if body.startswith("."):
+                            body = body[1:].lstrip()
+                        if body.startswith("))"):
+                            body = body[2:].lstrip()
+                        if title:
+                            title = re.sub(r"\s+", " ", title).strip()
+                            title = title.replace("(( ", "((").replace("( (", "((")
+                            title = title.replace(") )", "))")
+                        heading = f"Art. {num}."
+                        if title:
+                            heading = f"{heading} {title}"
+                        attachment_fragments.append(f"### {heading}\n\n")
+                        if body:
+                            attachment_fragments.append(f"{body}\n\n")
+                    else:
+                        attachment_fragments.append(f"{text}\n\n")
+            return attachment_fragments
+
+        for child in main_body:
+            attachment_fragments.extend(
+                process_body_element(child, ns, cross_references)
+            )
+        return attachment_fragments
+
     for child in attachment_element:
         if child.tag.endswith("chapter"):
             attachment_fragments.extend(process_chapter(child, ns, cross_references))
@@ -594,7 +757,7 @@ def process_article(
     article_heading_element = article_element.find("./akn:heading", ns)
 
     if article_num_element is not None:
-        article_num = article_num_element.text.strip()
+        article_num = clean_text_content(article_num_element, cross_references).strip()
         if article_heading_element is not None and article_heading_element.text:
             clean_article_heading = clean_text_content(
                 article_heading_element, cross_references
@@ -648,24 +811,17 @@ def process_article(
             else:
                 # Handle regular paragraph content
                 paragraph_text = (
-                    clean_text_content(para_content_element, cross_references)
+                    process_content_with_paragraphs(para_content_element, ns, cross_references)
                     if para_content_element is not None
                     else ""
                 )
-
-                # Remove the "------------" lines from the paragraph content
-                lines = paragraph_text.split("\n")
-                filtered_lines = [
-                    line for line in lines if not re.match(r"^-+$", line.strip())
-                ]
-                paragraph_text = "\n".join(filtered_lines).strip()
 
                 # Remove duplicate number if present at the beginning of the paragraph text
                 if para_num_element is not None:
                     num_to_remove = para_num_element.text.strip().rstrip(".")
                     # Regex to match the number followed by a period and optional space at the beginning of the string
                     pattern = r"^" + re.escape(num_to_remove) + r"\.?\s*"
-                    paragraph_text = re.sub(pattern, "", paragraph_text, 1).strip()
+                    paragraph_text = re.sub(pattern, "", paragraph_text, 1)
 
                 if para_num_element is not None and paragraph_text:
                     # Remove double dots from paragraph numbering and ensure single dot

@@ -150,10 +150,60 @@ class ConvertAkomaNtosoTest(unittest.TestCase):
         ns = {"akn": "http://docs.oasis-open.org/legaldocml/ns/akn/3.0"}
         result_fragments = process_attachment(root, ns)
         result = "".join(result_fragments)
-        # Should contain attachment section (H1 before global downgrade)
-        self.assertIn("# Allegato: Allegato A", result)
+        # Should contain attachment section (H3 before global downgrade)
+        self.assertIn("### Allegato A", result)
         # Should contain nested article
-        self.assertIn("## Art. 1 - Test Article", result)
+        self.assertIn("### Art. 1 - Test Article", result)
+
+    def test_article_with_suffix_in_attachment(self):
+        """Test articles with suffixes like -bis, -ter, -quater are on one line."""
+        attachment_xml = """<akn:attachment xmlns:akn="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
+            <akn:doc name="Test-art. 155 bis">
+                <akn:mainBody>
+                    <akn:paragraph>
+                        <akn:content>
+                            <akn:p>Art. 155-bis. (( ARTICOLO ABROGATO ))</akn:p>
+                        </akn:content>
+                    </akn:paragraph>
+                </akn:mainBody>
+            </akn:doc>
+        </akn:attachment>"""
+        root = ET.fromstring(attachment_xml)
+        ns = {"akn": "http://docs.oasis-open.org/legaldocml/ns/akn/3.0"}
+        result_fragments = process_attachment(root, ns)
+        result = "".join(result_fragments)
+        # Article number with suffix should be on one line
+        self.assertIn("### Art. 155-bis.", result)
+        # Should not be split across lines
+        self.assertNotIn("### Art. 155\n\n-bis", result)
+
+    def test_article_suffixes_variants(self):
+        """Test various article suffix variants (ter, quater, quinquies, sexies)."""
+        test_cases = [
+            ("Art. 155-ter. Text", "### Art. 155-ter."),
+            ("Art. 155-quater. Text", "### Art. 155-quater."),
+            ("Art. 155-quinquies. Text", "### Art. 155-quinquies."),
+            ("Art. 155-sexies. Text", "### Art. 155-sexies."),
+        ]
+        
+        for article_text, expected in test_cases:
+            with self.subTest(article=article_text):
+                attachment_xml = f"""<akn:attachment xmlns:akn="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
+                    <akn:doc>
+                        <akn:mainBody>
+                            <akn:paragraph>
+                                <akn:content>
+                                    <akn:p>{article_text}</akn:p>
+                                </akn:content>
+                            </akn:paragraph>
+                        </akn:mainBody>
+                    </akn:doc>
+                </akn:attachment>"""
+                root = ET.fromstring(attachment_xml)
+                ns = {"akn": "http://docs.oasis-open.org/legaldocml/ns/akn/3.0"}
+                result_fragments = process_attachment(root, ns)
+                result = "".join(result_fragments)
+                self.assertIn(expected, result)
 
     def test_generate_front_matter_complete(self):
         """Test front matter generation with complete metadata"""

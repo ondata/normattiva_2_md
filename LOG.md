@@ -1466,3 +1466,6 @@ Creata pianificazione completa per rendere normattiva2md usabile da notebook e s
 
 ## 2026-01-01
 - Improved CLI help output with Rich library for better readability and organization
+
+## 2026-01-21
+- Bumped version to v2.1.7 for upcoming release
