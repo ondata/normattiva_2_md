@@ -64,6 +64,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Tailwind CSS CDN -->
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -82,11 +83,16 @@
     </script>
 
     <!-- Prism.js for syntax highlighting -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
 
     <style>
         html {
             scroll-behavior: smooth;
+        }
+
+        section[id] {
+            scroll-margin-top: 4.5rem;
         }
 
         /* Skip link for accessibility */
@@ -136,7 +142,7 @@
 
         .tab-button {
             border-bottom: 3px solid transparent;
-            transition: all 0.3s ease;
+            transition: color 0.3s ease, border-color 0.3s ease;
         }
 
         .tab-button.active {
@@ -171,7 +177,7 @@
             color: white;
             font-size: 0.875rem;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: background-color 0.2s, border-color 0.2s, color 0.2s;
         }
 
         .copy-button:hover {
@@ -181,6 +187,30 @@
         .copy-button.copied {
             background: #10b981;
             border-color: #10b981;
+        }
+
+        h1,
+        h2,
+        h3 {
+            text-wrap: balance;
+        }
+
+        a:focus-visible,
+        button:focus-visible {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            .hover-lift,
+            .tab-button,
+            .copy-button {
+                transition: none;
+            }
         }
     </style>
 </head>
@@ -256,21 +286,37 @@
             const tabButtons = document.querySelectorAll('.tab-button');
             const tabContents = document.querySelectorAll('.tab-content');
 
+            const setActiveTab = (targetTabId) => {
+                const targetButton = document.querySelector(`[data-tab="${targetTabId}"]`);
+                const targetContent = document.getElementById(targetTabId);
+
+                if (!targetButton || !targetContent) {
+                    return;
+                }
+
+                // Remove active class and aria-selected from all buttons and contents
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.setAttribute('aria-selected', 'false');
+                });
+                tabContents.forEach(content => content.classList.remove('active'));
+
+                // Add active class and aria-selected to clicked button and corresponding content
+                targetButton.classList.add('active');
+                targetButton.setAttribute('aria-selected', 'true');
+                targetContent.classList.add('active');
+            };
+
+            const initialHash = window.location.hash.replace('#', '');
+            if (initialHash) {
+                setActiveTab(initialHash);
+            }
+
             tabButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const targetTab = this.getAttribute('data-tab');
-
-                    // Remove active class and aria-selected from all buttons and contents
-                    tabButtons.forEach(btn => {
-                        btn.classList.remove('active');
-                        btn.setAttribute('aria-selected', 'false');
-                    });
-                    tabContents.forEach(content => content.classList.remove('active'));
-
-                    // Add active class and aria-selected to clicked button and corresponding content
-                    this.classList.add('active');
-                    this.setAttribute('aria-selected', 'true');
-                    document.getElementById(targetTab).classList.add('active');
+                    setActiveTab(targetTab);
+                    window.location.hash = targetTab;
                 });
             });
 
