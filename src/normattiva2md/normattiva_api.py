@@ -195,20 +195,13 @@ def extract_params_from_normattiva_url(url, session=None, quiet=False):
         if all(k in params for k in ["dataGU", "codiceRedaz", "dataVigenza"]):
             return params, session
 
-    # Se il link caricaAKN non è presente, probabilmente l'XML non è disponibile
+    # Se il link caricaAKN non è presente, ritorna None per tentare il fallback
     if not link_match:
-        print(
-            "❌ ERRORE: Normattiva non espone il link caricaAKN per questo atto.",
-            file=sys.stderr,
-        )
-        print(
-            "   In questi casi l'esportazione XML sembra richiedere autenticazione",
-            file=sys.stderr,
-        )
-        print(
-            "   o non essere disponibile per l'atto richiesto.",
-            file=sys.stderr,
-        )
+        if not quiet:
+            print(
+                "⚠️  Link caricaAKN non trovato, tentativo con fallback...",
+                file=sys.stderr,
+            )
         return None, session
 
     # Estrai parametri dagli input hidden usando regex (fallback)
@@ -447,6 +440,9 @@ def download_akoma_ntoso_via_opendata(url, output_path, session=None, quiet=Fals
         "Accept-Language": "it-IT,it;q=0.9,en;q=0.8",
     }
 
+    if not quiet:
+        print("🔄 Tentativo download via API OpenData...", file=sys.stderr)
+
     try:
         response = session.get(
             url, headers={**headers, "Accept": "text/html"}, timeout=DEFAULT_TIMEOUT
@@ -519,6 +515,10 @@ def download_akoma_ntoso_via_opendata(url, output_path, session=None, quiet=Fals
 
     status_url = f"{base_url}/api/v1/ricerca-asincrona/check-status/{token}"
     stato = None
+
+    if not quiet:
+        print("⏳ Preparazione collezione OpenData", end="", file=sys.stderr, flush=True)
+
     for _ in range(60):
         try:
             status_response = session.get(
@@ -534,7 +534,13 @@ def download_akoma_ntoso_via_opendata(url, output_path, session=None, quiet=Fals
                 break
         except requests.RequestException:
             pass
+
+        if not quiet:
+            print(".", end="", file=sys.stderr, flush=True)
         time.sleep(2)
+
+    if not quiet:
+        print()  # New line after progress dots
 
     if stato != 3:
         print("❌ ERRORE: ricerca OpenData non completata in tempo utile.", file=sys.stderr)

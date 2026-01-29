@@ -667,8 +667,9 @@ def main():
             params = None
             session = None
             if not args.opendata:
+                # Show progress even when output goes to stdout (unless --quiet)
                 params, session = extract_params_from_normattiva_url(
-                    input_source, quiet=quiet_mode
+                    input_source, quiet=args.quiet
                 )
 
             if not quiet_mode:
@@ -718,12 +719,13 @@ def main():
                     ),
                 }
             else:
+                # Show progress even when output goes to stdout (unless --quiet)
                 success, metadata, session = download_akoma_ntoso_via_opendata(
-                    input_source, xml_temp_path, session=session, quiet=quiet_mode
+                    input_source, xml_temp_path, session=session, quiet=args.quiet
                 )
                 if not success:
                     success, metadata, session = download_akoma_ntoso_via_export(
-                        input_source, xml_temp_path, session=session, quiet=quiet_mode
+                        input_source, xml_temp_path, session=session, quiet=args.quiet
                     )
                 if not success:
                     print(

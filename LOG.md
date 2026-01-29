@@ -2,6 +2,20 @@
 
 Questo file documenta gli avanzamenti significativi e le decisioni chiave del progetto `normattiva_2_md`.
 
+## 2026-01-29
+
+### Fix messaggi di progresso fallback OpenData
+
+- Rimosso messaggio di errore fuorviante quando link caricaAKN non disponibile
+- Sostituito con messaggio informativo: "⚠️ Link caricaAKN non trovato, tentativo con fallback..."
+- Aggiunti indicatori di progresso per download via OpenData:
+  - Messaggio iniziale "🔄 Tentativo download via API OpenData..."
+  - Indicatore animato "⏳ Preparazione collezione OpenData..." con puntini durante polling
+  - Messaggio di successo "✅ File XML (OpenData) salvato in: ..."
+- Modificato quiet mode: messaggi di progresso visibili su stderr anche quando output va a stdout
+- Messaggi soppressi solo con flag --quiet esplicito
+- Fix UX: utente ora vede chiaramente che download è in corso, evita confusione su comando bloccato
+
 ## 2026-01-12
 
 ### URL con escape backslash
