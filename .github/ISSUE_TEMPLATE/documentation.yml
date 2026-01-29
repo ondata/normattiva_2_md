@@ -7,6 +7,8 @@ body:
     attributes:
       value: |
         Grazie per aiutarci a migliorare la documentazione!
+        Per domande su utilizzo o casi d'uso, usa le Discussions Q&A:
+        https://github.com/ondata/normattiva_2_md/discussions/categories/domande-e-supporto-q-a
   
   - type: dropdown
     id: doc_type

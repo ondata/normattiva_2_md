@@ -1,1 +1,5 @@
 blank_issues_enabled: false
+contact_links:
+  - name: Domande su utilizzo (Q&A)
+    url: https://github.com/ondata/normattiva_2_md/discussions/categories/domande-e-supporto-q-a
+    about: Usa le Discussions per domande su CLI/libreria e casi d'uso.
