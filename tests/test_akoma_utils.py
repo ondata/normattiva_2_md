@@ -1,5 +1,8 @@
+import sys
 import tempfile
 import unittest
+
+sys.path.insert(0, "src")
 
 from normattiva2md.akoma_utils import (
     akoma_uri_to_normattiva_url,

@@ -233,6 +233,9 @@ La CLI riconosce automaticamente gli URL di `normattiva.it` e scarica il documen
 # Conversione diretta URL → Markdown (output su file)
 normattiva2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" legge.md
 
+# Forza download via OpenData (quando manca export Akoma)
+normattiva2md --opendata "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" legge.md
+
 # Conversione diretta con output su stdout (utile per pipe)
 normattiva2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2005-03-07;82"
 
@@ -438,7 +441,8 @@ opzioni:
                          File Markdown di output (default: stdout)
    -s SEARCH, --search SEARCH
                          Cerca documento in linguaggio naturale (richiede Exa AI API)
-   --keep-xml            Mantiene il file XML temporaneo dopo la conversione
+  --keep-xml            Mantiene il file XML temporaneo dopo la conversione
+  --opendata            Forza download Akoma Ntoso via API OpenData (ZIP AKN)
    -q, --quiet           Modalità silenziosa (nessun output su stderr)
    -c, --completo        Forza download completo anche con URL articolo-specifico
    --with-references     Scarica anche tutti i riferimenti legislativi citati

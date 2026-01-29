@@ -74,6 +74,9 @@ source .venv/bin/activate  # Linux/macOS
 # or
 .venv\Scripts\activate  # Windows
 
+# Install the package in editable mode so tests can import `normattiva2md`
+pip3 install -e .
+
 # Then run tests
 make test
 ```
@@ -91,6 +94,7 @@ make test
 
 ```bash
 source .venv/bin/activate
+pip3 install -e .
 python3 -m unittest discover -s tests
 ```
 
@@ -98,9 +102,16 @@ python3 -m unittest discover -s tests
 
 ```bash
 source .venv/bin/activate
+pip3 install -e .
 pip3 install pytest
 python3 -m pytest tests/ -v
 ```
+
+### Note on network-dependent tests
+
+- Some tests hit external services (Normattiva, Exa API, programmagoverno.gov.it).
+- These can fail due to network or API availability; in that case, the failures are not necessarily regressions.
+- For consistent results, ensure network access and configure `EXA_API_KEY` if running Exa tests.
 
 ### Coverage Testing
 

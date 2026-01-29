@@ -1467,5 +1467,13 @@ Creata pianificazione completa per rendere normattiva2md usabile da notebook e s
 ## 2026-01-01
 - Improved CLI help output with Rich library for better readability and organization
 
+## 2026-01-29
+### Fallback OpenData AKN + flag for OpenData
+
+- **Fallback automatico**: se l'export Akoma (`caricaAKN`) non è disponibile, usa OpenData AKN (ZIP) per recuperare il file XML.
+- **Nuovo flag CLI**: `--opendata` per forzare il download via OpenData su qualsiasi norma.
+- **API Python**: `convert_url(..., force_opendata=True)` per forzare OpenData.
+- **Selezione XML**: scelta automatica del file di vigenza più adatto dal pacchetto ZIP.
+
 ## 2026-01-21
 - Bumped version to v2.1.7 for upcoming release

@@ -138,6 +138,9 @@ def print_rich_help():
     proc_table.add_column("Description")
 
     proc_table.add_row("--with-urls", "Genera link agli URL normattiva.it")
+    proc_table.add_row(
+        "--opendata", "Forza download Akoma Ntoso via API OpenData (ZIP AKN)"
+    )
     proc_table.add_row("--with-references", "Scarica anche leggi citate")
     proc_table.add_row("--provvedimenti", "Esporta provvedimenti attuativi CSV")
     proc_table.add_row("--validate", "Validazione strutturale del Markdown")
@@ -207,6 +210,8 @@ from .normattiva_api import (
     validate_normattiva_url,
     extract_params_from_normattiva_url,
     download_akoma_ntoso,
+    download_akoma_ntoso_via_export,
+    download_akoma_ntoso_via_opendata,
 )
 from .exa_api import lookup_normattiva_url
 from .akoma_utils import parse_article_reference
@@ -404,6 +409,11 @@ def main():
         "--with-urls",
         action="store_true",
         help="Genera link Markdown agli URL originali di normattiva.it per gli articoli citati",
+    )
+    parser.add_argument(
+        "--opendata",
+        action="store_true",
+        help="Forza download Akoma Ntoso via API OpenData (ZIP AKN)",
     )
     parser.add_argument(
         "-q", "--quiet", action="store_true", help="Disabilita output non essenziali"
@@ -653,45 +663,78 @@ def main():
                         f"Rilevato riferimento articolo: {article_ref}", file=sys.stderr
                     )
 
-            # Estrai parametri dalla pagina
-            params, session = extract_params_from_normattiva_url(
-                input_source, quiet=quiet_mode
-            )
-            if not params:
-                print("❌ Impossibile estrarre parametri dall'URL", file=sys.stderr)
-                sys.exit(1)
+            # Estrai parametri dalla pagina (se non forziamo OpenData)
+            params = None
+            session = None
+            if not args.opendata:
+                params, session = extract_params_from_normattiva_url(
+                    input_source, quiet=quiet_mode
+                )
 
             if not quiet_mode:
-                print(f"\nParametri estratti:", file=sys.stderr)
-                print(f"  dataGU: {params['dataGU']}", file=sys.stderr)
-                print(f"  codiceRedaz: {params['codiceRedaz']}", file=sys.stderr)
-                print(f"  dataVigenza: {params['dataVigenza']}\n", file=sys.stderr)
+                if params:
+                    print(f"\nParametri estratti:", file=sys.stderr)
+                    print(f"  dataGU: {params['dataGU']}", file=sys.stderr)
+                    print(f"  codiceRedaz: {params['codiceRedaz']}", file=sys.stderr)
+                    print(f"  dataVigenza: {params['dataVigenza']}\n", file=sys.stderr)
+                elif args.opendata:
+                    print(
+                        "⚠️ OpenData forzato: download via OpenData (ZIP AKN)",
+                        file=sys.stderr,
+                    )
+                else:
+                    print(
+                        "⚠️ Link caricaAKN non disponibile: tentativo fallback OpenData",
+                        file=sys.stderr,
+                    )
 
             # Crea file XML temporaneo con tempfile module (più sicuro)
             temp_fd, xml_temp_path = tempfile.mkstemp(
-                suffix=f"_{params['codiceRedaz']}.xml", prefix="akoma2md_"
+                suffix=f"_{params['codiceRedaz'] if params else 'export'}.xml",
+                prefix="akoma2md_",
             )
             os.close(temp_fd)  # Close file descriptor, we'll write with requests
 
             # Scarica XML
-            if not download_akoma_ntoso(
-                params, xml_temp_path, session, quiet=quiet_mode
-            ):
-                print("❌ Errore durante il download del file XML", file=sys.stderr)
-                sys.exit(1)
+            if params and not args.opendata:
+                if not download_akoma_ntoso(
+                    params, xml_temp_path, session, quiet=quiet_mode
+                ):
+                    print(
+                        "❌ Errore durante il download del file XML",
+                        file=sys.stderr,
+                    )
+                    sys.exit(1)
+                metadata = {
+                    "dataGU": params["dataGU"],
+                    "codiceRedaz": params["codiceRedaz"],
+                    "dataVigenza": params["dataVigenza"],
+                    "url": input_source,
+                    "url_xml": (
+                        "https://www.normattiva.it/do/atto/caricaAKN"
+                        f"?dataGU={params['dataGU']}"
+                        f"&codiceRedaz={params['codiceRedaz']}"
+                        f"&dataVigenza={params['dataVigenza']}"
+                    ),
+                }
+            else:
+                success, metadata, session = download_akoma_ntoso_via_opendata(
+                    input_source, xml_temp_path, session=session, quiet=quiet_mode
+                )
+                if not success:
+                    success, metadata, session = download_akoma_ntoso_via_export(
+                        input_source, xml_temp_path, session=session, quiet=quiet_mode
+                    )
+                if not success:
+                    print(
+                        "❌ Errore durante il download via fallback OpenData/HTML",
+                        file=sys.stderr,
+                    )
+                    sys.exit(1)
 
             # Converti a Markdown
             if not quiet_mode:
                 print(f"\nConversione in Markdown...", file=sys.stderr)
-
-            # Prepare metadata dict for front matter
-            metadata = {
-                "dataGU": params["dataGU"],
-                "codiceRedaz": params["codiceRedaz"],
-                "dataVigenza": params["dataVigenza"],
-                "url": input_source,  # The original URL
-                "url_xml": f"https://www.normattiva.it/do/atto/caricaAKN?dataGU={params['dataGU']}&codiceRedaz={params['codiceRedaz']}&dataVigenza={params['dataVigenza']}",
-            }
 
             # Add article reference to metadata if present (or if overridden by --completo)
             if article_ref:

@@ -35,6 +35,8 @@ from .markdown_converter import generate_markdown_text
 from .models import ConversionResult, SearchResult
 from .normattiva_api import (
     download_akoma_ntoso,
+    download_akoma_ntoso_via_export,
+    download_akoma_ntoso_via_opendata,
     extract_params_from_normattiva_url,
     is_normattiva_url,
     normalize_normattiva_url,
@@ -54,6 +56,7 @@ def convert_url(
     url: str,
     article: Optional[str] = None,
     with_urls: bool = False,
+    force_opendata: bool = False,
     quiet: bool = False,
 ) -> Optional[ConversionResult]:
     """
@@ -82,6 +85,9 @@ def convert_url(
 
         >>> # Con link inline
         >>> result = convert_url("https://...", with_urls=True)
+
+        >>> # Forza download via OpenData
+        >>> result = convert_url("https://...", force_opendata=True)
     """
     # Load .env file for API keys
     load_env_file()
@@ -100,30 +106,48 @@ def convert_url(
         logger.info(f"Conversione URL: {normalized_url}")
 
     # Extract parameters from URL
-    params, session = extract_params_from_normattiva_url(normalized_url, quiet=quiet)
-
-    if not params:
-        logger.warning(f"Impossibile estrarre parametri da {normalized_url}")
-        return None
+    params = None
+    session = None
+    if not force_opendata:
+        params, session = extract_params_from_normattiva_url(
+            normalized_url, quiet=quiet
+        )
 
     # Download XML to temp file
     with tempfile.NamedTemporaryFile(suffix=".xml", delete=False) as tmp:
         xml_path = tmp.name
 
     try:
-        success = download_akoma_ntoso(params, xml_path, session, quiet=quiet)
-        if not success:
-            logger.warning(f"Download fallito per {url}")
-            return None
+        if params and not force_opendata:
+            success = download_akoma_ntoso(params, xml_path, session, quiet=quiet)
+            if not success:
+                logger.warning(f"Download fallito per {url}")
+                return None
 
-        # Build metadata
-        metadata = {
-            "dataGU": params["dataGU"],
-            "codiceRedaz": params["codiceRedaz"],
-            "dataVigenza": params["dataVigenza"],
-            "url": normalized_url,
-            "url_xml": f"https://www.normattiva.it/do/atto/caricaAKN?dataGU={params['dataGU']}&codiceRedaz={params['codiceRedaz']}&dataVigenza={params['dataVigenza']}",
-        }
+            # Build metadata
+            metadata = {
+                "dataGU": params["dataGU"],
+                "codiceRedaz": params["codiceRedaz"],
+                "dataVigenza": params["dataVigenza"],
+                "url": normalized_url,
+                "url_xml": (
+                    "https://www.normattiva.it/do/atto/caricaAKN"
+                    f"?dataGU={params['dataGU']}"
+                    f"&codiceRedaz={params['codiceRedaz']}"
+                    f"&dataVigenza={params['dataVigenza']}"
+                ),
+            }
+        else:
+            success, metadata, session = download_akoma_ntoso_via_opendata(
+                normalized_url, xml_path, session=session, quiet=quiet
+            )
+            if not success:
+                success, metadata, session = download_akoma_ntoso_via_export(
+                    normalized_url, xml_path, session=session, quiet=quiet
+                )
+            if not success:
+                logger.warning(f"Download fallito per {url}")
+                return None
 
         # Add article to metadata if specified
         if article:

@@ -1,11 +1,16 @@
+import json
 import os
 import re
 import sys
+import time
+import zipfile
 from datetime import datetime
-from urllib.parse import urlparse
+from io import BytesIO
+from urllib.parse import parse_qs, urlparse
 
 import requests
 
+from .provvedimenti_api import extract_law_params_from_url
 from .constants import (
     ALLOWED_DOMAINS,
     DEFAULT_TIMEOUT,
@@ -173,8 +178,40 @@ def extract_params_from_normattiva_url(url, session=None, quiet=False):
 
     html = response.text
 
-    # Estrai parametri dagli input hidden usando regex
+    # Prova a leggere direttamente il link caricaAKN (più affidabile)
     params = {}
+    link_match = re.search(r'href="([^"]*caricaAKN[^"]*)"', html, re.I)
+    if link_match:
+        link = link_match.group(1).replace("&amp;", "&")
+        parsed_link = urlparse(link)
+        query = parse_qs(parsed_link.query)
+        if "dataGU" in query:
+            params["dataGU"] = query["dataGU"][0]
+        if "codiceRedaz" in query:
+            params["codiceRedaz"] = query["codiceRedaz"][0]
+        if "dataVigenza" in query:
+            params["dataVigenza"] = query["dataVigenza"][0]
+
+        if all(k in params for k in ["dataGU", "codiceRedaz", "dataVigenza"]):
+            return params, session
+
+    # Se il link caricaAKN non è presente, probabilmente l'XML non è disponibile
+    if not link_match:
+        print(
+            "❌ ERRORE: Normattiva non espone il link caricaAKN per questo atto.",
+            file=sys.stderr,
+        )
+        print(
+            "   In questi casi l'esportazione XML sembra richiedere autenticazione",
+            file=sys.stderr,
+        )
+        print(
+            "   o non essere disponibile per l'atto richiesto.",
+            file=sys.stderr,
+        )
+        return None, session
+
+    # Estrai parametri dagli input hidden usando regex (fallback)
 
     # Cerca atto.dataPubblicazioneGazzetta
     match_gu = re.search(
@@ -278,3 +315,385 @@ def download_akoma_ntoso(params, output_path, session=None, quiet=False):
     except requests.RequestException as e:
         print(f"❌ Errore durante il download: {e}", file=sys.stderr)
         return False
+
+
+def download_akoma_ntoso_via_export(url, output_path, session=None, quiet=False):
+    """
+    Tenta il download Akoma Ntoso passando dal form di export HTML.
+
+    Questo fallback è utile quando il link caricaAKN non è esposto pubblicamente.
+
+    Args:
+        url: URL normattiva.it dell'atto
+        output_path: percorso dove salvare il file XML
+        session: sessione requests da usare (opzionale)
+        quiet: se True, stampa solo errori
+
+    Returns:
+        tuple: (success, metadata, session)
+    """
+    if session is None:
+        session = requests.Session()
+
+    headers = {
+        "User-Agent": f"Akoma2MD/{VERSION} (https://github.com/ondata/akoma2md)",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "it-IT,it;q=0.9,en;q=0.8",
+        "Referer": "https://www.normattiva.it/",
+    }
+
+    try:
+        response = session.get(url, headers=headers, timeout=DEFAULT_TIMEOUT, verify=True)
+        response.raise_for_status()
+    except requests.RequestException as e:
+        print(f"Errore nel caricamento della pagina: {e}", file=sys.stderr)
+        return False, None, session
+
+    html = response.text
+    export_meta = _extract_export_metadata(html)
+    if not export_meta:
+        print(
+            "❌ ERRORE: impossibile estrarre i parametri per l'export HTML.",
+            file=sys.stderr,
+        )
+        return False, None, session
+
+    export_url = (
+        "https://www.normattiva.it/atto/vediMenuExport?"
+        f"atto.dataPubblicazioneGazzetta={export_meta['dataGU_human']}"
+        f"&atto.codiceRedazionale={export_meta['codiceRedaz']}"
+        "&currentSearch="
+    )
+
+    try:
+        export_page = session.get(
+            export_url,
+            headers={**headers, "Referer": url},
+            timeout=DEFAULT_TIMEOUT,
+            verify=True,
+        )
+        export_page.raise_for_status()
+    except requests.RequestException as e:
+        print(f"❌ Errore nel caricamento del menu export: {e}", file=sys.stderr)
+        return False, None, session
+
+    payload = _build_export_payload(export_page.text)
+    if not payload:
+        print("❌ ERRORE: impossibile costruire payload export.", file=sys.stderr)
+        return False, None, session
+
+    # Forza export XML
+    payload.append(("generaXml", "Esporta XML"))
+
+    try:
+        export_response = session.post(
+            "https://www.normattiva.it/do/atto/export",
+            data=payload,
+            headers={**headers, "Referer": export_url},
+            timeout=DEFAULT_TIMEOUT,
+            verify=True,
+        )
+        export_response.raise_for_status()
+    except requests.RequestException as e:
+        print(f"❌ Errore durante il download via export: {e}", file=sys.stderr)
+        return False, None, session
+
+    if (
+        export_response.content[:5] == b"<?xml"
+        or b"<akomaNtoso" in export_response.content[:500]
+    ):
+        with open(output_path, "wb") as f:
+            f.write(export_response.content)
+        if not quiet:
+            print(f"✅ File XML (export) salvato in: {output_path}", file=sys.stderr)
+        metadata = {
+            "dataGU": export_meta["dataGU"],
+            "codiceRedaz": export_meta["codiceRedaz"],
+            "dataVigenza": export_meta["dataVigenza"],
+            "url": url,
+        }
+        return True, metadata, session
+
+    # Salva HTML di errore per debug
+    debug_path = output_path + ".export.debug.html"
+    with open(debug_path, "wb") as f:
+        f.write(export_response.content)
+    print("❌ Errore: export non ha restituito XML valido", file=sys.stderr)
+    print(f"   Risposta salvata in: {debug_path}", file=sys.stderr)
+    return False, None, session
+
+
+def download_akoma_ntoso_via_opendata(url, output_path, session=None, quiet=False):
+    """
+    Tenta il download Akoma Ntoso via API OpenData (collezioni ZIP).
+
+    Questo fallback è utile quando il link caricaAKN non è esposto pubblicamente.
+
+    Args:
+        url: URL normattiva.it dell'atto
+        output_path: percorso dove salvare il file XML
+        session: sessione requests da usare (opzionale)
+        quiet: se True, stampa solo errori
+
+    Returns:
+        tuple: (success, metadata, session)
+    """
+    if session is None:
+        session = requests.Session()
+
+    headers = {
+        "User-Agent": f"Akoma2MD/{VERSION} (https://github.com/ondata/akoma2md)",
+        "Accept": "application/json",
+        "Accept-Language": "it-IT,it;q=0.9,en;q=0.8",
+    }
+
+    try:
+        response = session.get(
+            url, headers={**headers, "Accept": "text/html"}, timeout=DEFAULT_TIMEOUT
+        )
+        response.raise_for_status()
+    except requests.RequestException as e:
+        print(f"Errore nel caricamento della pagina: {e}", file=sys.stderr)
+        return False, None, session
+
+    export_meta = _extract_export_metadata(response.text)
+    if not export_meta:
+        print(
+            "❌ ERRORE: impossibile estrarre i parametri dalla pagina per l'API OpenData.",
+            file=sys.stderr,
+        )
+        return False, None, session
+
+    anno, numero = extract_law_params_from_url(url)
+    if not anno or not numero:
+        print(
+            "❌ ERRORE: impossibile estrarre anno/numero provvedimento dall'URL.",
+            file=sys.stderr,
+        )
+        return False, None, session
+
+    base_url = "https://api.normattiva.it/t/normattiva.api/bff-opendata/v1"
+    nuova_ricerca_url = f"{base_url}/api/v1/ricerca-asincrona/nuova-ricerca"
+
+    payload = {
+        "formato": "AKN",
+        "richiestaExport": "M",
+        "modalita": "C",
+        "tipoRicerca": "A",
+        "parametriRicerca": {
+            "dataInizioEmanazione": f"{export_meta['dataGU_human']}T00:00:00.000Z",
+            "dataFineEmanazione": f"{export_meta['dataGU_human']}T23:59:59.999Z",
+            "numeroProvvedimento": int(numero),
+            "annoProvvedimento": int(anno),
+        },
+    }
+
+    try:
+        ricerca_response = session.post(
+            nuova_ricerca_url,
+            headers={**headers, "Content-Type": "application/json"},
+            data=json.dumps(payload),
+            timeout=DEFAULT_TIMEOUT,
+        )
+        ricerca_response.raise_for_status()
+    except requests.RequestException as e:
+        print(f"❌ Errore avvio ricerca OpenData: {e}", file=sys.stderr)
+        return False, None, session
+
+    token = ricerca_response.text.strip().strip('"')
+    if not token:
+        print("❌ ERRORE: token ricerca OpenData non valido.", file=sys.stderr)
+        return False, None, session
+
+    # Conferma ricerca (opzionale)
+    conferma_url = f"{base_url}/api/v1/ricerca-asincrona/conferma-ricerca"
+    try:
+        session.put(
+            conferma_url,
+            headers={**headers, "Content-Type": "application/json"},
+            data=json.dumps({"token": token}),
+            timeout=DEFAULT_TIMEOUT,
+        )
+    except requests.RequestException:
+        pass
+
+    status_url = f"{base_url}/api/v1/ricerca-asincrona/check-status/{token}"
+    stato = None
+    for _ in range(60):
+        try:
+            status_response = session.get(
+                status_url, headers=headers, timeout=DEFAULT_TIMEOUT
+            )
+            if status_response.status_code == 303:
+                stato = 3
+                break
+            status_response.raise_for_status()
+            status_data = status_response.json()
+            stato = status_data.get("stato")
+            if stato == 3:
+                break
+        except requests.RequestException:
+            pass
+        time.sleep(2)
+
+    if stato != 3:
+        print("❌ ERRORE: ricerca OpenData non completata in tempo utile.", file=sys.stderr)
+        return False, None, session
+
+    download_url = (
+        f"{base_url}/api/v1/collections/download/collection-asincrona/{token}"
+    )
+
+    try:
+        download_response = session.get(
+            download_url, headers=headers, timeout=DEFAULT_TIMEOUT
+        )
+        download_response.raise_for_status()
+    except requests.RequestException as e:
+        print(f"❌ Errore download collezione OpenData: {e}", file=sys.stderr)
+        return False, None, session
+
+    try:
+        with zipfile.ZipFile(BytesIO(download_response.content)) as zf:
+            target_date = _parse_yyyymmdd(export_meta.get("dataVigenza"))
+            selected = _select_akoma_file_from_zip(zf, target_date)
+            if not selected:
+                print(
+                    "❌ ERRORE: nessun XML Akoma Ntoso trovato nel pacchetto OpenData.",
+                    file=sys.stderr,
+                )
+                return False, None, session
+            with zf.open(selected) as src, open(output_path, "wb") as dst:
+                dst.write(src.read())
+    except zipfile.BadZipFile:
+        print("❌ ERRORE: file ZIP OpenData non valido.", file=sys.stderr)
+        return False, None, session
+
+    if not quiet:
+        print(f"✅ File XML (OpenData) salvato in: {output_path}", file=sys.stderr)
+
+    metadata = {
+        "dataGU": export_meta["dataGU"],
+        "codiceRedaz": export_meta["codiceRedaz"],
+        "dataVigenza": export_meta["dataVigenza"],
+        "url": url,
+        "url_xml": download_url,
+    }
+    return True, metadata, session
+
+
+def _extract_export_metadata(html):
+    match_gu = re.search(
+        r'name="atto\.dataPubblicazioneGazzetta"[^>]*value="([^"]+)"', html
+    )
+    match_codice = re.search(
+        r'name="atto\.codiceRedazionale"[^>]*value="([^"]+)"', html
+    )
+    match_vigenza = re.search(
+        r'<input[^>]*name="dataVigenza"[^>]*value="(\d{2}/\d{2}/\d{4})"',
+        html,
+    )
+
+    if not match_gu or not match_codice:
+        return None
+
+    data_gu_human = match_gu.group(1)
+    data_gu = data_gu_human.replace("-", "")
+    codice = match_codice.group(1)
+
+    if match_vigenza:
+        date_parts = match_vigenza.group(1).split("/")
+        data_vigenza = f"{date_parts[2]}{date_parts[1]}{date_parts[0]}"
+    else:
+        data_vigenza = datetime.now().strftime("%Y%m%d")
+
+    return {
+        "dataGU_human": data_gu_human,
+        "dataGU": data_gu,
+        "codiceRedaz": codice,
+        "dataVigenza": data_vigenza,
+    }
+
+
+def _build_export_payload(html):
+    form_match = re.search(
+        r'<form[^>]*id="anteprima"[^>]*>(.*?)</form>',
+        html,
+        re.S | re.I,
+    )
+    if not form_match:
+        return None
+
+    form_html = form_match.group(1)
+    inputs = re.findall(r"<input[^>]*>", form_html, re.I)
+    payload = []
+
+    for inp in inputs:
+        name_match = re.search(r'name="([^"]+)"', inp, re.I)
+        if not name_match:
+            continue
+        name = name_match.group(1)
+
+        type_match = re.search(r'type="([^"]+)"', inp, re.I)
+        input_type = type_match.group(1).lower() if type_match else ""
+
+        value_match = re.search(r'value="([^"]*)"', inp, re.I)
+        value = value_match.group(1) if value_match else ""
+
+        # Skip submit controls; we'll add our own
+        if input_type == "submit":
+            continue
+
+        # Include checked checkboxes only
+        if input_type == "checkbox":
+            if not re.search(r'checked', inp, re.I):
+                continue
+
+        payload.append((name, value))
+
+    return payload
+
+
+def _select_akoma_file_from_zip(zf, target_date):
+    candidates = []
+    originals = []
+    for name in zf.namelist():
+        lower = name.lower()
+        if not lower.endswith(".xml"):
+            continue
+        if "vigenza_" in lower:
+            match = re.search(r"VIGENZA_(\d{4}-\d{2}-\d{2})_V", name)
+            if match:
+                date_str = match.group(1)
+                date_obj = _parse_iso_date(date_str)
+                candidates.append((date_obj, name))
+        elif "origin" in lower or "originale" in lower:
+            originals.append(name)
+
+    if candidates:
+        candidates.sort(key=lambda x: x[0])
+        if target_date:
+            valid = [c for c in candidates if c[0] and c[0] <= target_date]
+            if valid:
+                return valid[-1][1]
+        return candidates[-1][1]
+
+    if originals:
+        return originals[0]
+    return None
+
+
+def _parse_iso_date(date_str):
+    try:
+        return datetime.strptime(date_str, "%Y-%m-%d").date()
+    except (ValueError, TypeError):
+        return None
+
+
+def _parse_yyyymmdd(date_str):
+    if not date_str:
+        return None
+    try:
+        return datetime.strptime(date_str, "%Y%m%d").date()
+    except (ValueError, TypeError):
+        return None
