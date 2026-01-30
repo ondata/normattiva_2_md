@@ -477,102 +477,172 @@ def download_akoma_ntoso_via_opendata(url, output_path, session=None, quiet=Fals
         "modalita": "C",
         "tipoRicerca": "A",
         "parametriRicerca": {
-            "dataInizioEmanazione": f"{export_meta['dataGU_human']}T00:00:00.000Z",
-            "dataFineEmanazione": f"{export_meta['dataGU_human']}T23:59:59.999Z",
+            "dataInizioPubblicazione": f"{export_meta['dataGU_human']}T00:00:00.000Z",
+            "dataFinePubblicazione": f"{export_meta['dataGU_human']}T23:59:59.999Z",
             "numeroProvvedimento": int(numero),
             "annoProvvedimento": int(anno),
         },
     }
 
-    try:
-        ricerca_response = session.post(
-            nuova_ricerca_url,
-            headers={**headers, "Content-Type": "application/json"},
-            data=json.dumps(payload),
-            timeout=DEFAULT_TIMEOUT,
-        )
-        ricerca_response.raise_for_status()
-    except requests.RequestException as e:
-        print(f"❌ Errore avvio ricerca OpenData: {e}", file=sys.stderr)
-        return False, None, session
+    relaxed_payload = {
+        "formato": "AKN",
+        "richiestaExport": "M",
+        "modalita": "C",
+        "tipoRicerca": "A",
+        "parametriRicerca": {
+            "numeroProvvedimento": int(numero),
+            "annoProvvedimento": int(anno),
+        },
+    }
 
-    token = ricerca_response.text.strip().strip('"')
-    if not token:
-        print("❌ ERRORE: token ricerca OpenData non valido.", file=sys.stderr)
-        return False, None, session
-
-    # Conferma ricerca (opzionale)
-    conferma_url = f"{base_url}/api/v1/ricerca-asincrona/conferma-ricerca"
-    try:
-        session.put(
-            conferma_url,
-            headers={**headers, "Content-Type": "application/json"},
-            data=json.dumps({"token": token}),
-            timeout=DEFAULT_TIMEOUT,
-        )
-    except requests.RequestException:
-        pass
-
-    status_url = f"{base_url}/api/v1/ricerca-asincrona/check-status/{token}"
-    stato = None
-
-    if not quiet:
-        print("⏳ Preparazione collezione OpenData", end="", file=sys.stderr, flush=True)
-
-    for _ in range(60):
+    def _run_async_search(search_payload):
         try:
-            status_response = session.get(
-                status_url, headers=headers, timeout=DEFAULT_TIMEOUT
+            ricerca_response = session.post(
+                nuova_ricerca_url,
+                headers={**headers, "Content-Type": "application/json"},
+                data=json.dumps(search_payload),
+                timeout=DEFAULT_TIMEOUT,
             )
-            if status_response.status_code == 303:
-                stato = 3
-                break
-            status_response.raise_for_status()
-            status_data = status_response.json()
-            stato = status_data.get("stato")
-            if stato == 3:
-                break
+            ricerca_response.raise_for_status()
+        except requests.RequestException as e:
+            print(f"❌ Errore avvio ricerca OpenData: {e}", file=sys.stderr)
+            return None, None, None
+
+        token = ricerca_response.text.strip().strip('"')
+        if not token:
+            print("❌ ERRORE: token ricerca OpenData non valido.", file=sys.stderr)
+            return None, None, None
+
+        # Conferma ricerca (opzionale)
+        conferma_url = f"{base_url}/api/v1/ricerca-asincrona/conferma-ricerca"
+        try:
+            session.put(
+                conferma_url,
+                headers={**headers, "Content-Type": "application/json"},
+                data=json.dumps({"token": token}),
+                timeout=DEFAULT_TIMEOUT,
+            )
         except requests.RequestException:
             pass
 
+        status_url = f"{base_url}/api/v1/ricerca-asincrona/check-status/{token}"
+        stato = None
+        status_data = None
+
         if not quiet:
-            print(".", end="", file=sys.stderr, flush=True)
-        time.sleep(2)
+            print(
+                "⏳ Preparazione collezione OpenData",
+                end="",
+                file=sys.stderr,
+                flush=True,
+            )
 
-    if not quiet:
-        print()  # New line after progress dots
-
-    if stato != 3:
-        print("❌ ERRORE: ricerca OpenData non completata in tempo utile.", file=sys.stderr)
-        return False, None, session
-
-    download_url = (
-        f"{base_url}/api/v1/collections/download/collection-asincrona/{token}"
-    )
-
-    try:
-        download_response = session.get(
-            download_url, headers=headers, timeout=DEFAULT_TIMEOUT
-        )
-        download_response.raise_for_status()
-    except requests.RequestException as e:
-        print(f"❌ Errore download collezione OpenData: {e}", file=sys.stderr)
-        return False, None, session
-
-    try:
-        with zipfile.ZipFile(BytesIO(download_response.content)) as zf:
-            target_date = _parse_yyyymmdd(export_meta.get("dataVigenza"))
-            selected = _select_akoma_file_from_zip(zf, target_date)
-            if not selected:
-                print(
-                    "❌ ERRORE: nessun XML Akoma Ntoso trovato nel pacchetto OpenData.",
-                    file=sys.stderr,
+        for _ in range(60):
+            try:
+                status_response = session.get(
+                    status_url, headers=headers, timeout=DEFAULT_TIMEOUT
                 )
-                return False, None, session
-            with zf.open(selected) as src, open(output_path, "wb") as dst:
-                dst.write(src.read())
-    except zipfile.BadZipFile:
-        print("❌ ERRORE: file ZIP OpenData non valido.", file=sys.stderr)
+                if status_response.status_code == 303:
+                    stato = 3
+                    break
+                status_response.raise_for_status()
+                status_data = status_response.json()
+                stato = status_data.get("stato")
+                if stato == 3:
+                    break
+            except requests.RequestException:
+                pass
+
+            if not quiet:
+                print(".", end="", file=sys.stderr, flush=True)
+            time.sleep(2)
+
+        if not quiet:
+            print()  # New line after progress dots
+
+        return stato, status_data, token
+
+    payloads = [payload, relaxed_payload]
+    download_url = None
+    selected = None
+
+    for idx, current_payload in enumerate(payloads):
+        stato, status_data, token = _run_async_search(current_payload)
+        if stato != 3:
+            if idx == 0:
+                continue
+            print(
+                "❌ ERRORE: ricerca OpenData non completata in tempo utile.",
+                file=sys.stderr,
+            )
+            return False, None, session
+
+        if status_data and status_data.get("totAtti") == 0:
+            if idx == 0:
+                if not quiet:
+                    print(
+                        "⚠️  Ricerca OpenData senza risultati, ritento senza filtro data...",
+                        file=sys.stderr,
+                    )
+                continue
+            print(
+                "❌ ERRORE: ricerca OpenData non ha restituito risultati.",
+                file=sys.stderr,
+            )
+            return False, None, session
+
+        download_url = (
+            f"{base_url}/api/v1/collections/download/collection-asincrona/{token}"
+        )
+
+        try:
+            download_response = session.get(
+                download_url, headers=headers, timeout=DEFAULT_TIMEOUT
+            )
+            download_response.raise_for_status()
+        except requests.RequestException as e:
+            if idx == 0:
+                if not quiet:
+                    print(
+                        "⚠️  Errore download collezione OpenData, ritento senza filtro data...",
+                        file=sys.stderr,
+                    )
+                continue
+            print(f"❌ Errore download collezione OpenData: {e}", file=sys.stderr)
+            return False, None, session
+
+        try:
+            with zipfile.ZipFile(BytesIO(download_response.content)) as zf:
+                target_date = _parse_yyyymmdd(export_meta.get("dataVigenza"))
+                selected = _select_akoma_file_from_zip(zf, target_date)
+                if not selected:
+                    if idx == 0:
+                        if not quiet:
+                            print(
+                                "⚠️  ZIP OpenData senza XML AKN, ritento senza filtro data...",
+                                file=sys.stderr,
+                            )
+                        continue
+                    print(
+                        "❌ ERRORE: nessun XML Akoma Ntoso trovato nel pacchetto OpenData.",
+                        file=sys.stderr,
+                    )
+                    return False, None, session
+                with zf.open(selected) as src, open(output_path, "wb") as dst:
+                    dst.write(src.read())
+            break
+        except zipfile.BadZipFile:
+            if idx == 0:
+                if not quiet:
+                    print(
+                        "⚠️  ZIP OpenData non valido, ritento senza filtro data...",
+                        file=sys.stderr,
+                    )
+                continue
+            print("❌ ERRORE: file ZIP OpenData non valido.", file=sys.stderr)
+            return False, None, session
+
+    if not selected:
         return False, None, session
 
     if not quiet:

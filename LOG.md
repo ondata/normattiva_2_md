@@ -2,6 +2,18 @@
 
 Questo file documenta gli avanzamenti significativi e le decisioni chiave del progetto `normattiva_2_md`.
 
+## 2026-01-30
+
+### Release v2.1.10: Progressive OpenData Fallback Retry
+
+- Implementata strategia di retry progressiva per OpenData API
+- Primo tentativo: ricerca con filtri completi (data inizio/fine + numero + anno)
+- Fallback automatico: senza filtri data se primo tentativo fallisce o senza risultati
+- Risolve issue #23: documenti (es. L. 118/2022) che prima fallivano con errore HTML
+- Retry logic: gestisce sia errori di download che ZIP non valido
+- Messaggi progressivi: avviso utente quando passa al fallback senza data
+- Fix field API: da `dataInizioPubblicazione`/`dataFinePubblicazione` (corretti per OpenData)
+
 ## 2026-01-29
 
 ### Fix messaggi di progresso fallback OpenData
