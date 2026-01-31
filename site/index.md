@@ -216,7 +216,7 @@ for hit in hits[:3]:
         <div class="text-center mb-16">
             <h2 class="text-4xl font-bold text-gray-900 mb-4">Vedi la differenza</h2>
             <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                Da XML Akoma Ntoso a Markdown pulito e LLM-friendly
+                Da XML Akoma Ntoso a Markdown pulito leggibile anche dalle persone
             </p>
         </div>
         <div class="max-w-6xl mx-auto">
@@ -262,15 +262,15 @@ for hit in hits[:3]:
                     <div class="mt-4 space-y-2 text-sm text-gray-600">
                         <div class="flex items-center gap-2">
                             <span class="text-red-500">❌</span>
-                            <span>Verboso e difficile da leggere</span>
+                            <span>Non leggibile a schermo: è un formato per le macchine</span>
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="text-red-500">❌</span>
-                            <span>Alto consumo di token per LLM</span>
+                            <span>&lt;docType&gt;DECRETO LEGISLATIVO&lt;/docType&gt; vale più token di "DECRETO LEGISLATIVO"</span>
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="text-red-500">❌</span>
-                            <span>Richiede parsing XML complesso</span>
+                            <span>Per leggerlo bisogna saper usare strumenti di parsing XML</span>
                         </div>
                     </div>
                 </div>
@@ -282,7 +282,7 @@ for hit in hits[:3]:
                             <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                             </svg>
-                            <span class="font-semibold text-green-700">Markdown LLM-ready</span>
+                            <span class="font-semibold text-green-700">Markdown pronto per LLM</span>
                         </div>
                     </div>
                     <div class="bg-gray-900 rounded-lg overflow-hidden">
@@ -319,7 +319,7 @@ dataVigenza: 20250130
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="text-green-500">✅</span>
-                            <span>Metadata YAML + gerarchia H1-H4</span>
+                            <span>Metadati YAML + gerarchia H1–H4</span>
                         </div>
                     </div>
                 </div>
@@ -327,7 +327,7 @@ dataVigenza: 20250130
             <div class="mt-12 bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
                 <p class="text-lg text-gray-700">
                     <span class="font-semibold text-blue-600">Risultato:</span>
-                    Token ottimizzati per LLM, struttura book-style perfetta per RAG, metadata completi per tracciabilità
+                    Meno token, struttura adatta al RAG, metadati completi per poter risalire sempre alla fonte in formato Akoma
                 </p>
             </div>
         </div>
@@ -522,9 +522,9 @@ normattiva2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legi
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
             </div>
-            <h2 class="text-3xl font-bold text-gray-900 mb-4">Possibile grazie a Normattiva</h2>
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Possibile grazie a Normattiva e ad Akoma Ntoso</h2>
             <p class="text-lg text-gray-600 mb-6 leading-relaxed">
-                Questo progetto si basa sul servizio di <strong>Normattiva</strong>, che rende disponibili le norme italiane in formato XML strutturato (Akoma Ntoso). Senza questo normattiva2md non sarebbe stato possibile.
+                Questo progetto è possibile grazie al servizio di <strong>Normattiva</strong> e al formato XML strutturato <strong>Akoma Ntoso</strong>, che permette di costruire applicazioni machine-to-machine capaci di trasformare il testo in modo affidabile. Senza questi due elementi, normattiva2md non sarebbe stato possibile.
             </p>
             <p class="text-gray-600 mb-6">
                 Normattiva eroga un servizio completo di informazione sulle leggi italiane, garantendo accessibilità e trasparenza normativa per tutte le persone.
