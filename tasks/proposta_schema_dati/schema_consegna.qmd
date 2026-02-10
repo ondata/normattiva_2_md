@@ -261,7 +261,8 @@ L'[articolo 7](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-0
 
 | Nome Campo | Tipo | Descrizione |
 |------------|------|-------------|
-| id_struttura | Alfanumerico | Identificativo univoco del centro antiviolenza o casa rifugio |
+| id_struttura | Alfanumerico | Identificativo univoco (se previsto) del centro antiviolenza o casa rifugio |
+| nome_struttura | Testuale | Denominazione del centro antiviolenza o casa rifugio |
 | tipo_struttura | Enumerativo | Tipologia: "Centro antiviolenza", "Casa rifugio" |
 | accreditamento | Enumerativo | Stato di accreditamento: "Accreditato", "Non accreditato". La legge richiede dati distinti per le due categorie ([art. 7 comma 1](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7)) |
 | regione | Alfanumerico | Codice ISTAT della regione o provincia autonoma. La legge richiede disaggregazione regionale ([art. 7 comma 1](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7)) |
