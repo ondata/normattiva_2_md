@@ -11,10 +11,6 @@ format:
     reference-doc: ./custom-reference-doc.docx
     toc: true
     toc-depth: 3
-  html:
-    toc: true
-    toc-depth: 3
-    embed-resources: false
 ---
 
 ## Introduzione
@@ -268,15 +264,15 @@ L'[articolo 7](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-0
 | tipo_struttura | Enumerativo | Tipologia: "Centro antiviolenza", "Casa rifugio" |
 | accreditamento | Enumerativo | Stato di accreditamento: "Accreditato", "Non accreditato". La legge richiede dati distinti per le due categorie ([art. 7 comma 1](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7)) |
 | regione | Alfanumerico | Codice ISTAT della regione o provincia autonoma. La legge richiede disaggregazione regionale ([art. 7 comma 1](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7)) |
-| id_utente_anonimizzato (proposta) | Alfanumerico | Identificativo univoco anonimizzato dell'utente. Formato: `UTE-{hash}`. Garantisce l'anonimato come previsto dall'[art. 7 comma 2 lett. a)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7) |
-| data_primo_contatto (proposta) | Data | Data del primo accesso al servizio. Formato: `AAAA-MM-GG` |
+| id_utente_anonimizzato | Alfanumerico | Identificativo univoco anonimizzato dell'utente. Formato: `UTE-{hash}`. Garantisce l'anonimato come previsto dall'[art. 7 comma 2 lett. a)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7) |
+| data_primo_contatto | Data | Data del primo accesso al servizio. Formato: `AAAA-MM-GG` |
 | relazione_autore_vittima | Enumerativo | Relazione tra autore e vittima, come previsto dall'[art. 7 comma 2 lett. a)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7) che include esplicitamente la relazione autore-vittima tra le caratteristiche dell'utenza (vedi [tabella](#relazione-autore-vittima)) |
 | tipologia_violenza | Enumerativo | Tipologia di violenza subita, come previsto dall'[art. 7 comma 2 lett. b)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7) (vedi [tabella](#tipologia-di-violenza)): "Fisica", "Sessuale", "Psicologica", "Economica" |
 | presenza_figli_durante_fatto | Booleano | Indica se la violenza è avvenuta in presenza dei figli, come previsto dall'[art. 7 comma 2 lett. b)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7) |
 | atti_persecutori | Booleano | Indica se la violenza include atti persecutori, come previsto dall'[art. 7 comma 2 lett. b)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7) |
 | tipo_intervento | Enumerativo | Tipologia di intervento di assistenza fornito, come previsto dall'[art. 7 comma 2 lett. c)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7) (vedi [tabella](#tipologia-di-intervento)) |
-| eta_utente (proposta) | Numerico | Età dell'utente al momento del primo contatto (se nota) |
-| genere_utente (proposta) | Enumerativo | Genere dell'utente: "F", "M", "Altro", "Non specificato" |
+| eta_utente | Numerico | Età dell'utente al momento del primo contatto (se nota) |
+| genere_utente | Enumerativo | Genere dell'utente: "F", "M", "Altro", "Non specificato" |
 
 : Schema del dataset Centri Antiviolenza e Case Rifugio {.striped .hover .small}
 
