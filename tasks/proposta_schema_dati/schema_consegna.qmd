@@ -60,11 +60,11 @@ Prima di presentare lo schema dati, è importante chiarire un aspetto tecnico fo
 Nella realtà dei reati di violenza di genere, **non sempre esiste una corrispondenza uno-a-uno** tra evento, vittima e autore. Alcuni esempi concreti:
 
 - **Caso 1 - Violenza sessuale di gruppo** (Art. 609-octies CP).
-Una donna viene aggredita da 3 uomini. Questo è **1 evento**, **1 vittima**, ma **3 autori**.
+Una donna viene aggredita da 3 uomini. Si tratta di **1 evento**, **1 vittima**, ma **3 autori**.
 - **Caso 2 - Maltrattamenti in famiglia** (Art. 572 CP).
-Un uomo maltratta la moglie e i due figli. Questo è **1 evento**, **1 autore**, ma **3 vittime**.
+Un uomo maltratta la moglie e i due figli. Si tratta di **1 evento**, **1 autore**, ma **3 vittime**.
 - **Caso 3 - Reati multipli simultanei**.
-Durante un episodio di violenza domestica, l'autore commette lesioni personali, violenza privata e minaccia. Questo è **1 evento**, **1 vittima**, **1 autore**, ma **3 reati** distinti.
+Durante un episodio di violenza domestica, l'autore commette lesioni personali, violenza privata e minaccia. Si tratta di **1 evento**, **1 vittima**, **1 autore**, ma **3 reati** distinti.
 
 ### La soluzione proposta
 
@@ -170,7 +170,7 @@ Una donna vittima di violenza domestica potrebbe avere:
 7. **15 settembre 2024**: Sentenza di primo grado (condanna)
 8. **20 gennaio 2025**: Sentenza di appello (conferma condanna)
 
-Questo è **1 vittima**, ma **8 eventi procedurali** che devono essere tracciati in sequenza temporale per comprendere l'efficacia delle misure di protezione e l'esito finale del procedimento.
+Si tratta di **1 vittima**, ma **8 eventi procedurali** che devono essere tracciati in sequenza temporale per comprendere l'efficacia delle misure di protezione e l'esito finale del procedimento.
 
 #### Soluzione: schema unificato con eventi procedurali
 
