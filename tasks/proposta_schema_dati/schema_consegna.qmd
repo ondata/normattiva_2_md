@@ -233,8 +233,6 @@ Questo dataset traduce in schema i requisiti specifici dell'[art. 4 comma 2](htt
 
 | Nome Campo | Tipo | Descrizione |
 |------------|------|-------------|
-| id_accesso | Alfanumerico | Identificativo univoco dell'accesso alla struttura sanitaria. Formato: `ACC-{anno}-{progressivo}` (es. `ACC-2024-005678`) |
-| id_vittima_anonimizzato | Alfanumerico | Identificativo univoco anonimizzato della vittima. Formato: `VIT-{hash}`. Garantisce l'anonimato come previsto dall'[art. 4 comma 2 lett. c)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art4) |
 | data_accesso | Data | Data dell'accesso alla struttura sanitaria. Formato: `AAAA-MM-GG` |
 | struttura_sanitaria | Alfanumerico | Codice della struttura sanitaria (codice STS11 del Ministero della Salute) |
 | tipo_struttura | Enumerativo | Tipologia di struttura: "Pronto soccorso", "Altra struttura sanitaria pubblica" |
