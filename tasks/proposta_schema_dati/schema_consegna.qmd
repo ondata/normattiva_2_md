@@ -1,0 +1,430 @@
+---
+title: "Proposta Schema Dati sulla Violenza di Genere"
+subtitle: "Basata sulla Legge 53 del 5 maggio 2022"
+lang: it
+mainfont: Montserrat
+link-external-newwindow: true
+comments:
+  hypothesis: true
+format:
+  docx:
+    reference-doc: ./custom-reference-doc.docx
+    toc: true
+    toc-depth: 3
+  html:
+    toc: true
+    toc-depth: 3
+    embed-resources: false
+---
+
+::: {.callout-note}
+Quest'analisi è stata realizzata con il supporto del tool [normattiva2md](https://ondata.github.io/normattiva_2_md/), uno strumento che trasforma i testi delle leggi italiane in formato leggibile e pronto per l'uso con intelligenze artificiali.
+:::
+
+## 📝 Cronologia aggiornamenti
+
+**2026-01-07**
+
+- Aggiunti 3 reati previsti dalla [Direttiva UE 2024/1385](#nota-contesto-europeo-e-opportunità-per-litalia) (stalking online, molestie online, istigazione alla violenza/odio online) per anticipare il recepimento normativo
+
+**2025-12-26**
+
+- Aggiunto riferimento alla [Legge 181/2025 sul femminicidio](#supporto-normativo-aggiuntivo-la-legge-1812025)
+- Integrato [contesto normativo europeo](#nota-contesto-europeo-e-opportunità-per-litalia) (Direttiva UE 2024/1385)
+
+---
+
+## Introduzione
+
+Questa pagina definisce una proposta di schema dati da pubblicare sul tema dei femminicidi e della violenza di genere, basata principalmente sulla normativa corrente italiana e in particolare sulla [**Legge 53 del 5 maggio 2022**](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53) ("Disposizioni in materia di statistiche in tema di violenza di genere").
+
+La Legge 53/2022 prevede:
+
+- Un **Centro elaborazione dati** presso il Ministero della Giustizia per rilevare i dati su 27 reati di violenza ([art. 5, comma 3](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art5))
+- Un **Sistema interministeriale** per tracciare denunce, misure di protezione e procedimenti giudiziari ([art. 5, commi 4-5](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art5))
+- Trasmissione periodica dei dati all'ISTAT e al Dipartimento per le Pari Opportunità
+
+Lo schema proposto traduce i requisiti normativi in una struttura dati concreta e pubblicabile, pronta per l'implementazione.
+
+---
+
+## Supporto normativo aggiuntivo: la Legge 181/2025
+
+A ulteriore supporto della richiesta, la recente [**Legge 181 del 2 dicembre 2025**](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-12-02;181!vig=2025-12-26) ("Introduzione del delitto di femminicidio e altri interventi normativi per il contrasto alla violenza nei confronti delle donne e per la tutela delle vittime") introduce elementi importanti che rafforzano l'esigenza di un sistema di raccolta dati strutturato:
+
+- **Nuovo reato di femminicidio**: L'[articolo 1, lettera a)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-12-02;181~art1!vig=2025-12-26) introduce il nuovo art. 577-bis CP (Femminicidio). L'[articolo 13](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-12-02;181~art13!vig=2025-12-26) stabilisce che "tutte le volte in cui la legge fa riferimento all'omicidio il richiamo si intende operato anche al femminicidio", rendendo il femminicidio parte integrante della L. 53/2022.
+
+- **Relazione annuale al Parlamento**: L'[articolo 2](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-12-02;181~art2!vig=2025-12-26) prevede che entro il 30 giugno di ogni anno il Ministro della Giustizia presenti alle Camere una relazione con l'indicazione specifica dei **dati delle condanne e assoluzioni per femminicidio** nonché per omicidio, **disaggregati per sesso della vittima e circostanze aggravanti**. Questo conferma l'esigenza di un sistema di raccolta dati dettagliato, strutturato e pubblicamente accessibile.
+
+- **Nuove aggravanti di genere**: L'[articolo 1](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-12-02;181~art1!vig=2025-12-26) introduce aggravanti specifiche quando il reato è commesso "come atto di odio o discriminazione o prevaricazione... in quanto donna" per diversi reati (maltrattamenti, lesioni personali, stalking, revenge porn, violenza sessuale, interruzione di gravidanza).
+
+- **Nuovi eventi procedurali**: L'[articolo 3](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-12-02;181~art3!vig=2025-12-26) introduce l'obbligo di audizione personale della vittima da parte del PM su richiesta motivata e la possibilità di sequestro conservativo per garantire il risarcimento danni.
+
+Questi elementi sono stati integrati nello schema dati proposto.
+
+---
+
+## Nota metodologica: gestione della cardinalità
+
+Prima di presentare lo schema dati, è importante chiarire un aspetto tecnico fondamentale per garantire la **completezza e l'accuratezza** delle informazioni raccolte.
+
+### Il problema
+
+Nella realtà dei reati di violenza di genere, **non sempre esiste una corrispondenza uno-a-uno** tra evento, vittima e autore. Alcuni esempi concreti:
+
+- **Caso 1 - Violenza sessuale di gruppo** (Art. 609-octies CP).
+Una donna viene aggredita da 3 uomini. Questo è **1 evento**, **1 vittima**, ma **3 autori**.
+- **Caso 2 - Maltrattamenti in famiglia** (Art. 572 CP).
+Un uomo maltratta la moglie e i due figli. Questo è **1 evento**, **1 autore**, ma **3 vittime**.
+- **Caso 3 - Reati multipli simultanei**.
+Durante un episodio di violenza domestica, l'autore commette lesioni personali, violenza privata e minaccia. Questo è **1 evento**, **1 vittima**, **1 autore**, ma **3 reati** distinti.
+
+### La soluzione proposta
+
+Per gestire correttamente questi casi senza perdere informazioni, proponiamo uno **schema con identificativi anonimi** che permettono di collegare tra loro le diverse componenti mantenendo una singola tabella di facile utilizzo:
+
+- **`id_evento`**: identifica l'episodio di violenza (es. `EVT-2024-001234`)
+- **`id_vittima_anonimizzato`**: identifica in modo anonimizzato la persona vittima (es. `VIT-A3F8B2C1`)
+- **`id_autore_anonimizzato`**: identifica in modo anonimizzato l'autore del reato (es. `AUT-7D9E4F2A`)
+
+Ogni **riga** del dataset rappresenta una **combinazione** di evento-vittima-autore-reato.
+
+### Esempio pratico
+
+**Scenario**: Violenza sessuale di gruppo con 3 autori e 1 vittima, avvenuta il 15 marzo 2024.
+
+Il dataset conterrà **3 righe**:
+
+| id_evento | tipo_reato | id_vittima | eta_vittima | id_autore | eta_autore | relazione_autore_vittima |
+|-----------|------------|------------|-------------|-----------|------------|--------------------------|
+| EVT-2024-001234 | Violenza sessuale di gruppo | VIT-A3F8B2C1 | 23 | AUT-7D9E4F2A | 28 | Conoscente |
+| EVT-2024-001234 | Violenza sessuale di gruppo | VIT-A3F8B2C1 | 23 | AUT-3B5C8E1F | 31 | Conoscente |
+| EVT-2024-001234 | Violenza sessuale di gruppo | VIT-A3F8B2C1 | 23 | AUT-9F2A6D4C | 26 | Sconosciuto |
+
+: Esempio di struttura dati per violenza sessuale di gruppo con 3 autori {.striped .hover .small}
+
+**Come leggere i dati**:
+
+- Stesso `id_evento` → **stesso episodio di violenza**
+- Stesso `id_vittima_anonimizzato` → **stessa persona vittima** (l'età 23 si ripete)
+- Diverso `id_autore_anonimizzato` → **autori diversi** (3 persone con età diverse)
+
+### Vantaggi per l'analisi
+
+Questo approccio permette di calcolare correttamente:
+
+- **Numero di eventi reali**: `COUNT(DISTINCT id_evento)` → 1 evento
+- **Numero di vittime uniche**: `COUNT(DISTINCT id_vittima_anonimizzato)` → 1 vittima
+- **Numero di autori unici**: `COUNT(DISTINCT id_autore_anonimizzato)` → 3 autori
+- **Numero totale di righe**: 3 (una per ogni combinazione autore-vittima)
+
+Senza gli identificativi univoci, **sarebbe impossibile distinguere** 3 eventi separati da 1 evento con 3 autori.
+
+---
+
+## Schema Dati
+
+### Dataset: Centro Elaborazione Dati - Reati di Violenza di Genere
+
+**Riferimento normativo**: [Articolo 5](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art5) della Legge 53/2022
+
+Questo dataset contiene le informazioni che il Ministero della Giustizia e dell'Interno devono rilevare, con trasmissione periodica all'ISTAT e al Dipartimento per le Pari Opportunità.
+
+**Struttura**: Come spiegato nella [nota metodologica](#nota-metodologica-gestione-della-cardinalità), ogni riga rappresenta una combinazione di evento-vittima-autore-reato. Gli identificativi anonimi permettono di gestire correttamente i casi con multipli autori, vittime o reati.
+
+| Nome Campo | Tipo | Descrizione |
+|------------|------|-------------|
+| id_evento | Alfanumerico | Identificativo univoco dell'episodio di violenza. Formato: `EVT-{anno}-{progressivo}` (es. `EVT-2024-001234`). Stesso ID = stesso evento |
+| id_vittima_anonimizzato | Alfanumerico | Identificativo univoco anonimizzato della vittima. Formato: `VIT-{hash}` (es. `VIT-A3F8B2C1`). Garantisce l'anonimato e permette di contare vittime uniche |
+| id_autore_anonimizzato | Alfanumerico | Identificativo univoco anonimizzato dell'autore. Formato: `AUT-{hash}` (es. `AUT-7D9E4F2A`). Garantisce l'anonimato e permette di contare autori unici |
+| data_fatto | Data | Data in cui è avvenuto il fatto (se nota). Formato: `AAAA-MM-GG` |
+| tipo_reato | Enumerativo | Codice identificativo del reato, secondo la lista dei 27 reati previsti dall'[art. 5 comma 3](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art5) (vedi elenco valori della [tabella](#lista-dei-reati-monitorati) più in basso) |
+| relazione_autore_vittima | Enumerativo | Relazione tra autore e vittima, secondo le 15 modalità obbligatorie definite dall'[art. 2 comma 2](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art2) (vedi elenco valori della [tabella](#relazione-autore-vittima) più in basso) |
+| eta_vittima | Numerico | Età della vittima al momento del fatto (se nota) |
+| genere_vittima | Enumerativo | Genere della vittima (se noto): "F", "M", "Altro", "Non specificato" |
+| eta_autore | Numerico | Età dell'autore del reato al momento del fatto (se nota) |
+| genere_autore | Enumerativo | Genere dell'autore del reato (se noto): "M", "F", "Altro", "Non specificato" |
+| luogo_fatto | Enumerativo | Informazioni sul luogo dove il fatto è avvenuto (se noto) (vedi elenco valori della [tabella](#luogo-del-fatto) più in basso) |
+| localita_comune | Alfanumerico | Codice ISTAT del comune dove è avvenuto il fatto. **Regola di anonimizzazione**: se il numero di casi nel comune è inferiore a 3, lasciare vuoto e riportare solo la provincia |
+| localita_provincia | Alfanumerico | Codice ISTAT della provincia dove è avvenuto il fatto. Sempre valorizzato quando la località è nota |
+| tipologia_arma | Enumerativo | Tipologia di arma eventualmente utilizzata (se nota) (vedi elenco valori della [tabella](#tipologia-di-arma) più in basso) |
+| aggravante_genere | Booleano | Indica se il reato è stato commesso con le aggravanti di genere previste dalla [L. 181/2025, art. 1](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-12-02;181~art1!vig=2025-12-26) ("come atto di odio/discriminazione/prevaricazione... in quanto donna"). Applicabile a: maltrattamenti (art. 572 c.5 CP), lesioni (art. 585 c.4 CP), interruzione gravidanza (art. 593-ter c.6 CP), violenza sessuale (art. 609-ter 5-ter.1 CP), stalking (art. 612-bis c.4 CP), revenge porn (art. 612-ter c.5 CP) |
+| presenza_figli_durante_fatto | Booleano | Indica se la violenza è stata commessa in presenza sul luogo del fatto dei figli degli autori o delle vittime |
+| vittima_ha_figli_minori | Booleano | Indica se la vittima ha figli minorenni (rilevante per le tutele previste dalla [L. 122/2016](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2016-07-07;122) come modificata dalla [L. 181/2025, art. 4](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-12-02;181~art4!vig=2025-12-26) - Fondo orfani di crimini domestici) |
+| atti_persecutori | Booleano | Indica se la violenza è stata commessa unitamente ad atti persecutori (stalking) |
+
+: Schema del dataset Centro Elaborazione Dati - Reati di Violenza di Genere {.striped .hover .small}
+
+---
+
+### Dataset: Sistema Interministeriale di Raccolta Dati
+
+**Riferimento normativo**: [Articolo 5, commi 4 e 5](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art5) della Legge 53/2022
+
+#### Premessa: il percorso della vittima nel sistema giudiziario
+
+L'[articolo 5 comma 5](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art5) richiede di tracciare "per ogni donna vittima di violenza" le informazioni su **denunce, misure e procedimenti** in ogni grado del procedimento giudiziario.
+
+Nella realtà, una singola vittima può attraversare **molteplici fasi** nel tempo:
+
+**Esempio di percorso reale**:
+
+Una donna vittima di violenza domestica potrebbe avere:
+1. **15 marzo 2024**: Prima denuncia per maltrattamenti
+2. **15 marzo 2024**: Allontanamento d'urgenza dell'autore (misura precautelare)
+3. **20 marzo 2024**: Ammonimento del Questore (misura di prevenzione)
+4. **25 marzo 2024**: Divieto di avvicinamento (misura cautelare)
+5. **10 aprile 2024**: Violazione del divieto → nuova denuncia
+6. **15 aprile 2024**: Arresto dell'autore
+7. **15 settembre 2024**: Sentenza di primo grado (condanna)
+8. **20 gennaio 2025**: Sentenza di appello (conferma condanna)
+
+Questo è **1 vittima**, ma **8 eventi procedurali** che devono essere tracciati in sequenza temporale per comprendere l'efficacia delle misure di protezione e l'esito finale del procedimento.
+
+#### Soluzione: schema unificato con eventi procedurali
+
+Per semplicità, proponiamo una **singola tabella** dove ogni riga rappresenta un **evento procedurale** nel percorso della vittima. L'identificativo anonimizzato della vittima permette di collegare tutti gli eventi della stessa persona.
+
+| Nome Campo | Tipo | Descrizione | Valore esempio |
+|------------|------|-------------|----------------|
+| id_vittima_anonimizzato | Alfanumerico | Identificativo univoco anonimizzato della vittima. Formato: `VIT-{hash}` (es. `VIT-A3F8B2C1`). Stesso ID = stessa persona | "VIT-A3F8B2C1" |
+| id_evento_procedurale | Alfanumerico | Identificativo univoco dell'evento procedurale. Formato: `EVP-{anno}-{progressivo}` (es. `EVP-2024-001234`) | "EVP-2024-001234" |
+| tipo_evento | Enumerativo | Tipologia di evento procedurale (vedi [valori controllati](#tipo-evento-procedurale)) | "Denuncia" |
+| tipo_reato | Enumerativo | Reato per cui l'evento procedurale è riferito, secondo lista Art. 5 comma 3 (vedi [tabella](#lista-dei-reati-monitorati)). Obbligatorio per tipo_evento="DENUNCIA", opzionale per altri eventi | "Maltrattamenti contro familiari e conviventi" |
+| data_evento | Data | Data in cui è avvenuto l'evento. Formato: `AAAA-MM-GG` | 2024-03-15 |
+| autorita | Enumerativo | Autorità competente che ha gestito l'evento | "Carabinieri", "Procura", "Tribunale", "Questore" |
+| dettaglio_evento | Testuale | Dettaglio specifico dell'evento (es. tipo di misura, tipo di sentenza, motivazione archiviazione) | "Divieto di avvicinamento ex art. 282-ter cpp" |
+| esito | Enumerativo | Esito dell'evento (se applicabile): "Applicata", "Respinta", "Violata", "Condanna", "Assoluzione", "Archiviazione" | "Applicata" |
+| eta_vittima | Numerico | Età della vittima al momento della prima denuncia (se nota) | 32 |
+| genere_vittima | Enumerativo | Genere della vittima: "F", "M", "Altro", "Non specificato" | "F" |
+| relazione_autore_vittima | Enumerativo | Relazione tra autore e vittima al momento della prima denuncia (vedi [tabella](#relazione-autore-vittima)) | "Ex coniuge/ex convivente" |
+| eta_autore | Numerico | Età dell'autore al momento della prima denuncia (se nota) | 38 |
+| genere_autore | Enumerativo | Genere dell'autore: "M", "F", "Altro", "Non specificato" | "M" |
+
+: Schema del dataset Sistema Interministeriale di Raccolta Dati {.striped .hover .small}
+
+#### Esempio pratico: lettura dei dati
+
+Riprendendo l'esempio del percorso descritto sopra, il dataset conterrebbe **8 righe** con lo **stesso `id_vittima_anonimizzato`**:
+
+| id_vittima | id_evento | tipo_evento | tipo_reato | data_evento | dettaglio_evento | esito |
+|------------|-----------|-------------|------------|-------------|------------------|-------|
+| VIT-A3F8B2C1 | EVP-2024-001234 | Denuncia | Maltrattamenti contro familiari e conviventi | 2024-03-15 | Prima denuncia | Presentata |
+| VIT-A3F8B2C1 | EVP-2024-001235 | Misura precautelare | Maltrattamenti contro familiari e conviventi | 2024-03-15 | Allontanamento d'urgenza ex art. 384-bis cpp | Applicata |
+| VIT-A3F8B2C1 | EVP-2024-001236 | Misura di prevenzione | Maltrattamenti contro familiari e conviventi | 2024-03-20 | Ammonimento Questore ex art. 8 DL 11/2009 | Applicata |
+| VIT-A3F8B2C1 | EVP-2024-001237 | Misura cautelare | Maltrattamenti contro familiari e conviventi | 2024-03-25 | Divieto di avvicinamento ex art. 282-ter cpp | Applicata |
+| VIT-A3F8B2C1 | EVP-2024-001238 | Violazione misura | Maltrattamenti contro familiari e conviventi | 2024-04-10 | Violazione divieto di avvicinamento | Accertata |
+| VIT-A3F8B2C1 | EVP-2024-001239 | Arresto | Maltrattamenti contro familiari e conviventi | 2024-04-15 | Arresto per violazione misura cautelare | Eseguito |
+| VIT-A3F8B2C1 | EVP-2024-001240 | Sentenza | Maltrattamenti contro familiari e conviventi | 2024-09-15 | Primo grado - Condanna 3 anni e 6 mesi | Condanna |
+| VIT-A3F8B2C1 | EVP-2024-001241 | Sentenza | Maltrattamenti contro familiari e conviventi | 2025-01-20 | Appello - Conferma condanna | Condanna |
+
+: Esempio di percorso procedurale completo di una vittima dal momento della denuncia fino alla sentenza {.striped .hover .small}
+
+**Come leggere i dati**:
+
+- Stesso `id_vittima_anonimizzato` → **stessa persona** vittima
+- Stesso `tipo_reato` → **stesso procedimento penale** (in questo caso, maltrattamenti)
+- Ogni riga = **un evento** nel percorso giudiziario
+- L'ordine cronologico (campo `data_evento`) permette di ricostruire la **timeline** completa
+- È possibile analizzare: tempi tra denuncia e misure, efficacia delle misure per tipo di reato, tasso di violazioni, esiti finali
+
+**Nota**: Se la stessa vittima denuncia reati diversi in momenti diversi (es. prima maltrattamenti, poi violenza sessuale), nel dataset ci saranno due percorsi procedurali distinti identificabili dal campo `tipo_reato`.
+
+---
+
+## Nota: contesto europeo e opportunità per l'Italia
+
+A rafforzamento della richiesta, è utile evidenziare che la raccolta sistematica di dati sulla violenza di genere non è solo una previsione della normativa italiana, ma un **obbligo europeo in arrivo**.
+
+La [**Direttiva UE 2024/1385 del 14 maggio 2024**](https://eur-lex.europa.eu/legal-content/IT/TXT/?uri=CELEX:32024L1385) sulla lotta alla violenza contro le donne e alla violenza domestica prevede all'[**articolo 44**](https://eur-lex.europa.eu/legal-content/IT/TXT/?uri=CELEX:32024L1385#d1e3942-1-1) che gli Stati membri raccolgano e pubblichino statistiche annuali disaggregate su:
+
+- Numero di reati denunciati e condanne (par. 2, lett. a)
+- Numero di donne uccise in contesto di violenza di genere (par. 2, lett. b)
+- Numero e capacità delle case rifugio (par. 2, lett. c)
+- Numero di chiamate alle linee di assistenza (par. 2, lett. d)
+
+Il **termine di recepimento della direttiva è il 14 giugno 2027** ([articolo 49](https://eur-lex.europa.eu/legal-content/IT/TXT/?uri=CELEX:32024L1385#d1e4167-1-1)).
+
+**L'Italia ha già anticipato questo quadro normativo** con la Legge 53/2022, che in alcuni aspetti è **più dettagliata** rispetto ai requisiti minimi europei (27 reati specifici anziché categorie generiche, 15 modalità di relazione autore-vittima, età puntuale anziché fasce).
+
+Pubblicare ora i dati previsti dalla L. 53/2022 significherebbe:
+
+1. **Dare piena attuazione** a una norma nazionale già vigente dal 2022
+2. **Anticipare virtuosamente** l'obbligo europeo del 2027
+3. **Dimostrare leadership** dell'Italia su un tema di rilevanza europea
+4. **Fornire evidenze empiriche** per politiche pubbliche più efficaci
+
+In questo senso, la pubblicazione dei dati non è solo un atto di trasparenza, ma un **investimento strategico** in vista degli obblighi europei imminenti.
+
+---
+
+## Valori Controllati
+
+### Relazione Autore-Vittima
+
+**Riferimento normativo**: [Articolo 2, comma 2](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art2) della Legge 53/2022
+
+Questo è il set minimo di modalità che devono essere previste nelle rilevazioni:
+
+| Codice | Valore |
+|--------|--------|
+| 1 | Coniuge/convivente |
+| 2 | Fidanzato |
+| 3 | Ex coniuge/ex convivente |
+| 4 | Ex fidanzato |
+| 5 | Altro parente |
+| 6 | Collega/datore di lavoro |
+| 7 | Conoscente/amico |
+| 8 | Cliente |
+| 9 | Vicino di casa |
+| 10 | Compagno di scuola |
+| 11 | Insegnante o persona che esercita un'attività di cura e/o custodia |
+| 12 | Medico o operatore sanitario |
+| 13 | Persona sconosciuta alla vittima |
+| 14 | Altro |
+| 15 | Autore non identificato |
+
+: Valori controllati per la relazione autore-vittima (Art. 2, comma 2, L. 53/2022) {.striped .hover .small}
+
+---
+
+### Tipologia di Violenza
+
+**Riferimento normativo**: [Articolo 2, comma 1](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art2) e [Articolo 4, comma 2, lettera a)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art4)
+
+| Codice | Valore |
+|--------|--------|
+| FIS | Violenza fisica |
+| SES | Violenza sessuale |
+| PSI | Violenza psicologica |
+| ECO | Violenza economica |
+
+: Tipologie di violenza previste dalla normativa {.striped .hover .small}
+
+---
+
+### Lista dei Reati Monitorati
+
+**Riferimento normativo**: [Articolo 5, comma 3](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art5) della Legge 53/2022
+
+| Codice | Reato | Riferimento Normativo |
+|--------|-------|----------------------|
+| a | Omicidio (anche tentato) | Art. 575 CP, anche aggravato ex artt. 576 e 577 CP |
+| a-bis | Femminicidio | Art. 577-bis CP |
+| b | Percosse | Art. 581 CP |
+| c | Lesioni personali | Art. 582 CP, anche aggravate ex artt. 583 e 585 CP |
+| d | Violenza sessuale | Art. 609-bis CP, anche aggravata ex art. 609-ter CP |
+| d-bis | Violenza sessuale di gruppo | Art. 609-octies CP |
+| e | Atti sessuali con minorenne | Art. 609-quater CP |
+| e-bis | Corruzione di minorenne | Art. 609-quinquies CP |
+| f | Maltrattamenti contro familiari e conviventi | Art. 572 CP |
+| g | Atti persecutori (stalking) | Art. 612-bis CP |
+| h | Diffusione illecita di immagini o video sessualmente espliciti (revenge porn) | Art. 612-ter CP |
+| i | Violazione dei provvedimenti di allontanamento dalla casa familiare e del divieto di avvicinamento | Art. 387-bis CP |
+| l | Costrizione o induzione al matrimonio | Art. 558-bis CP |
+| m | Pratiche di mutilazione degli organi genitali femminili | Art. 583-bis CP |
+| n | Deformazione dell'aspetto della persona mediante lesioni permanenti al viso | Art. 583-quinquies CP |
+| o | Interruzione di gravidanza non consensuale | Art. 593-ter CP |
+| p | Sequestro di persona | Art. 605 CP |
+| q | Violenza privata | Art. 610 CP |
+| r | Violazione di domicilio | Art. 614 CP |
+| s | Violazione degli obblighi di assistenza familiare | Artt. 570 e 570-bis CP |
+| t | Prostituzione minorile | Art. 600-bis CP |
+| u | Abbandono di persona minore o incapace | Art. 591 CP |
+| v | Danneggiamento | Art. 635 CP |
+| z | Estorsione | Art. 629 CP |
+| aa | Minaccia | Art. 612 CP |
+| bb | Favoreggiamento e sfruttamento della prostituzione | Art. 3 Legge 75/1958 |
+| cc | Circonvenzione di incapace | Art. 643 CP |
+| dd | Tratta di persone | Art. 601 CP |
+| ee | Stalking online | Art. 7 Direttiva UE 2024/1385 |
+| ff | Molestie online | Art. 8 Direttiva UE 2024/1385 |
+| gg | Istigazione alla violenza o all'odio online | Art. 9 Direttiva UE 2024/1385 |
+
+: Lista completa dei 27 reati monitorati (Art. 5, comma 3, L. 53/2022) {.striped .hover .small}
+
+::: {.callout-important}
+## Reati aggiuntivi non previsti dalla L. 53/2022
+
+I reati con codici **ee**, **ff** e **gg** (stalking online, molestie online e istigazione alla violenza/odio online) **non sono attualmente previsti dall'Art. 5, comma 3 della Legge 53/2022**, ma derivano dalla [**Direttiva UE 2024/1385**](https://eur-lex.europa.eu/legal-content/IT/TXT/?uri=CELEX:32024L1385) (articoli 7, 8 e 9) che l'Italia dovrà recepire entro il **14 giugno 2027**.
+
+Sono stati inclusi in questa proposta per:
+
+1. **Anticipare l'attuazione** della normativa europea in arrivo
+2. **Completare il quadro** dei reati digitali, sempre più rilevanti
+3. **Garantire continuità** nel monitoraggio senza dover ristrutturare lo schema in futuro
+4. **Fornire dati comparabili** a livello europeo sin da subito
+
+Si raccomanda quindi di prevedere fin da ora la raccolta di questi dati, in attesa del formale recepimento della direttiva.
+:::
+
+---
+
+### Tipologia di Arma
+
+**Nota**: La [legge 53/2022](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art5) prevede la rilevazione della "tipologia di arma eventualmente utilizzata" ma non specifica i valori controllati. La tabella seguente è un **esempio** da validare. Si raccomanda di utilizzare **classificazioni già esistenti e consolidate** in uso presso le Forze dell'Ordine (es. tassonomie SDI - Sistema di Indagine, o standard ISTAT) per garantire coerenza e interoperabilità dei dati.
+
+Esempio di valori controllati per il campo `tipologia_arma`:
+
+| Codice | Valore |
+|--------|--------|
+| FUOCO | Arma da fuoco |
+| BIANCA | Arma bianca (coltello, taglierino, ecc.) |
+| CONTUND | Oggetto contundente |
+| CHIMICO | Sostanza chimica (acido, veleno, ecc.) |
+| MANI | Mani nude / corpo |
+| ALTRO | Altro tipo di arma/oggetto |
+| ND | Non determinata / Non nota |
+
+: Valori controllati proposti per la tipologia di arma {.striped .hover .small}
+
+---
+
+### Luogo del Fatto
+
+**Nota**: La [legge 53/2022](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art5) prevede la rilevazione delle "informazioni sul luogo dove il fatto è avvenuto" ma non specifica i valori controllati. La tabella seguente è un **esempio** da validare. Si raccomanda di utilizzare **classificazioni già esistenti e consolidate** in uso presso le Forze dell'Ordine (es. tassonomie SDI - Sistema di Indagine, o standard ISTAT) per garantire coerenza e interoperabilità dei dati.
+
+Esempio di valori controllati per il campo `luogo_fatto`:
+
+| Codice | Valore |
+|--------|--------|
+| ABIT_VITTIMA | Abitazione della vittima |
+| ABIT_AUTORE | Abitazione dell'autore |
+| ABIT_COMUNE | Abitazione comune (convivenza) |
+| LAVORO | Luogo di lavoro |
+| SCUOLA | Istituto scolastico |
+| STRADA | Strada / luogo pubblico |
+| VEICOLO | Veicolo |
+| LOCALE | Locale pubblico (bar, ristorante, ecc.) |
+| ONLINE | Online / digitale |
+| ALTRO | Altro luogo |
+| ND | Non determinato / Non noto |
+
+: Valori controllati proposti per il luogo del fatto {.striped .hover .small}
+
+---
+
+### Tipo Evento Procedurale
+
+**Riferimento normativo**: [Articolo 5, comma 5](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art5) della Legge 53/2022
+
+Valori controllati per il campo `tipo_evento` del dataset Sistema Interministeriale:
+
+| Codice | Valore | Descrizione |
+|--------|--------|-------------|
+| DENUNCIA | Denuncia | Presentazione di denuncia/querela alle forze dell'ordine o alla Procura |
+| AUDIZIONE_PM | Audizione personale PM | Audizione personale da parte del PM su richiesta motivata della vittima ([art. 362 comma 1-ter cpp](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:1988-10-28;447~art362), come modificato dalla [L. 181/2025, art. 3, lett. p)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-12-02;181~art3!vig=2025-12-26)) |
+| MIS_PREV | Misura di prevenzione | Ammonimento del Questore ex art. 8 DL 11/2009 |
+| MIS_PREC | Misura precautelare | Allontanamento d'urgenza ex art. 384-bis cpp |
+| MIS_CAUT | Misura cautelare | Divieto di avvicinamento, obbligo di dimora, arresti domiciliari, custodia cautelare |
+| SEQ_CONSERV | Sequestro conservativo | Sequestro conservativo per garanzia risarcimento danni ([art. 316 comma 1-ter cpp](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:1988-10-28;447~art316), introdotto dalla [L. 181/2025, art. 3, lett. o)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-12-02;181~art3!vig=2025-12-26)) |
+| ORD_PROT | Ordine di protezione | Ordine di protezione civile ex artt. 342-ter e 342-bis cc |
+| MIS_SIC | Misura di sicurezza | Libertà vigilata, casa di cura e custodia, etc. |
+| VIOLAZIONE | Violazione misura | Violazione di misure cautelari, ordini di protezione, etc. |
+| ARRESTO | Arresto | Arresto dell'autore del reato |
+| ARCHIVIAZIONE | Archiviazione | Provvedimento di archiviazione del procedimento |
+| SENTENZA | Sentenza | Sentenza (primo grado, appello, cassazione) |
+
+: Valori controllati per il tipo di evento procedurale {.striped .hover .small}
+
+**Nota**: Il campo `dettaglio_evento` contiene la specificazione puntuale (es. per MIS_CAUT: "Divieto di avvicinamento ex art. 282-ter cpp").
