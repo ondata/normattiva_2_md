@@ -115,6 +115,8 @@ Questa sezione introduttiva fa riferimento principalmente al dataset [Centro Ela
 
 La Legge 53/2022 prevede quattro sistemi di raccolta dati complementari, ciascuno affidato a soggetti diversi. Di seguito proponiamo uno schema per i tre sistemi che prevedono raccolte dati strutturate: il sistema di rilevazione penale (Art. 5), il sistema informativo sanitario (Art. 4) e le indagini sui centri antiviolenza (Art. 7). Il quarto pilastro (Art. 2, indagini campionarie ISTAT) ha natura metodologica diversa (indagini a campione triennali) e non si presta a uno schema di dataset continuo.
 
+**Legenda**: negli schemi che seguono, i campi il cui nome è seguito da **(proposta)** non sono esplicitamente previsti dalla norma ma sono suggeriti per rendere il dataset più completo e utilizzabile. I campi il cui nome è seguito da **(L. 181/2025)** derivano dalla Legge 181/2025 anziché dalla Legge 53/2022. Tutti gli altri campi traducono direttamente requisiti normativi della L. 53/2022.
+
 ### Dataset: Centro Elaborazione Dati - Reati di Violenza di Genere
 
 **Riferimento normativo**: [Articolo 5](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art5) della Legge 53/2022
@@ -125,10 +127,10 @@ Questo dataset contiene le informazioni che il Ministero della Giustizia e dell'
 
 | Nome Campo | Tipo | Descrizione |
 |------------|------|-------------|
-| id_evento | Alfanumerico | Identificativo univoco dell'episodio di violenza. Formato: `EVT-{anno}-{progressivo}` (es. `EVT-2024-001234`). Stesso ID = stesso evento |
-| id_vittima_anonimizzato | Alfanumerico | Identificativo univoco anonimizzato della vittima. Formato: `VIT-{hash}` (es. `VIT-A3F8B2C1`). Garantisce l'anonimato e permette di contare vittime uniche |
-| id_autore_anonimizzato | Alfanumerico | Identificativo univoco anonimizzato dell'autore. Formato: `AUT-{hash}` (es. `AUT-7D9E4F2A`). Garantisce l'anonimato e permette di contare autori unici |
-| data_fatto | Data | Data in cui è avvenuto il fatto (se nota). Formato: `AAAA-MM-GG` |
+| id_evento (proposta) | Alfanumerico | Identificativo univoco dell'episodio di violenza. Formato: `EVT-{anno}-{progressivo}` (es. `EVT-2024-001234`). Stesso ID = stesso evento |
+| id_vittima_anonimizzato (proposta) | Alfanumerico | Identificativo univoco anonimizzato della vittima. Formato: `VIT-{hash}` (es. `VIT-A3F8B2C1`). Garantisce l'anonimato e permette di contare vittime uniche |
+| id_autore_anonimizzato (proposta) | Alfanumerico | Identificativo univoco anonimizzato dell'autore. Formato: `AUT-{hash}` (es. `AUT-7D9E4F2A`). Garantisce l'anonimato e permette di contare autori unici |
+| data_fatto (proposta) | Data | Data in cui è avvenuto il fatto (se nota). Formato: `AAAA-MM-GG` |
 | tipo_reato | Enumerativo | Codice identificativo del reato, secondo la lista dei 27 reati previsti dall'[art. 5 comma 3](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art5) (vedi elenco valori della [tabella](#lista-dei-reati-monitorati) più in basso) |
 | relazione_autore_vittima | Enumerativo | Relazione tra autore e vittima, secondo le 15 modalità obbligatorie definite dall'[art. 2 comma 2](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art2) (vedi elenco valori della [tabella](#relazione-autore-vittima) più in basso) |
 | eta_vittima | Numerico | Età della vittima al momento del fatto (se nota) |
@@ -136,12 +138,12 @@ Questo dataset contiene le informazioni che il Ministero della Giustizia e dell'
 | eta_autore | Numerico | Età dell'autore del reato al momento del fatto (se nota) |
 | genere_autore | Enumerativo | Genere dell'autore del reato (se noto): "M", "F", "Altro", "Non specificato" |
 | luogo_fatto | Enumerativo | Informazioni sul luogo dove il fatto è avvenuto (se noto) (vedi elenco valori della [tabella](#luogo-del-fatto) più in basso) |
-| localita_comune | Alfanumerico | Codice ISTAT del comune dove è avvenuto il fatto. **Regola di anonimizzazione**: se il numero di casi nel comune è inferiore a 3, lasciare vuoto e riportare solo la provincia |
-| localita_provincia | Alfanumerico | Codice ISTAT della provincia dove è avvenuto il fatto. Sempre valorizzato quando la località è nota |
+| localita_comune (proposta) | Alfanumerico | Codice ISTAT del comune dove è avvenuto il fatto. **Regola di anonimizzazione**: se il numero di casi nel comune è inferiore a 3, lasciare vuoto e riportare solo la provincia |
+| localita_provincia (proposta) | Alfanumerico | Codice ISTAT della provincia dove è avvenuto il fatto. Sempre valorizzato quando la località è nota |
 | tipologia_arma | Enumerativo | Tipologia di arma eventualmente utilizzata (se nota) (vedi elenco valori della [tabella](#tipologia-di-arma) più in basso) |
-| aggravante_genere | Booleano | Indica se il reato è stato commesso con le aggravanti di genere previste dalla [L. 181/2025, art. 1](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-12-02;181~art1!vig=2025-12-26) ("come atto di odio/discriminazione/prevaricazione... in quanto donna"). Applicabile a: maltrattamenti (art. 572 c.5 CP), lesioni (art. 585 c.4 CP), interruzione gravidanza (art. 593-ter c.6 CP), violenza sessuale (art. 609-ter 5-ter.1 CP), stalking (art. 612-bis c.4 CP), revenge porn (art. 612-ter c.5 CP) |
+| aggravante_genere (L. 181/2025) | Booleano | Indica se il reato è stato commesso con le aggravanti di genere previste dalla [L. 181/2025, art. 1](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-12-02;181~art1!vig=2025-12-26) ("come atto di odio/discriminazione/prevaricazione... in quanto donna"). Applicabile a: maltrattamenti (art. 572 c.5 CP), lesioni (art. 585 c.4 CP), interruzione gravidanza (art. 593-ter c.6 CP), violenza sessuale (art. 609-ter 5-ter.1 CP), stalking (art. 612-bis c.4 CP), revenge porn (art. 612-ter c.5 CP) |
 | presenza_figli_durante_fatto | Booleano | Indica se la violenza è stata commessa in presenza sul luogo del fatto dei figli degli autori o delle vittime |
-| vittima_ha_figli_minori | Booleano | Indica se la vittima ha figli minorenni (rilevante per le tutele previste dalla [L. 122/2016](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2016-07-07;122) come modificata dalla [L. 181/2025, art. 4](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-12-02;181~art4!vig=2025-12-26) - Fondo orfani di crimini domestici) |
+| vittima_ha_figli_minori (L. 181/2025) | Booleano | Indica se la vittima ha figli minorenni (rilevante per le tutele previste dalla [L. 122/2016](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2016-07-07;122) come modificata dalla [L. 181/2025, art. 4](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2025-12-02;181~art4!vig=2025-12-26) - Fondo orfani di crimini domestici) |
 | atti_persecutori | Booleano | Indica se la violenza è stata commessa unitamente ad atti persecutori (stalking) |
 
 : Schema del dataset Centro Elaborazione Dati - Reati di Violenza di Genere {.striped .hover .small}
@@ -178,19 +180,19 @@ Per semplicità, proponiamo una **singola tabella** dove ogni riga rappresenta u
 
 | Nome Campo | Tipo | Descrizione | Valore esempio |
 |------------|------|-------------|----------------|
-| id_vittima_anonimizzato | Alfanumerico | Identificativo univoco anonimizzato della vittima. Formato: `VIT-{hash}` (es. `VIT-A3F8B2C1`). Stesso ID = stessa persona | "VIT-A3F8B2C1" |
-| id_evento_procedurale | Alfanumerico | Identificativo univoco dell'evento procedurale. Formato: `EVP-{anno}-{progressivo}` (es. `EVP-2024-001234`) | "EVP-2024-001234" |
+| id_vittima_anonimizzato (proposta) | Alfanumerico | Identificativo univoco anonimizzato della vittima. Formato: `VIT-{hash}` (es. `VIT-A3F8B2C1`). Stesso ID = stessa persona | "VIT-A3F8B2C1" |
+| id_evento_procedurale (proposta) | Alfanumerico | Identificativo univoco dell'evento procedurale. Formato: `EVP-{anno}-{progressivo}` (es. `EVP-2024-001234`) | "EVP-2024-001234" |
 | tipo_evento | Enumerativo | Tipologia di evento procedurale (vedi [valori controllati](#tipo-evento-procedurale)) | "Denuncia" |
 | tipo_reato | Enumerativo | Reato per cui l'evento procedurale è riferito, secondo lista Art. 5 comma 3 (vedi [tabella](#lista-dei-reati-monitorati)). Obbligatorio per tipo_evento="DENUNCIA", opzionale per altri eventi | "Maltrattamenti contro familiari e conviventi" |
-| data_evento | Data | Data in cui è avvenuto l'evento. Formato: `AAAA-MM-GG` | 2024-03-15 |
-| autorita | Enumerativo | Autorità competente che ha gestito l'evento | "Carabinieri", "Procura", "Tribunale", "Questore" |
-| dettaglio_evento | Testuale | Dettaglio specifico dell'evento (es. tipo di misura, tipo di sentenza, motivazione archiviazione) | "Divieto di avvicinamento ex art. 282-ter cpp" |
-| esito | Enumerativo | Esito dell'evento (se applicabile): "Applicata", "Respinta", "Violata", "Condanna", "Assoluzione", "Archiviazione" | "Applicata" |
-| eta_vittima | Numerico | Età della vittima al momento della prima denuncia (se nota) | 32 |
-| genere_vittima | Enumerativo | Genere della vittima: "F", "M", "Altro", "Non specificato" | "F" |
-| relazione_autore_vittima | Enumerativo | Relazione tra autore e vittima al momento della prima denuncia (vedi [tabella](#relazione-autore-vittima)) | "Ex coniuge/ex convivente" |
-| eta_autore | Numerico | Età dell'autore al momento della prima denuncia (se nota) | 38 |
-| genere_autore | Enumerativo | Genere dell'autore: "M", "F", "Altro", "Non specificato" | "M" |
+| data_evento (proposta) | Data | Data in cui è avvenuto l'evento. Formato: `AAAA-MM-GG` | 2024-03-15 |
+| autorita (proposta) | Enumerativo | Autorità competente che ha gestito l'evento | "Carabinieri", "Procura", "Tribunale", "Questore" |
+| dettaglio_evento (proposta) | Testuale | Dettaglio specifico dell'evento (es. tipo di misura, tipo di sentenza, motivazione archiviazione) | "Divieto di avvicinamento ex art. 282-ter cpp" |
+| esito (proposta) | Enumerativo | Esito dell'evento (se applicabile): "Applicata", "Respinta", "Violata", "Condanna", "Assoluzione", "Archiviazione" | "Applicata" |
+| eta_vittima (proposta) | Numerico | Età della vittima al momento della prima denuncia (se nota) | 32 |
+| genere_vittima (proposta) | Enumerativo | Genere della vittima: "F", "M", "Altro", "Non specificato" | "F" |
+| relazione_autore_vittima (proposta) | Enumerativo | Relazione tra autore e vittima al momento della prima denuncia (vedi [tabella](#relazione-autore-vittima)) | "Ex coniuge/ex convivente" |
+| eta_autore (proposta) | Numerico | Età dell'autore al momento della prima denuncia (se nota) | 38 |
+| genere_autore (proposta) | Enumerativo | Genere dell'autore: "M", "F", "Altro", "Non specificato" | "M" |
 
 : Schema del dataset Sistema Interministeriale di Raccolta Dati {.striped .hover .small}
 
@@ -233,17 +235,17 @@ Questo dataset traduce in schema i requisiti specifici dell'[art. 4 comma 2](htt
 
 | Nome Campo | Tipo | Descrizione |
 |------------|------|-------------|
-| data_accesso | Data | Data dell'accesso alla struttura sanitaria. Formato: `AAAA-MM-GG` |
-| struttura_sanitaria | Alfanumerico | Codice della struttura sanitaria (codice STS11 del Ministero della Salute) |
-| tipo_struttura | Enumerativo | Tipologia di struttura: "Pronto soccorso", "Altra struttura sanitaria pubblica" |
+| data_accesso (proposta) | Data | Data dell'accesso alla struttura sanitaria. Formato: `AAAA-MM-GG` |
+| struttura_sanitaria (proposta) | Alfanumerico | Codice della struttura sanitaria (codice STS11 del Ministero della Salute) |
+| tipo_struttura (proposta) | Enumerativo | Tipologia di struttura: "Pronto soccorso", "Altra struttura sanitaria pubblica" |
 | tipologia_violenza | Enumerativo | Tipologia di violenza rilevata, come previsto dall'[art. 4 comma 2 lett. a)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art4) (vedi [tabella](#tipologia-di-violenza)): "Fisica", "Sessuale", "Psicologica", "Economica" |
 | relazione_autore_vittima | Enumerativo | Relazione tra autore e vittima, secondo le 15 modalità previste dall'[art. 2 comma 2](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art2), come richiamato dall'[art. 4 comma 2](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art4) (vedi [tabella](#relazione-autore-vittima)) |
-| eta_vittima | Numerico | Età della vittima al momento dell'accesso (se nota) |
-| genere_vittima | Enumerativo | Genere della vittima: "F", "M", "Altro", "Non specificato" |
+| eta_vittima (proposta) | Numerico | Età della vittima al momento dell'accesso (se nota) |
+| genere_vittima (proposta) | Enumerativo | Genere della vittima: "F", "M", "Altro", "Non specificato" |
 | presenza_figli_durante_fatto | Booleano | Indica se la violenza è stata commessa in presenza sul luogo del fatto dei figli degli autori o delle vittime, come previsto dall'[art. 4 comma 2 lett. b)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art4) |
 | atti_persecutori | Booleano | Indica se la violenza è stata commessa unitamente ad atti persecutori, come previsto dall'[art. 4 comma 2 lett. b)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art4) |
 | rischio_revittimizzazione | Booleano | Indica se sono stati rilevati indicatori di rischio di revittimizzazione, come previsto dall'[art. 4 comma 2 lett. c)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art4), sulla base dell'allegato B al [DPCM 24 novembre 2017](https://www.gazzettaufficiale.it/eli/id/2018/01/30/18A00520/sg) |
-| localita_provincia | Alfanumerico | Codice ISTAT della provincia della struttura sanitaria |
+| localita_provincia (proposta) | Alfanumerico | Codice ISTAT della provincia della struttura sanitaria |
 
 : Schema del dataset Sistema Informativo Sanitario - Violenza di Genere {.striped .hover .small}
 
@@ -261,20 +263,20 @@ L'[articolo 7](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-0
 
 | Nome Campo | Tipo | Descrizione |
 |------------|------|-------------|
-| id_struttura | Alfanumerico | Identificativo univoco (se previsto) del centro antiviolenza o casa rifugio |
-| nome_struttura | Testuale | Denominazione del centro antiviolenza o casa rifugio |
+| id_struttura (proposta) | Alfanumerico | Identificativo univoco (se previsto) del centro antiviolenza o casa rifugio |
+| nome_struttura (proposta) | Testuale | Denominazione del centro antiviolenza o casa rifugio |
 | tipo_struttura | Enumerativo | Tipologia: "Centro antiviolenza", "Casa rifugio" |
 | accreditamento | Enumerativo | Stato di accreditamento: "Accreditato", "Non accreditato". La legge richiede dati distinti per le due categorie ([art. 7 comma 1](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7)) |
 | regione | Alfanumerico | Codice ISTAT della regione o provincia autonoma. La legge richiede disaggregazione regionale ([art. 7 comma 1](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7)) |
-| id_utente_anonimizzato | Alfanumerico | Identificativo univoco anonimizzato dell'utente. Formato: `UTE-{hash}`. Garantisce l'anonimato come previsto dall'[art. 7 comma 2 lett. a)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7) |
-| data_primo_contatto | Data | Data del primo accesso al servizio. Formato: `AAAA-MM-GG` |
+| id_utente_anonimizzato (proposta) | Alfanumerico | Identificativo univoco anonimizzato dell'utente. Formato: `UTE-{hash}`. Garantisce l'anonimato come previsto dall'[art. 7 comma 2 lett. a)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7) |
+| data_primo_contatto (proposta) | Data | Data del primo accesso al servizio. Formato: `AAAA-MM-GG` |
 | relazione_autore_vittima | Enumerativo | Relazione tra autore e vittima, come previsto dall'[art. 7 comma 2 lett. a)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7) che include esplicitamente la relazione autore-vittima tra le caratteristiche dell'utenza (vedi [tabella](#relazione-autore-vittima)) |
 | tipologia_violenza | Enumerativo | Tipologia di violenza subita, come previsto dall'[art. 7 comma 2 lett. b)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7) (vedi [tabella](#tipologia-di-violenza)): "Fisica", "Sessuale", "Psicologica", "Economica" |
 | presenza_figli_durante_fatto | Booleano | Indica se la violenza è avvenuta in presenza dei figli, come previsto dall'[art. 7 comma 2 lett. b)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7) |
 | atti_persecutori | Booleano | Indica se la violenza include atti persecutori, come previsto dall'[art. 7 comma 2 lett. b)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7) |
 | tipo_intervento | Enumerativo | Tipologia di intervento di assistenza fornito, come previsto dall'[art. 7 comma 2 lett. c)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7) (vedi [tabella](#tipologia-di-intervento)) |
-| eta_utente | Numerico | Età dell'utente al momento del primo contatto (se nota) |
-| genere_utente | Enumerativo | Genere dell'utente: "F", "M", "Altro", "Non specificato" |
+| eta_utente (proposta) | Numerico | Età dell'utente al momento del primo contatto (se nota) |
+| genere_utente (proposta) | Enumerativo | Genere dell'utente: "F", "M", "Altro", "Non specificato" |
 
 : Schema del dataset Centri Antiviolenza e Case Rifugio {.striped .hover .small}
 
