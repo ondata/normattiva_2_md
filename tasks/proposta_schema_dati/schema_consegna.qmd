@@ -17,34 +17,21 @@ format:
     embed-resources: false
 ---
 
-::: {.callout-note}
-Quest'analisi è stata realizzata con il supporto del tool [normattiva2md](https://ondata.github.io/normattiva_2_md/), uno strumento che trasforma i testi delle leggi italiane in formato leggibile e pronto per l'uso con intelligenze artificiali.
-:::
-
-## 📝 Cronologia aggiornamenti
-
-**2026-01-07**
-
-- Aggiunti 3 reati previsti dalla [Direttiva UE 2024/1385](#nota-contesto-europeo-e-opportunità-per-litalia) (stalking online, molestie online, istigazione alla violenza/odio online) per anticipare il recepimento normativo
-
-**2025-12-26**
-
-- Aggiunto riferimento alla [Legge 181/2025 sul femminicidio](#supporto-normativo-aggiuntivo-la-legge-1812025)
-- Integrato [contesto normativo europeo](#nota-contesto-europeo-e-opportunità-per-litalia) (Direttiva UE 2024/1385)
-
----
-
 ## Introduzione
 
-Questa pagina definisce una proposta di schema dati da pubblicare sul tema dei femminicidi e della violenza di genere, basata principalmente sulla normativa corrente italiana e in particolare sulla [**Legge 53 del 5 maggio 2022**](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53) ("Disposizioni in materia di statistiche in tema di violenza di genere").
+Questo documento definisce una proposta di schema dati da pubblicare sul tema dei **femminicidi** e della **violenza di genere**, basata principalmente sulla normativa corrente italiana e in particolare sulla [**Legge 53 del 5 maggio 2022**](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53) ("Disposizioni in materia di statistiche in tema di violenza di genere").
 
-La Legge 53/2022 prevede:
+La Legge 53/2022 istituisce un **sistema articolato di raccolta dati** che coinvolge più amministrazioni e prevede quattro pilastri informativi distinti:
 
-- Un **Centro elaborazione dati** presso il Ministero della Giustizia per rilevare i dati su 27 reati di violenza ([art. 5, comma 3](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art5))
-- Un **Sistema interministeriale** per tracciare denunce, misure di protezione e procedimenti giudiziari ([art. 5, commi 4-5](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art5))
-- Trasmissione periodica dei dati all'ISTAT e al Dipartimento per le Pari Opportunità
+1. **Indagini campionarie ISTAT/SISTAN** ([Art. 2](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art2)): indagini triennali sulla violenza contro le donne, inclusa la parte sommersa, con dati disaggregati fino al livello regionale. Rappresentano il quadro di riferimento generale per tutte le rilevazioni.
 
-Lo schema proposto traduce i requisiti normativi in una struttura dati concreta e pubblicabile, pronta per l'implementazione.
+2. **Strutture sanitarie e pronto soccorso** ([Art. 4](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art4)): il Ministero della Salute è tenuto ad aggiornare il sistema informativo per il monitoraggio delle prestazioni di emergenza-urgenza, integrandolo con informazioni sulla violenza di genere (tipologia di violenza, relazione autore-vittima, indicatori di revittimizzazione).
+
+3. **Centro Elaborazione Dati e Sistema Interministeriale** ([Art. 5](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art5)): il Ministero dell'Interno e il Ministero della Giustizia rilevano i dati su 27 reati di violenza, tracciano denunce, misure di protezione e procedimenti giudiziari, con trasmissione periodica all'ISTAT e al Dipartimento per le Pari Opportunità.
+
+4. **Centri antiviolenza e case rifugio** ([Art. 7](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7)): l'ISTAT realizza indagini sulle caratteristiche dell'utenza, le tipologie di violenza subita e gli interventi di assistenza forniti, con dati distinti per accreditamento e disaggregati per regione.
+
+Lo schema proposto traduce i requisiti normativi di ciascun pilastro in strutture dati concrete e pubblicabili, pronte per l'implementazione. Si ricorda che il [**Codice dell'Amministrazione Digitale**](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2005-03-07;82) (D.Lgs. 82/2005) e il [**D.Lgs. 36/2006**](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2006-01-24;36) (attuazione della Direttiva 2003/98/CE sul riutilizzo dell'informazione del settore pubblico) prevedono che le pubbliche amministrazioni rendano disponibili i dati in loro possesso in formato aperto. I dati qui proposti andrebbero pertanto pubblicati e resi disponibili come dati aperti, con le necessarie misure di anonimizzazione e nel pieno rispetto della normativa sulla protezione dei dati personali.
 
 ---
 
@@ -120,9 +107,13 @@ Questo approccio permette di calcolare correttamente:
 
 Senza gli identificativi univoci, **sarebbe impossibile distinguere** 3 eventi separati da 1 evento con 3 autori.
 
+Questa sezione introduttiva fa riferimento principalmente al dataset [Centro Elaborazione Dati - Reati di Violenza di Genere](#dataset-centro-elaborazione-dati---reati-di-violenza-di-genere).
+
 ---
 
 ## Schema Dati
+
+La Legge 53/2022 prevede quattro sistemi di raccolta dati complementari, ciascuno affidato a soggetti diversi. Di seguito proponiamo uno schema per i tre sistemi che prevedono raccolte dati strutturate: il sistema di rilevazione penale (Art. 5), il sistema informativo sanitario (Art. 4) e le indagini sui centri antiviolenza (Art. 7). Il quarto pilastro (Art. 2, indagini campionarie ISTAT) ha natura metodologica diversa (indagini a campione triennali) e non si presta a uno schema di dataset continuo.
 
 ### Dataset: Centro Elaborazione Dati - Reati di Violenza di Genere
 
@@ -229,6 +220,88 @@ Riprendendo l'esempio del percorso descritto sopra, il dataset conterrebbe **8 r
 - È possibile analizzare: tempi tra denuncia e misure, efficacia delle misure per tipo di reato, tasso di violazioni, esiti finali
 
 **Nota**: Se la stessa vittima denuncia reati diversi in momenti diversi (es. prima maltrattamenti, poi violenza sessuale), nel dataset ci saranno due percorsi procedurali distinti identificabili dal campo `tipo_reato`.
+
+---
+
+### Dataset: Sistema Informativo Sanitario - Violenza di Genere
+
+**Riferimento normativo**: [Articolo 4](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art4) della Legge 53/2022
+
+L'[articolo 4](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art4) prevede che tutte le strutture sanitarie pubbliche e in particolare le unità operative di pronto soccorso forniscano dati sulla violenza contro le donne. Il Ministero della Salute è tenuto ad aggiornare il sistema informativo per il monitoraggio delle prestazioni di emergenza-urgenza ([DM 17 dicembre 2008](https://www.gazzettaufficiale.it/eli/id/2009/01/13/09A00249/sg)), integrandolo con un set di informazioni utili per la rilevazione della violenza di genere.
+
+Questo dataset traduce in schema i requisiti specifici dell'[art. 4 comma 2](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art4): tipologia di violenza, relazione autore-vittima, contesto (presenza figli, atti persecutori) e indicatori di rischio di revittimizzazione.
+
+| Nome Campo | Tipo | Descrizione |
+|------------|------|-------------|
+| id_accesso | Alfanumerico | Identificativo univoco dell'accesso alla struttura sanitaria. Formato: `ACC-{anno}-{progressivo}` (es. `ACC-2024-005678`) |
+| id_vittima_anonimizzato | Alfanumerico | Identificativo univoco anonimizzato della vittima. Formato: `VIT-{hash}`. Garantisce l'anonimato come previsto dall'[art. 4 comma 2 lett. c)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art4) |
+| data_accesso | Data | Data dell'accesso alla struttura sanitaria. Formato: `AAAA-MM-GG` |
+| struttura_sanitaria | Alfanumerico | Codice della struttura sanitaria (codice STS11 del Ministero della Salute) |
+| tipo_struttura | Enumerativo | Tipologia di struttura: "Pronto soccorso", "Altra struttura sanitaria pubblica" |
+| tipologia_violenza | Enumerativo | Tipologia di violenza rilevata, come previsto dall'[art. 4 comma 2 lett. a)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art4) (vedi [tabella](#tipologia-di-violenza)): "Fisica", "Sessuale", "Psicologica", "Economica" |
+| relazione_autore_vittima | Enumerativo | Relazione tra autore e vittima, secondo le 15 modalità previste dall'[art. 2 comma 2](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art2), come richiamato dall'[art. 4 comma 2](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art4) (vedi [tabella](#relazione-autore-vittima)) |
+| eta_vittima | Numerico | Età della vittima al momento dell'accesso (se nota) |
+| genere_vittima | Enumerativo | Genere della vittima: "F", "M", "Altro", "Non specificato" |
+| presenza_figli_durante_fatto | Booleano | Indica se la violenza è stata commessa in presenza sul luogo del fatto dei figli degli autori o delle vittime, come previsto dall'[art. 4 comma 2 lett. b)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art4) |
+| atti_persecutori | Booleano | Indica se la violenza è stata commessa unitamente ad atti persecutori, come previsto dall'[art. 4 comma 2 lett. b)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art4) |
+| rischio_revittimizzazione | Booleano | Indica se sono stati rilevati indicatori di rischio di revittimizzazione, come previsto dall'[art. 4 comma 2 lett. c)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art4), sulla base dell'allegato B al [DPCM 24 novembre 2017](https://www.gazzettaufficiale.it/eli/id/2018/01/30/18A00520/sg) |
+| localita_provincia | Alfanumerico | Codice ISTAT della provincia della struttura sanitaria |
+
+: Schema del dataset Sistema Informativo Sanitario - Violenza di Genere {.striped .hover .small}
+
+::: {.callout-note}
+L'[art. 4 comma 2 lett. c)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art4) fa riferimento agli **indicatori di rischio di revittimizzazione** previsti dall'allegato B al DPCM 24 novembre 2017 (linee guida nazionali per le Aziende sanitarie in tema di soccorso e assistenza alle donne vittime di violenza). Si raccomanda di utilizzare la scala di valutazione del rischio già in uso presso le strutture sanitarie per popolare questo campo.
+:::
+
+---
+
+### Dataset: Centri Antiviolenza e Case Rifugio
+
+**Riferimento normativo**: [Articolo 7](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7) della Legge 53/2022
+
+L'[articolo 7](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7) prevede che l'ISTAT realizzi indagini sui centri antiviolenza e sulle case rifugio, accreditati e non, con dati disaggregati per regione. Le indagini devono evidenziare: le caratteristiche dell'utenza ([comma 2 lett. a](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7)), la tipologia di violenza subita ([comma 2 lett. b](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7)) e il numero e le tipologie di interventi di assistenza fornita ([comma 2 lett. c](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7)).
+
+| Nome Campo | Tipo | Descrizione |
+|------------|------|-------------|
+| id_struttura | Alfanumerico | Identificativo univoco del centro antiviolenza o casa rifugio |
+| tipo_struttura | Enumerativo | Tipologia: "Centro antiviolenza", "Casa rifugio" |
+| accreditamento | Enumerativo | Stato di accreditamento: "Accreditato", "Non accreditato". La legge richiede dati distinti per le due categorie ([art. 7 comma 1](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7)) |
+| regione | Alfanumerico | Codice ISTAT della regione o provincia autonoma. La legge richiede disaggregazione regionale ([art. 7 comma 1](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7)) |
+| id_utente_anonimizzato | Alfanumerico | Identificativo univoco anonimizzato dell'utente. Formato: `UTE-{hash}`. Garantisce l'anonimato come previsto dall'[art. 7 comma 2 lett. a)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7) |
+| data_primo_contatto | Data | Data del primo accesso al servizio. Formato: `AAAA-MM-GG` |
+| relazione_autore_vittima | Enumerativo | Relazione tra autore e vittima, come previsto dall'[art. 7 comma 2 lett. a)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7) che include esplicitamente la relazione autore-vittima tra le caratteristiche dell'utenza (vedi [tabella](#relazione-autore-vittima)) |
+| tipologia_violenza | Enumerativo | Tipologia di violenza subita, come previsto dall'[art. 7 comma 2 lett. b)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7) (vedi [tabella](#tipologia-di-violenza)): "Fisica", "Sessuale", "Psicologica", "Economica" |
+| presenza_figli_durante_fatto | Booleano | Indica se la violenza è avvenuta in presenza dei figli, come previsto dall'[art. 7 comma 2 lett. b)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7) |
+| atti_persecutori | Booleano | Indica se la violenza include atti persecutori, come previsto dall'[art. 7 comma 2 lett. b)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7) |
+| tipo_intervento | Enumerativo | Tipologia di intervento di assistenza fornito, come previsto dall'[art. 7 comma 2 lett. c)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7) (vedi [tabella](#tipologia-di-intervento)) |
+| eta_utente | Numerico | Età dell'utente al momento del primo contatto (se nota) |
+| genere_utente | Enumerativo | Genere dell'utente: "F", "M", "Altro", "Non specificato" |
+
+: Schema del dataset Centri Antiviolenza e Case Rifugio {.striped .hover .small}
+
+::: {.callout-note}
+L'[art. 7 comma 3](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7) prevede che regioni, province autonome ed enti locali utilizzino i dati disaggregati su base territoriale raccolti dall'ISTAT, "al fine di non gravare sull'attività dei centri antiviolenza e delle case rifugio". Lo schema proposto tiene conto di questa esigenza di semplicità.
+:::
+
+---
+
+## Nota sull'integrazione dei sistemi di raccolta dati
+
+La Legge 53/2022 prevede sistemi di raccolta dati distinti per ciascun pilastro (Art. 4, Art. 5, Art. 7), senza prevedere esplicitamente un'integrazione tra di essi. Tuttavia, un esame delle variabili raccolte evidenzia una **significativa sovrapposizione**: tutti i sistemi rilevano la relazione autore-vittima, la tipologia di violenza, la presenza di figli e gli atti persecutori.
+
+Questa frammentazione comporta rischi concreti:
+
+- **Duplicazione dei dati**: la stessa vittima che accede al pronto soccorso (Art. 4), sporge denuncia (Art. 5) e si rivolge a un centro antiviolenza (Art. 7) genera tre record separati in tre sistemi diversi, senza possibilità di collegamento
+- **Impossibilità di analisi trasversale**: non è possibile valutare, ad esempio, quante donne che accedono al pronto soccorso poi sporgono denuncia, o quante vengono prese in carico dai centri antiviolenza
+- **Incoerenza dei dati**: le stesse informazioni raccolte in contesti diversi possono risultare discordanti senza un meccanismo di riconciliazione
+
+**Si raccomanda pertanto** che, nell'attuazione della legge, venga prevista almeno una delle seguenti soluzioni:
+
+1. **Identificativo anonimizzato comune**: l'adozione dello stesso sistema di identificazione anonimizzata della vittima (`id_vittima_anonimizzato`) nei tre dataset permetterebbe di collegare i percorsi della stessa persona attraverso i diversi servizi, senza compromettere l'anonimato
+2. **Integrazione progressiva**: l'accesso al servizio sanitario (es. pronto soccorso) potrebbe confluire come evento nel sistema interministeriale di Art. 5, arricchendo il tracciamento del percorso della vittima con una voce ulteriore
+3. **Interoperabilità dei sistemi**: anche in assenza di integrazione diretta, la definizione di standard comuni (formati, codifiche, periodicità) garantirebbe la possibilità di analisi congiunte a posteriori
+
+L'obiettivo finale è disporre di un quadro informativo **unico e coerente** sul fenomeno della violenza di genere, che permetta di seguire il percorso della vittima dall'accesso ai servizi sanitari, attraverso il sistema giudiziario, fino alla presa in carico da parte dei servizi di supporto.
 
 ---
 
@@ -428,3 +501,27 @@ Valori controllati per il campo `tipo_evento` del dataset Sistema Interministeri
 : Valori controllati per il tipo di evento procedurale {.striped .hover .small}
 
 **Nota**: Il campo `dettaglio_evento` contiene la specificazione puntuale (es. per MIS_CAUT: "Divieto di avvicinamento ex art. 282-ter cpp").
+
+---
+
+### Tipologia di Intervento
+
+**Riferimento normativo**: [Articolo 7, comma 2, lettera c)](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7) della Legge 53/2022
+
+**Nota**: La legge prevede la rilevazione del "numero e le tipologie di interventi di assistenza fornita" ma non specifica i valori controllati. La tabella seguente è un **esempio** da validare. Si raccomanda di utilizzare **classificazioni già esistenti e consolidate** in uso presso i centri antiviolenza e le indagini ISTAT sui servizi per garantire coerenza e comparabilità dei dati.
+
+Esempio di valori controllati per il campo `tipo_intervento`:
+
+| Codice | Valore |
+|--------|--------|
+| ACCOGLIENZA | Prima accoglienza e ascolto |
+| OSPITALITA | Ospitalità in casa rifugio |
+| LEGALE | Assistenza e consulenza legale |
+| PSICOLOGICA | Supporto psicologico |
+| LAVORO | Orientamento e inserimento lavorativo |
+| ABITATIVO | Orientamento abitativo |
+| FIGLI | Supporto per figli minori |
+| SANITARIO | Accompagnamento sanitario |
+| ALTRO | Altro tipo di intervento |
+
+: Valori controllati proposti per la tipologia di intervento (Art. 7) {.striped .hover .small}
