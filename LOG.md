@@ -2,6 +2,16 @@
 
 Questo file documenta gli avanzamenti significativi e le decisioni chiave del progetto `normattiva_2_md`.
 
+## 2026-06-05
+
+### Feature: --no-notes flag (issue #24)
+
+- Aggiunto `--no-notes` alla CLI: esclude i blocchi `AGGIORNAMENTO (N)` dall'output Markdown
+- Aggiunto `no_notes=False` a `convert_url()`, `convert_xml()` e funzioni interne dell'API
+- Il parametro percorre tutta la catena: `generate_markdown_text` → `process_content_with_paragraphs`
+- I marcatori `(( ))` da `<ins>/<del>` rimangono invariati (non sono note storiche)
+- Aggiunti 6 test in `tests/test_no_notes.py`
+
 ## 2026-01-30
 
 ### Release v2.1.10: Progressive OpenData Fallback Retry
