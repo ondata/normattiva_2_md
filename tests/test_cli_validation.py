@@ -29,6 +29,7 @@ class TestCLIValidation(unittest.TestCase):
             completo=False,
             with_references=False,
             with_urls=False,
+            no_notes=False,
             provvedimenti=False,
             debug_search=False,
             auto_select=True,

@@ -187,48 +187,58 @@ def clean_text_content(element, cross_references=None):
     return cleaned_text
 
 
-def process_content_with_paragraphs(content_element, ns, cross_references=None):
+def process_content_with_paragraphs(content_element, ns, cross_references=None, no_notes=False):
     """
     Process a <content> element that may contain multiple <p> elements.
     Treats each <p> as a block-level element with appropriate spacing.
-    
+
     Args:
         content_element: The <content> XML element
         ns: XML namespace
         cross_references: Optional cross-reference mapping
-    
+        no_notes: If True, skip AGGIORNAMENTO annotation blocks
+
     Returns:
         str: Processed text with proper line breaks between paragraphs
     """
     if content_element is None:
         return ""
-    
+
     # Check if content has <p> children
     p_elements = content_element.findall("./akn:p", ns)
-    
+
     if not p_elements:
         # No <p> children, process normally
         return clean_text_content(content_element, cross_references)
-    
+
     # Process each <p> separately
     parts = []
+    skip_aggiornamento = False
     for p_elem in p_elements:
         p_text = clean_text_content(p_elem, cross_references).strip()
-        
+
         # Skip empty, dash-only, or parentheses-only lines
         if not p_text or re.match(r"^[-()]+$", p_text):
             continue
-            
+
         # Check if this is an AGGIORNAMENTO header
         if p_text.startswith("AGGIORNAMENTO"):
+            if no_notes:
+                skip_aggiornamento = True
+                continue
+            skip_aggiornamento = False
             parts.append(f"\n\n{p_text}")
         else:
+            if skip_aggiornamento and no_notes:
+                # Content paragraphs following an AGGIORNAMENTO header are also notes
+                continue
+            skip_aggiornamento = False
             # Regular text - add with space if not first
             if parts:
                 parts.append(f" {p_text}")
             else:
                 parts.append(p_text)
-    
+
     return "".join(parts)
 
 def convert_akomantoso_to_markdown_improved(
@@ -238,6 +248,7 @@ def convert_akomantoso_to_markdown_improved(
     article_ref=None,
     cross_references=None,
     with_urls=False,
+    no_notes=False,
 ):
     try:
         # If with_urls is enabled, build cross-reference mapping from <ref> tags
@@ -293,7 +304,7 @@ def convert_akomantoso_to_markdown_improved(
             metadata = extract_metadata_from_xml(root)
 
         markdown_fragments = generate_markdown_fragments(
-            root, AKN_NAMESPACE, metadata, cross_references
+            root, AKN_NAMESPACE, metadata, cross_references, no_notes=no_notes
         )
     except ET.ParseError as e:
         print(f"Errore durante il parsing del file XML: {e}", file=sys.stderr)
@@ -337,7 +348,7 @@ def convert_akomantoso_to_markdown_improved(
         print(f"Errore durante la scrittura del file Markdown: {e}", file=sys.stderr)
         return False
 
-def generate_markdown_fragments(root, ns, metadata=None, cross_references=None):
+def generate_markdown_fragments(root, ns, metadata=None, cross_references=None, no_notes=False):
     """Build the markdown fragments for a parsed Akoma Ntoso document."""
 
     fragments = []
@@ -347,8 +358,8 @@ def generate_markdown_fragments(root, ns, metadata=None, cross_references=None):
 
     # Generate body content
     preamble_fragments = extract_preamble_fragments(root, ns, cross_references)
-    body_elements_fragments = extract_body_fragments(root, ns, cross_references)
-    attachment_fragments = extract_attachments_fragments(root, ns, cross_references)
+    body_elements_fragments = extract_body_fragments(root, ns, cross_references, no_notes=no_notes)
+    attachment_fragments = extract_attachments_fragments(root, ns, cross_references, no_notes=no_notes)
 
     body_fragments = []
     body_fragments.extend(preamble_fragments)
@@ -373,11 +384,11 @@ def generate_markdown_fragments(root, ns, metadata=None, cross_references=None):
     return fragments
 
 def generate_markdown_text(
-    root, ns=AKN_NAMESPACE, metadata=None, cross_references=None
+    root, ns=AKN_NAMESPACE, metadata=None, cross_references=None, no_notes=False
 ):
     """Return the Markdown rendering for the provided Akoma Ntoso root."""
 
-    return "".join(generate_markdown_fragments(root, ns, metadata, cross_references))
+    return "".join(generate_markdown_fragments(root, ns, metadata, cross_references, no_notes=no_notes))
 
 def extract_document_title(root, ns):
     """Convert the `<docTitle>` element to a Markdown H1 if present."""
@@ -407,7 +418,7 @@ def extract_preamble_fragments(root, ns, cross_references=None):
                     fragments.append(f"{text}\n\n")
     return fragments
 
-def extract_body_fragments(root, ns, cross_references=None):
+def extract_body_fragments(root, ns, cross_references=None, no_notes=False):
     """Traverse body nodes and delegate conversion to specialised handlers."""
 
     fragments = []
@@ -416,11 +427,11 @@ def extract_body_fragments(root, ns, cross_references=None):
         return fragments
 
     for element in body:
-        fragments.extend(process_body_element(element, ns, cross_references))
+        fragments.extend(process_body_element(element, ns, cross_references, no_notes=no_notes))
     return fragments
 
 
-def extract_attachments_fragments(root, ns, cross_references=None):
+def extract_attachments_fragments(root, ns, cross_references=None, no_notes=False):
     """Collect attachment fragments that live outside the main body."""
 
     fragments = []
@@ -434,30 +445,30 @@ def extract_attachments_fragments(root, ns, cross_references=None):
 
     fragments.append("## Allegati\n\n")
     for attachment in attachment_elements:
-        fragments.extend(process_attachment(attachment, ns, cross_references))
+        fragments.extend(process_attachment(attachment, ns, cross_references, no_notes=no_notes))
 
     return fragments
 
-def process_body_element(element, ns, cross_references=None):
+def process_body_element(element, ns, cross_references=None, no_notes=False):
     """Process a direct child of `<body>` producing Markdown fragments."""
 
     if element.tag.endswith("title"):
-        return process_title(element, ns, cross_references)
+        return process_title(element, ns, cross_references, no_notes=no_notes)
     if element.tag.endswith("part"):
-        return process_part(element, ns, cross_references)
+        return process_part(element, ns, cross_references, no_notes=no_notes)
     if element.tag.endswith("chapter"):
-        return process_chapter(element, ns, cross_references)
+        return process_chapter(element, ns, cross_references, no_notes=no_notes)
     if element.tag.endswith("article"):
         article_fragments = []
         process_article(
-            element, article_fragments, ns, level=2, cross_references=cross_references
+            element, article_fragments, ns, level=2, cross_references=cross_references, no_notes=no_notes
         )
         return article_fragments
     if element.tag.endswith("attachment"):
-        return process_attachment(element, ns, cross_references)
+        return process_attachment(element, ns, cross_references, no_notes=no_notes)
     return []
 
-def process_chapter(chapter_element, ns, cross_references=None):
+def process_chapter(chapter_element, ns, cross_references=None, no_notes=False):
     """
     Convert a chapter element to Markdown fragments with proper hierarchy.
 
@@ -502,7 +513,7 @@ def process_chapter(chapter_element, ns, cross_references=None):
     # Process child elements
     for child in chapter_element:
         if child.tag.endswith("section"):
-            chapter_fragments.extend(process_section(child, ns, cross_references))
+            chapter_fragments.extend(process_section(child, ns, cross_references, no_notes=no_notes))
         elif child.tag.endswith("article"):
             process_article(
                 child,
@@ -510,11 +521,12 @@ def process_chapter(chapter_element, ns, cross_references=None):
                 ns,
                 level=article_level,
                 cross_references=cross_references,
+                no_notes=no_notes,
             )
 
     return chapter_fragments
 
-def process_section(section_element, ns, cross_references=None):
+def process_section(section_element, ns, cross_references=None, no_notes=False):
     """Convert a section element and its articles to Markdown fragments."""
 
     section_fragments = []
@@ -530,10 +542,11 @@ def process_section(section_element, ns, cross_references=None):
             ns,
             level=4,
             cross_references=cross_references,
+            no_notes=no_notes,
         )
     return section_fragments
 
-def process_title(title_element, ns, cross_references=None):
+def process_title(title_element, ns, cross_references=None, no_notes=False):
     """
     Convert a title element to Markdown H2 heading.
     Titles are top-level structural elements.
@@ -547,7 +560,7 @@ def process_title(title_element, ns, cross_references=None):
     # Process any nested content (chapters, articles, etc.)
     for child in title_element:
         if child.tag.endswith("chapter"):
-            title_fragments.extend(process_chapter(child, ns, cross_references))
+            title_fragments.extend(process_chapter(child, ns, cross_references, no_notes=no_notes))
         elif child.tag.endswith("article"):
             process_article(
                 child,
@@ -555,11 +568,12 @@ def process_title(title_element, ns, cross_references=None):
                 ns,
                 level=3,
                 cross_references=cross_references,
+                no_notes=no_notes,
             )
 
     return title_fragments
 
-def process_part(part_element, ns, cross_references=None):
+def process_part(part_element, ns, cross_references=None, no_notes=False):
     """
     Convert a part element to Markdown fragments.
     Parts are major structural divisions, rendered as H3.
@@ -573,7 +587,7 @@ def process_part(part_element, ns, cross_references=None):
     # Process nested content (chapters, articles, etc.)
     for child in part_element:
         if child.tag.endswith("chapter"):
-            part_fragments.extend(process_chapter(child, ns, cross_references))
+            part_fragments.extend(process_chapter(child, ns, cross_references, no_notes=no_notes))
         elif child.tag.endswith("article"):
             process_article(
                 child,
@@ -581,11 +595,12 @@ def process_part(part_element, ns, cross_references=None):
                 ns,
                 level=3,
                 cross_references=cross_references,
+                no_notes=no_notes,
             )
 
     return part_fragments
 
-def process_attachment(attachment_element, ns, cross_references=None):
+def process_attachment(attachment_element, ns, cross_references=None, no_notes=False):
     """
     Convert an attachment element to Markdown fragments.
     Attachments are rendered as a separate section.
@@ -633,7 +648,7 @@ def process_attachment(attachment_element, ns, cross_references=None):
             for paragraph in paragraphs:
                 # Process paragraph content with support for multiple <p> elements
                 para_content = paragraph.find("./akn:content", ns)
-                text = process_content_with_paragraphs(para_content, ns, cross_references) if para_content is not None else ""
+                text = process_content_with_paragraphs(para_content, ns, cross_references, no_notes=no_notes) if para_content is not None else ""
                 
                 if text and clean_heading:
                     normalized = re.sub(r"\s+", " ", text).strip()
@@ -751,7 +766,7 @@ def process_table(table_element, ns, cross_references=None):
     return markdown_table
 
 def process_article(
-    article_element, markdown_content_list, ns, level=2, cross_references=None
+    article_element, markdown_content_list, ns, level=2, cross_references=None, no_notes=False
 ):
     article_num_element = article_element.find("./akn:num", ns)
     article_heading_element = article_element.find("./akn:heading", ns)
@@ -811,7 +826,7 @@ def process_article(
             else:
                 # Handle regular paragraph content
                 paragraph_text = (
-                    process_content_with_paragraphs(para_content_element, ns, cross_references)
+                    process_content_with_paragraphs(para_content_element, ns, cross_references, no_notes=no_notes)
                     if para_content_element is not None
                     else ""
                 )

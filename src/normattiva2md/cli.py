@@ -142,6 +142,7 @@ def print_rich_help():
         "--opendata", "Forza download Akoma Ntoso via API OpenData (ZIP AKN)"
     )
     proc_table.add_row("--with-references", "Scarica anche leggi citate")
+    proc_table.add_row("--no-notes", "Esclude blocchi AGGIORNAMENTO dall'output")
     proc_table.add_row("--provvedimenti", "Esporta provvedimenti attuativi CSV")
     proc_table.add_row("--validate", "Validazione strutturale del Markdown")
     console.print(proc_table)
@@ -409,6 +410,11 @@ def main():
         "--with-urls",
         action="store_true",
         help="Genera link Markdown agli URL originali di normattiva.it per gli articoli citati",
+    )
+    parser.add_argument(
+        "--no-notes",
+        action="store_true",
+        help="Esclude i blocchi AGGIORNAMENTO (note storiche delle modifiche) dall'output Markdown",
     )
     parser.add_argument(
         "--opendata",
@@ -753,6 +759,7 @@ def main():
                 metadata=metadata,
                 article_ref=article_ref,
                 with_urls=args.with_urls,
+                no_notes=args.no_notes,
             )
 
             if success:
@@ -817,6 +824,7 @@ def main():
             metadata=None,
             article_ref=article_filter_eid,
             with_urls=args.with_urls,
+            no_notes=args.no_notes,
         )
 
         if success:

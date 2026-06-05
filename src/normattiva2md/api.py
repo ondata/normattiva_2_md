@@ -58,6 +58,7 @@ def convert_url(
     with_urls: bool = False,
     force_opendata: bool = False,
     quiet: bool = False,
+    no_notes: bool = False,
 ) -> Optional[ConversionResult]:
     """
     Converte documento da URL normattiva.it a Markdown.
@@ -160,6 +161,7 @@ def convert_url(
             with_urls=with_urls,
             metadata=metadata,
             quiet=quiet,
+            no_notes=no_notes,
         )
 
         if result:
@@ -182,6 +184,7 @@ def convert_xml(
     with_urls: bool = False,
     metadata: Optional[Dict] = None,
     quiet: bool = False,
+    no_notes: bool = False,
 ) -> Optional[ConversionResult]:
     """
     Converte file XML locale a Markdown.
@@ -225,6 +228,7 @@ def convert_xml(
         with_urls=with_urls,
         metadata=metadata,
         quiet=quiet,
+        no_notes=no_notes,
     )
 
 
@@ -234,6 +238,7 @@ def _convert_xml_internal(
     with_urls: bool = False,
     metadata: Optional[Dict] = None,
     quiet: bool = False,
+    no_notes: bool = False,
 ) -> Optional[ConversionResult]:
     """
     Internal conversion function used by both convert_url and convert_xml.
@@ -284,6 +289,7 @@ def _convert_xml_internal(
             ns=AKN_NAMESPACE,
             metadata=metadata,
             cross_references=cross_references,
+            no_notes=no_notes,
         )
 
         if not quiet:
