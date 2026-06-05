@@ -7,4 +7,8 @@ ALLOWED_DOMAINS = ["www.normattiva.it", "normattiva.it"]
 MAX_FILE_SIZE_MB = 50
 MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
 DEFAULT_TIMEOUT = 30
-VERSION = "2.1.10"
+try:
+    from importlib.metadata import version as _pkg_version
+    VERSION = _pkg_version("normattiva2md")
+except Exception:
+    VERSION = "unknown"
