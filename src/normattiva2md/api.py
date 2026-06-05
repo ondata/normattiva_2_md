@@ -68,6 +68,9 @@ def convert_url(
         article: Articolo specifico da estrarre (es: "4", "16bis")
         with_urls: Genera link markdown per riferimenti normativi
         quiet: Disabilita logging info
+        no_notes: Se True, esclude dall'output i blocchi AGGIORNAMENTO (note
+            storiche delle modifiche) e il testo che li segue nello stesso
+            elemento <content>. I marcatori (( ... )) non vengono rimossi.
 
     Returns:
         ConversionResult con markdown e metadata, oppure None se conversione fallisce
@@ -195,6 +198,9 @@ def convert_xml(
         with_urls: Genera link markdown per riferimenti
         metadata: Metadata opzionali da includere nel front matter
         quiet: Disabilita logging info
+        no_notes: Se True, esclude dall'output i blocchi AGGIORNAMENTO (note
+            storiche delle modifiche) e il testo che li segue nello stesso
+            elemento <content>. I marcatori (( ... )) non vengono rimossi.
 
     Returns:
         ConversionResult con markdown e metadata, oppure None se conversione fallisce

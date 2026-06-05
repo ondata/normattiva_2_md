@@ -28,8 +28,8 @@ The conversion API SHALL accept a `no_notes` parameter that, when `True`, omits 
 - **AND** from there to `generate_markdown_fragments` and `extract_body_fragments`
 - **AND** ultimately to `process_content_with_paragraphs` where filtering occurs
 
-#### Scenario: Filtering scope limited to AGGIORNAMENTO paragraphs
+#### Scenario: Filtering scope covers entire AGGIORNAMENTO block
 - **WHEN** `no_notes=True` and an article contains both normal paragraphs and AGGIORNAMENTO blocks
-- **THEN** only paragraphs whose text starts with `AGGIORNAMENTO` SHALL be omitted
-- **AND** all other paragraph text SHALL appear in the output unchanged
+- **THEN** the paragraph starting with `AGGIORNAMENTO` AND all subsequent paragraphs in the same `<content>` element SHALL be omitted
+- **AND** all paragraphs before the AGGIORNAMENTO marker SHALL appear in the output unchanged
 - **AND** `<ins>/<del>` wrapped text (rendered as `(( ... ))`) SHALL not be affected

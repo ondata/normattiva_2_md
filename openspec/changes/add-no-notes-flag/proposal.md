@@ -39,7 +39,7 @@ CLI (--no-notes)
             → process_content_with_paragraphs(no_notes=...)
 ```
 
-Punto di filtraggio: in `process_content_with_paragraphs()` (markdown_converter.py:222), quando `no_notes=True`, i paragrafi che iniziano con `"AGGIORNAMENTO"` vengono saltati.
+Punto di filtraggio: in `process_content_with_paragraphs()` (markdown_converter.py:222), quando `no_notes=True`, il paragrafo che inizia con `"AGGIORNAMENTO"` e tutti i paragrafi che lo seguono nello stesso elemento `<content>` vengono saltati (l'intero blocco nota, non solo la riga header).
 
 ## Fuori scope
 

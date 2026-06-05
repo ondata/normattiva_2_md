@@ -2,7 +2,7 @@
 
 ## Implementation
 
-- [ ] **1. markdown_converter.py** — aggiunge `no_notes=False` a `process_content_with_paragraphs()`: salta i paragrafi che iniziano con `"AGGIORNAMENTO"` quando `no_notes=True`
+- [ ] **1. markdown_converter.py** — aggiunge `no_notes=False` a `process_content_with_paragraphs()`: quando `no_notes=True`, salta il paragrafo che inizia con `"AGGIORNAMENTO"` e tutti quelli che lo seguono nello stesso `<content>` (l'intero blocco nota)
 - [ ] **2. markdown_converter.py** — propaga `no_notes` attraverso la catena: `generate_markdown_text` → `generate_markdown_fragments` → `extract_body_fragments` → `process_body_element` → `process_article` → `process_content_with_paragraphs`
 - [ ] **3. api.py** — aggiunge `no_notes=False` a `convert_url()`, `convert_xml()`, `_convert_xml_internal()`; passa il parametro a `generate_markdown_text()`
 - [ ] **4. cli.py** — aggiunge `--no-notes` ad argparse; passa `no_notes` alla funzione di conversione; aggiorna la tabella help Rich
