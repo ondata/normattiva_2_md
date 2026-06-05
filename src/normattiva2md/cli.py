@@ -545,9 +545,8 @@ def main():
                     .lower()
                 )
                 if download_choice not in ["s", "si", "sì", "y", "yes"]:
-                    print("📄 Mostro il documento su stdout...", file=sys.stderr)
-                    input_source = selected_url
-                    output_file = None  # Output su stdout
+                    print("❌ Download annullato dall'utente", file=sys.stderr)
+                    sys.exit(0)
                 else:
                     # Genera nome file snake_case
                     suggested_filename = generate_snake_case_filename(selected_title)
