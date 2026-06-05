@@ -4,6 +4,11 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2026-06-05
 
+### Fix v2.1.15: test provvedimenti isolati dalla rete
+
+- `test_provvedimenti_no_results`, `test_provvedimenti_fetch_error_exits`, `test_provvedimenti_missing_params_exits` ora mockano il download XML
+- I test fallivano su Windows in CI perché normattiva.it è irraggiungibile da Windows GH Actions
+
 ### Feature: --no-notes flag (issue #24)
 
 - Aggiunto `--no-notes` alla CLI: esclude i blocchi `AGGIORNAMENTO (N)` dall'output Markdown

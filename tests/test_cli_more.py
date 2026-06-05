@@ -166,56 +166,110 @@ class TestCliMore(unittest.TestCase):
                     cli.main()
             mock_validate.assert_not_called()
 
+    def _provvedimenti_xml_mocks(self, tmpdir):
+        """Restituisce i mock per il download XML usati dai test provvedimenti."""
+        fd, temp_file = tempfile.mkstemp(dir=tmpdir, suffix=".xml")
+        params = {"dataGU": "20200101", "codiceRedaz": "X", "dataVigenza": "20200102"}
+        return fd, temp_file, params
+
     def test_provvedimenti_no_results(self):
-        with mock.patch(
-            "sys.argv",
-            [
-                "normattiva2md",
-                "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2020;1",
-                "--provvedimenti",
-            ],
-        ), mock.patch(
-            "normattiva2md.cli.is_normattiva_url", return_value=True
-        ), mock.patch(
-            "normattiva2md.cli.extract_law_params_from_url", return_value=("2020", "1")
-        ), mock.patch(
-            "normattiva2md.cli.fetch_all_provvedimenti", return_value=[]
-        ):
-            cli.main()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            fd, temp_file, params = self._provvedimenti_xml_mocks(tmpdir)
+            with mock.patch(
+                "sys.argv",
+                [
+                    "normattiva2md",
+                    "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2020;1",
+                    "--provvedimenti",
+                ],
+            ), mock.patch(
+                "normattiva2md.cli.is_normattiva_url", return_value=True
+            ), mock.patch(
+                "normattiva2md.cli.validate_normattiva_url"
+            ), mock.patch(
+                "normattiva2md.cli.extract_params_from_normattiva_url",
+                return_value=(params, object()),
+            ), mock.patch(
+                "normattiva2md.cli.download_akoma_ntoso", return_value=True
+            ), mock.patch(
+                "normattiva2md.cli.convert_akomantoso_to_markdown_improved",
+                return_value=True,
+            ), mock.patch(
+                "tempfile.mkstemp", return_value=(fd, temp_file)
+            ), mock.patch(
+                "normattiva2md.cli.os.remove"
+            ), mock.patch(
+                "normattiva2md.cli.extract_law_params_from_url", return_value=("2020", "1")
+            ), mock.patch(
+                "normattiva2md.cli.fetch_all_provvedimenti", return_value=[]
+            ):
+                cli.main()
 
     def test_provvedimenti_fetch_error_exits(self):
-        with mock.patch(
-            "sys.argv",
-            [
-                "normattiva2md",
-                "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2020;1",
-                "--provvedimenti",
-            ],
-        ), mock.patch(
-            "normattiva2md.cli.is_normattiva_url", return_value=True
-        ), mock.patch(
-            "normattiva2md.cli.extract_law_params_from_url", return_value=("2020", "1")
-        ), mock.patch(
-            "normattiva2md.cli.fetch_all_provvedimenti", return_value=None
-        ):
-            with self.assertRaises(SystemExit):
-                cli.main()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            fd, temp_file, params = self._provvedimenti_xml_mocks(tmpdir)
+            with mock.patch(
+                "sys.argv",
+                [
+                    "normattiva2md",
+                    "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2020;1",
+                    "--provvedimenti",
+                ],
+            ), mock.patch(
+                "normattiva2md.cli.is_normattiva_url", return_value=True
+            ), mock.patch(
+                "normattiva2md.cli.validate_normattiva_url"
+            ), mock.patch(
+                "normattiva2md.cli.extract_params_from_normattiva_url",
+                return_value=(params, object()),
+            ), mock.patch(
+                "normattiva2md.cli.download_akoma_ntoso", return_value=True
+            ), mock.patch(
+                "normattiva2md.cli.convert_akomantoso_to_markdown_improved",
+                return_value=True,
+            ), mock.patch(
+                "tempfile.mkstemp", return_value=(fd, temp_file)
+            ), mock.patch(
+                "normattiva2md.cli.os.remove"
+            ), mock.patch(
+                "normattiva2md.cli.extract_law_params_from_url", return_value=("2020", "1")
+            ), mock.patch(
+                "normattiva2md.cli.fetch_all_provvedimenti", return_value=None
+            ):
+                with self.assertRaises(SystemExit):
+                    cli.main()
 
     def test_provvedimenti_missing_params_exits(self):
-        with mock.patch(
-            "sys.argv",
-            [
-                "normattiva2md",
-                "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2020;1",
-                "--provvedimenti",
-            ],
-        ), mock.patch(
-            "normattiva2md.cli.is_normattiva_url", return_value=True
-        ), mock.patch(
-            "normattiva2md.cli.extract_law_params_from_url", return_value=(None, None)
-        ):
-            with self.assertRaises(SystemExit):
-                cli.main()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            fd, temp_file, params = self._provvedimenti_xml_mocks(tmpdir)
+            with mock.patch(
+                "sys.argv",
+                [
+                    "normattiva2md",
+                    "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2020;1",
+                    "--provvedimenti",
+                ],
+            ), mock.patch(
+                "normattiva2md.cli.is_normattiva_url", return_value=True
+            ), mock.patch(
+                "normattiva2md.cli.validate_normattiva_url"
+            ), mock.patch(
+                "normattiva2md.cli.extract_params_from_normattiva_url",
+                return_value=(params, object()),
+            ), mock.patch(
+                "normattiva2md.cli.download_akoma_ntoso", return_value=True
+            ), mock.patch(
+                "normattiva2md.cli.convert_akomantoso_to_markdown_improved",
+                return_value=True,
+            ), mock.patch(
+                "tempfile.mkstemp", return_value=(fd, temp_file)
+            ), mock.patch(
+                "normattiva2md.cli.os.remove"
+            ), mock.patch(
+                "normattiva2md.cli.extract_law_params_from_url", return_value=(None, None)
+            ):
+                with self.assertRaises(SystemExit):
+                    cli.main()
 
     def test_provvedimenti_write_failure_exits(self):
         with mock.patch(
