@@ -383,7 +383,7 @@ def main():
     parser.add_argument(
         "--auto-select",
         action="store_true",
-        help="Seleziona automaticamente il miglior risultato dalla ricerca naturale (default: False se --debug-search abilitato)",
+        help="Seleziona automaticamente il miglior risultato dalla ricerca naturale (default: selezione interattiva; ignorato con --debug-search)",
     )
     parser.add_argument(
         "--validate",
@@ -514,7 +514,8 @@ def main():
             print(f"🔍 Ricerca documento: {args.search_query}", file=sys.stderr)
 
         # Determina se usare selezione automatica o manuale
-        # auto_select è True di default, a meno che debug_search non sia True
+        # Di default la selezione è interattiva; --auto-select sceglie il miglior risultato,
+        # --debug-search forza comunque la selezione manuale
         auto_select_search = args.auto_select
         if args.debug_search:
             auto_select_search = False
@@ -548,38 +549,40 @@ def main():
                     print("❌ Download annullato dall'utente", file=sys.stderr)
                     sys.exit(0)
                 else:
-                    # Genera nome file snake_case
-                    suggested_filename = generate_snake_case_filename(selected_title)
-                    try:
-                        filename_input = input(
-                            f"📝 Nome file (INVIO per confermare, o scrivi nome desiderato) [{suggested_filename}]: "
-                        ).strip()
-                    except KeyboardInterrupt:
-                        print("\r❌ Operazione annullata dall'utente", file=sys.stderr)
-                        sys.exit(0)
+                    # Con -o il nome file è già deciso: niente prompt
+                    if not output_file:
+                        # Genera nome file snake_case
+                        suggested_filename = generate_snake_case_filename(selected_title)
+                        try:
+                            filename_input = input(
+                                f"📝 Nome file (INVIO per confermare, o scrivi nome desiderato) [{suggested_filename}]: "
+                            ).strip()
+                        except KeyboardInterrupt:
+                            print("\r❌ Operazione annullata dall'utente", file=sys.stderr)
+                            sys.exit(0)
 
-                    # Valida input: ignora risposte di conferma troppo corte
-                    if filename_input and filename_input.lower() not in [
-                        "s",
-                        "si",
-                        "sì",
-                        "y",
-                        "yes",
-                        "n",
-                        "no",
-                    ]:
-                        output_file = filename_input
-                        if not output_file.endswith(".md"):
-                            output_file += ".md"
-                    elif filename_input and len(filename_input) <= 2:
-                        # Input troppo corto probabilmente è un errore, usa il suggerito
-                        print(
-                            f"⚠️  Nome troppo corto, uso il nome suggerito: {suggested_filename}",
-                            file=sys.stderr,
-                        )
-                        output_file = suggested_filename
-                    else:
-                        output_file = suggested_filename
+                        # Valida input: ignora risposte di conferma troppo corte
+                        if filename_input and filename_input.lower() not in [
+                            "s",
+                            "si",
+                            "sì",
+                            "y",
+                            "yes",
+                            "n",
+                            "no",
+                        ]:
+                            output_file = filename_input
+                            if not output_file.endswith(".md"):
+                                output_file += ".md"
+                        elif filename_input and len(filename_input) <= 2:
+                            # Input troppo corto probabilmente è un errore, usa il suggerito
+                            print(
+                                f"⚠️  Nome troppo corto, uso il nome suggerito: {suggested_filename}",
+                                file=sys.stderr,
+                            )
+                            output_file = suggested_filename
+                        else:
+                            output_file = suggested_filename
 
                     # Verifica se il file esiste già
                     if os.path.exists(output_file):

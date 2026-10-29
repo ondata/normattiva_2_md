@@ -325,7 +325,7 @@ Prima di utilizzare questa funzionalità, assicurati di aver configurato l'[API 
 **Importante**: Per la ricerca in linguaggio naturale devi **sempre usare il flag `-s` o `--search`**:
 
 ```bash
-# Ricerca automatica (seleziona automaticamente il miglior risultato)
+# Di default la ricerca mostra i risultati e chiede quale scaricare.
 # Usa --auto-select per evitare i prompt interattivi e usare il primo risultato suggerito.
 normattiva2md -s "legge stanca accessibilità" output.md
 normattiva2md -s "codice amministrazione digitale" --auto-select > cad.md
@@ -450,7 +450,7 @@ opzioni:
    --with-urls           Genera link markdown agli articoli citati su normattiva.it
    --provvedimenti       Esporta provvedimenti attuativi in CSV (richiede URL normattiva.it)
    --debug-search        Modalità debug interattiva per la ricerca (mostra tutti i risultati)
-   --auto-select         Seleziona automaticamente il miglior risultato (default: True)
+   --auto-select         Seleziona automaticamente il miglior risultato (default: selezione interattiva)
    --exa-api-key EXA_API_KEY
                          API key di Exa AI (alternativa a EXA_API_KEY env var)
 

@@ -5,6 +5,57 @@ import json
 import requests
 from .normattiva_api import is_normattiva_url, is_normattiva_export_url # Per la validazione URL
 
+ACT_URL_MARKERS = ("/uri-res/N2Ls?", "/eli/", "/atto/caricaDettaglioAtto?")
+
+
+def _is_act_url(url):
+    """True se l'URL è la pagina di un atto su normattiva.it (non home, guide, ricerca)."""
+    return bool(
+        url
+        and is_normattiva_url(url)
+        and not is_normattiva_export_url(url)
+        and any(marker in url for marker in ACT_URL_MARKERS)
+    )
+
+
+def _exa_search(search_query, exa_api_key, include_domains, debug_json):
+    """
+    Esegue una chiamata a Exa /search.
+
+    Returns:
+        list or None: i risultati, oppure None in caso di errore
+    """
+    headers = {"x-api-key": exa_api_key, "Content-Type": "application/json"}
+    payload = {"query": search_query, "numResults": 5, "type": "auto"}
+    if include_domains:
+        payload["includeDomains"] = include_domains
+
+    response = requests.post(
+        "https://api.exa.ai/search", headers=headers, json=payload, timeout=30
+    )
+
+    if response.status_code != 200:
+        print(
+            f"❌ Errore Exa API (HTTP {response.status_code}): {response.text}",
+            file=sys.stderr,
+        )
+        return None
+
+    try:
+        data = response.json()
+    except json.JSONDecodeError as e:
+        print(f"❌ Errore nel parsing JSON da Exa API: {e}", file=sys.stderr)
+        return None
+
+    # Debug: mostra JSON completo se richiesto
+    if debug_json:
+        print(f"🔍 JSON completo da Exa API:", file=sys.stderr)
+        print(json.dumps(data, indent=2, ensure_ascii=False), file=sys.stderr)
+        print(file=sys.stderr)
+
+    return data.get("results", [])
+
+
 def lookup_normattiva_url(
     search_query, debug_json=False, auto_select=True, exa_api_key=None
 ):
@@ -33,43 +84,22 @@ def lookup_normattiva_url(
             print("   Registrati su: https://exa.ai", file=sys.stderr)
             return None
 
-        # Prepara la richiesta per Exa API
-        url = "https://api.exa.ai/search"
-        headers = {"x-api-key": exa_api_key, "Content-Type": "application/json"}
-
-        # Payload per Exa API - filtro dominio tramite includeDomains
-        payload = {
-            "query": search_query,
-            "includeDomains": ["normattiva.it"],
-            "numResults": 5,
-            "type": "auto",
-        }
-
-        # Effettua la chiamata API
-        response = requests.post(url, headers=headers, json=payload, timeout=30)
-
-        if response.status_code != 200:
-            print(
-                f"❌ Errore Exa API (HTTP {response.status_code}): {response.text}",
-                file=sys.stderr,
-            )
+        # Prima ricerca limitata a normattiva.it
+        results = _exa_search(search_query, exa_api_key, ["normattiva.it"], debug_json)
+        if results is None:
             return None
 
-        # Parse JSON response
-        try:
-            data = response.json()
-        except json.JSONDecodeError as e:
-            print(f"❌ Errore nel parsing JSON da Exa API: {e}", file=sys.stderr)
-            return None
+        # Col filtro di dominio Exa può restituire solo pagine generiche del sito
+        # (home, guide, ricerca) anche quando l'atto è nell'indice: es. "legge stanca".
+        # In quel caso si ripete la ricerca sul web aperto, tenendo solo gli atti.
+        if not any(_is_act_url(r.get("url")) for r in results):
+            open_results = _exa_search(search_query, exa_api_key, None, debug_json)
+            if open_results is None:
+                return None
+            open_acts = [r for r in open_results if _is_act_url(r.get("url"))]
+            if open_acts:
+                results = open_acts
 
-        # Debug: mostra JSON completo se richiesto
-        if debug_json:
-            print(f"🔍 JSON completo da Exa API:", file=sys.stderr)
-            print(json.dumps(data, indent=2, ensure_ascii=False), file=sys.stderr)
-            print(file=sys.stderr)
-
-        # Estrai risultati
-        results = data.get("results", [])
         if not results:
             print(f"❌ Nessun risultato trovato per: {search_query}", file=sys.stderr)
             return None
@@ -105,7 +135,7 @@ def lookup_normattiva_url(
 
         for i, result in enumerate(results):
             url = result.get("url")
-            if url and is_normattiva_url(url) and not is_normattiva_export_url(url):
+            if _is_act_url(url):
                 # Calcola un punteggio di preferenza
                 preference_score = 0
                 title = result.get("title", "").lower()
@@ -113,10 +143,6 @@ def lookup_normattiva_url(
                 # Skippa risultati con "errore" nel titolo (pagine di errore di normattiva.it)
                 if "errore" in title:
                     continue
-
-                # Penalizza URL caricaDettaglioAtto (restituiscono HTML, non XML)
-                if "/caricaDettaglioAtto?" in url:
-                    preference_score -= 50
 
                 # Bonus forte per URL uri-res/N2Ls (funzionano sempre)
                 if "/uri-res/N2Ls?" in url:

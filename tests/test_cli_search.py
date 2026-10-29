@@ -49,6 +49,29 @@ class TestCliSearch(unittest.TestCase):
             with self.assertRaises(SystemExit):
                 cli.main()
 
+    def test_search_debug_manual_with_output_skips_filename_prompt(self):
+        lookup_result = {
+            "url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2020;1",
+            "title": "Titolo",
+        }
+        with mock.patch(
+            "sys.argv",
+            ["normattiva2md", "--search", "query", "--debug-search", "-o", "mio.md"],
+        ), mock.patch(
+            "normattiva2md.cli.lookup_normattiva_url", return_value=lookup_result
+        ), mock.patch(
+            # solo conferma download e rifiuto sovrascrittura: nessun prompt nome file
+            "builtins.input", side_effect=["s", "n"]
+        ) as fake_input, mock.patch(
+            "normattiva2md.cli.generate_snake_case_filename"
+        ) as fake_name, mock.patch(
+            "os.path.exists", return_value=True
+        ):
+            with self.assertRaises(SystemExit):
+                cli.main()
+        fake_name.assert_not_called()
+        self.assertIn("mio.md", fake_input.call_args_list[-1].args[0])
+
 
 if __name__ == "__main__":
     unittest.main()

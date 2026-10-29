@@ -2,6 +2,18 @@
 
 Questo file documenta gli avanzamenti significativi e le decisioni chiave del progetto `normattiva_2_md`.
 
+## 2026-10-29
+
+### Fix v2.1.16: ricerca `--search` di nuovo funzionante
+
+- Exa, col filtro `includeDomains: normattiva.it`, per alcune query (es. "legge stanca") restituisce solo pagine generiche del sito (home, guide, ricerca), anche se l'atto è nel suo indice: la pagina esce solo sul web aperto. Il codice di ricerca era fermo dalla v2.0.23, è cambiato il comportamento di Exa
+- `exa_api.py`: accettati solo URL di atti (`uri-res/N2Ls`, `/eli/`, `caricaDettaglioAtto`); se col filtro di dominio non c'è nessun atto, seconda ricerca sul web aperto tenendo solo gli atti normattiva.it
+- Tolta la penalità -50 sugli URL `caricaDettaglioAtto`: convertono (provato su DL 87/2018), e la penalità faceva scegliere l'atto sbagliato per "decreto dignità"
+- `normalize_normattiva_url`: decodifica gli URN percent-encoded (`urn%3Anir%3A...`), forma in cui Exa li restituisce; prima fallivano con "impossibile estrarre i parametri"
+- Ricerca interattiva: con `-o` non si chiede più il nome del file (prima `-o` veniva ignorato)
+- README e help: `--auto-select` ha default selezione interattiva, non True
+- Limite noto: per "legge spazzacorrotti" Exa mette la L. 3/2019 dietro un'altra legge, e la selezione automatica sceglie quella sbagliata
+
 ## 2026-06-05
 
 ### Fix v2.1.15: test provvedimenti isolati dalla rete

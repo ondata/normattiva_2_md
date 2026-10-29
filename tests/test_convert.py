@@ -399,6 +399,58 @@ class URLLookupTest(unittest.TestCase):
                 "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2018-12-30;205",
             )
 
+    def test_lookup_normattiva_url_open_web_fallback(self):
+        """Col filtro di dominio solo pagine generiche: si ripete sul web aperto"""
+        import unittest.mock as mock
+
+        generic = mock.MagicMock(status_code=200)
+        generic.json.return_value = {
+            "results": [
+                {"url": "https://www.normattiva.it/", "title": "Normattiva"},
+                {
+                    "url": "https://www.normattiva.it/staticPage/guidaAllUso_ModalitaDiRicerca",
+                    "title": "Normattiva",
+                },
+            ]
+        }
+        open_web = mock.MagicMock(status_code=200)
+        open_web.json.return_value = {
+            "results": [
+                {"url": "https://it.wikipedia.org/wiki/Legge_Stanca", "title": "Legge Stanca"},
+                {
+                    "url": "https://www.normattiva.it/uri-res/N2Ls?urn%3Anir%3Astato%3Alegge%3A2004-01-09%3B4%21vig=",
+                    "title": "Legge Stanca (L. 4/2004)",
+                },
+            ]
+        }
+
+        with mock.patch("os.getenv", return_value="fake-api-key"), mock.patch(
+            "requests.post", side_effect=[generic, open_web]
+        ) as post:
+            result = lookup_normattiva_url("legge stanca")
+
+        self.assertEqual(
+            result,
+            "https://www.normattiva.it/uri-res/N2Ls?urn%3Anir%3Astato%3Alegge%3A2004-01-09%3B4%21vig=",
+        )
+        self.assertEqual(post.call_count, 2)
+        self.assertEqual(post.call_args_list[0].kwargs["json"]["includeDomains"], ["normattiva.it"])
+        self.assertNotIn("includeDomains", post.call_args_list[1].kwargs["json"])
+
+    def test_lookup_normattiva_url_only_generic_pages(self):
+        """Nessun atto né col filtro né sul web aperto: nessun URL"""
+        import unittest.mock as mock
+
+        generic = mock.MagicMock(status_code=200)
+        generic.json.return_value = {
+            "results": [{"url": "https://www.normattiva.it/", "title": "Normattiva"}]
+        }
+
+        with mock.patch("os.getenv", return_value="fake-api-key"), mock.patch(
+            "requests.post", return_value=generic
+        ):
+            self.assertIsNone(lookup_normattiva_url("legge stanca"))
+
     def test_lookup_normattiva_url_no_url_found(self):
         """Test when Exa API doesn't return valid results"""
         import unittest.mock as mock

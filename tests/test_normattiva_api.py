@@ -40,6 +40,12 @@ class TestNormattivaApi(unittest.TestCase):
         self.assertNotIn("\\", normalized)
         self.assertTrue(api.validate_normattiva_url(normalized))
 
+        encoded = "https://www.normattiva.it/uri-res/N2Ls?urn%3Anir%3Astato%3Alegge%3A2004-01-09%3B4%21vig="
+        self.assertEqual(
+            api.normalize_normattiva_url(encoded),
+            "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2004-01-09;4!vig=",
+        )
+
         with self.assertRaises(ValueError):
             api.validate_normattiva_url("http://www.normattiva.it/")
         with self.assertRaises(ValueError):

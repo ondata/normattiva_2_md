@@ -6,7 +6,7 @@ import time
 import zipfile
 from datetime import datetime
 from io import BytesIO
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qs, unquote, urlparse
 
 import requests
 
@@ -22,7 +22,8 @@ from .constants import (
 
 def normalize_normattiva_url(url):
     """
-    Normalizza URL normattiva.it rimuovendo escape backslash.
+    Normalizza URL normattiva.it rimuovendo escape backslash e decodificando
+    gli URN percent-encoded (es. urn%3Anir%3A... restituiti da Exa).
 
     Args:
         url: URL string
@@ -33,7 +34,14 @@ def normalize_normattiva_url(url):
     if not isinstance(url, str):
         return url
 
-    return url.replace("\\", "")
+    url = url.replace("\\", "")
+
+    # URN codificato: uri-res/N2Ls?urn%3Anir%3Astato%3Alegge%3A2004-01-09%3B4
+    base, sep, query = url.partition("/uri-res/N2Ls?")
+    if sep and "%" in query:
+        url = base + sep + unquote(query)
+
+    return url
 
 
 def validate_normattiva_url(url):
